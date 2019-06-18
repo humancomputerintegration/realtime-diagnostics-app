@@ -1,0 +1,3 @@
+Implement a server that can also handle threading (HTTP & SMS)
+Implement incoming SMS module into Server
+--> Add threading for that SMS module
