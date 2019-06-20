@@ -70,9 +70,9 @@ void loop() {
       // Retrieve SMS value.
       uint16_t smslen;
       if (fona.readSMS(slot, smsBuffer, 250, &smslen)) { // pass in buffer and max len!
-        Serial.print("DING::");
+        Serial.print("MESG::");
         Serial.println(smsBuffer);
-        Serial.print("DONG::");
+        Serial.print("FROM::");
         Serial.println(callerIDbuffer);
       }
       //Send back an automatic response
