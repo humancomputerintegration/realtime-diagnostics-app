@@ -2,7 +2,9 @@ import serial # import Serial Library
 import numpy  # Import numpy
  
 messages= []
-arduinoData = serial.Serial('com3', 115200) #Creating our serial object named arduinoData
+port_windows = 'com3'
+port_linux = '/dev/ttyACM0'
+arduinoData = serial.Serial(port_linux, 115200) #Creating our serial object named arduinoData
 cnt=0
 print("initializing")
 while True: 
