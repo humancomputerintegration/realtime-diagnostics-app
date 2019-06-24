@@ -13,5 +13,5 @@ while True:
     arduinoString = arduinoData.readline()
     process_s = arduinoString.decode('utf-8').strip()
     tcmp = process_s[:6]
-    if(tcmp == "DING::" or tcmp == "DONG::"):
+    if(tcmp == "MESG::" or tcmp == "FROM::"):
     	print(process_s[6:])
