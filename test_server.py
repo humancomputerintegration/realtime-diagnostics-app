@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request
 import sms as s
 
+#Threading Modules 
+import threading
+import logging
+import time
+
 app = Flask(__name__)
 
 
@@ -21,7 +26,9 @@ def my_form_post():
 		
 #allows us to run the webserver w/out environment variables 
 if __name__ == '__main__':
-	app.run(debug=True, threaded=True)
+	web_serv = threading.Thread(target = app.run(debug=True, threaded = True))
+	sms_serv = threading.Thread(target = s.sms_listener())
+	# app.run(debug=True, threaded=True)
 
 
 
