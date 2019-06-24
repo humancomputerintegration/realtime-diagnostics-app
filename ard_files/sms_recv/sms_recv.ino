@@ -66,9 +66,10 @@ void loop() {
       char callerIDbuffer[32];  //we'll store the SMS sender number in here
       // Retrieve SMS sender address/phone number.
       fona.getSMSSender(slot, callerIDbuffer, 31);
-//      callerIDbuffer
+      //      callerIDbuffer
       // Retrieve SMS value.
       uint16_t smslen;
+    
       if (fona.readSMS(slot, smsBuffer, 250, &smslen)) { // pass in buffer and max len!
         Serial.print("MESG::");
         Serial.println(smsBuffer);
@@ -76,7 +77,12 @@ void loop() {
         Serial.println(callerIDbuffer);
       }
       //Send back an automatic response
-      fona.sendSMS(callerIDbuffer, "Text messaged received --- processing");
+      //This process of messing around with the character buffers for a custom 
+//      message seems to take a long time, so I might just edit this out
+      char replyBuffer[250];
+      String replyString = String("You sent:: ") + smsBuffer;
+      replyString.toCharArray(replyBuffer, 250);
+      fona.sendSMS(callerIDbuffer, replyBuffer);
       fona.deleteSMS(slot);
     }
   }

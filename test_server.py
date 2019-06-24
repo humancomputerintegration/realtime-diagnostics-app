@@ -27,7 +27,7 @@ def my_form_post():
 #allows us to run the webserver w/out environment variables 
 if __name__ == '__main__':
 	web_serv = threading.Thread(target = app.run(debug=True, threaded = True))
-	sms_serv = threading.Thread(target = s.sms_listener())
+	# sms_serv = threading.Thread(target = s.sms_listener())
 	# app.run(debug=True, threaded=True)
 
 
