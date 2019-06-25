@@ -1,0 +1,2 @@
+If you're getting permission errors to access the Ardunio + Fona combo, use:
+"sudo chmod a+rw /dev/ttyACM0" to give your computer proper permissions. The device not be named "dev/ttyACM0", so make sure you double check what the device isnamed
