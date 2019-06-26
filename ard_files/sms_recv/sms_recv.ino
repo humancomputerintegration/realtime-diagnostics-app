@@ -5,17 +5,14 @@
 #define FONA_RX 2
 #define FONA_TX 3
 #define FONA_RST 4
+
 #include <SoftwareSerial.h>
 SoftwareSerial fonaSS = SoftwareSerial(FONA_TX, FONA_RX);
 SoftwareSerial *fonaSerial = &fonaSS;
-// Hardware serial is also possible!
-//  HardwareSerial *fonaSerial = &Serial1;
-
 // Use this for FONA 800 and 808s
 Adafruit_FONA fona = Adafruit_FONA(FONA_RST);
 
-// this is a large buffer for replies
-char replybuffer[255];
+char replybuffer[255]; //buffer for replies
 uint8_t readline(char *buff, uint8_t maxbuff, uint16_t timeout = 0);
 
 void setup() {

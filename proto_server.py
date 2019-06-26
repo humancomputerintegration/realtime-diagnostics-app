@@ -8,7 +8,6 @@ import time
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def my_form():
     return render_template('sendtext.html')

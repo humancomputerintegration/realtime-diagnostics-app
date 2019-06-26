@@ -22,6 +22,7 @@ def send_text(cred_file, message, sendn, recvn):
 	message = client.messages.create(body=message,from_=sendn,to=recvn)
 	print("message sent - message id = {}".format(message.sid))
 
+#The ardunio should be flashed with the arduino file "sms_recv.ino"
 def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=6, filter_key=["MESG::","FROM::"]):
 	print("starting the SMS listener")
 	running = True
