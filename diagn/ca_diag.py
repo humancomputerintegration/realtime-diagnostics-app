@@ -133,7 +133,7 @@ def diagnosis(gender, age, symptoms, wm, umls_dis_name, umls_sympt):
 
 if __name__ == "__main__":
 	print("beginning test for the Computer-Assisted-Diagonstic System")
-	wm, dsm, model = load_files()
+	wm, dsm, model = load_files("Dis_Sym_30-Copy1.csv","dis_symptom.csv", "word2vec_bmc_30.model")
 	umls_dis_name, umls_sympt, umls_num, rev_sym, rev_dis = parse_tables()
 	gender, age, symptoms = input_prompt()
 	diagnosis(gender, age, symptoms, wm, umls_dis_name, umls_sympt)
