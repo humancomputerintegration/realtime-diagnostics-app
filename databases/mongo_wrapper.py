@@ -18,42 +18,73 @@ from pymongo.uri_parser import parse_host
 #db.command("collstats", collection_name)
 #db.command("filemd5", object_id, root=file_root) 
 
+
+#Client Functions 
 def open_connection(host:str, port:int, username, password):
 	uri = "mongodb://{}:{}@{}:{}/".format(username,password,host,port)
 	client = pymongo.MongoClient(uri,serverSelectionTimeoutMS=40)
 	try:
 		server_details = client.server_info()
-		print("Connection Successful. Server details below:")
-		print("------------------------------------------------")
-		pprint(client.server_info())	
+		# print("Connection Successful. Server details below:")
+		# print("------------------------------------------------")
+		# pprint(server_details)	
+		# print("------------------------------------------------")
 	except pymongo.errors.ServerSelectionTimeoutError as e:
 		print(e)
 		print("Possible Errors: Credentials, Host & Port, Internet Connection")	
 
 	return client
 
+def close_connection(client):
+	client.close()
+
+#Database Functions
 def createUser(database, username, password, hierarchy="user",roles=["read"]):
 	database.command("createUser", hierarchy, pwd = password, roles=roles)
 
 def updateUser(database, username, password, hierarchy="user",roles=["read"]):
 	datbase.command("updateUser", hierarchy, pwd = password, roles=roles)
-	
-# def pick_db(db_name):
 
+def drop_db(client,database_name):
+	client.drop_db(database_name)
+
+
+# def get_create_db:
+
+# def get_db():
+
+def list_dbs(client, mode = 'names'):
+	valid_lists = {'names': client.list_database_names(),
+					'cursors': client.list_database()}
+	throw_error = lambda : raise Exception('Not a valid list DB mode')
+	return valid_lists.get(mode, throw_error())
+	
 # def get_collection(collection_name):
 
 # def insert_document():
 
 # def find_document(query requirements):
- 	
+ 
+def unit_test():
+	print("beginning unit tests for mongo_wrapper.py")
+	print("------------------------------------------------")
+
+
 if __name__ == "__main__":
 	print("starting the tests")
 	client = open_connection('localhost',27017,'root',"humancomputerintegration")
 	# serverStatusResult=client.admin.command("serverStatus")
 	# pprint(serverStatusResult)
 
-	temp_db = client["test2_database"]
-	posts = temp_db[posts2] #we need to use this .notation to make sure it's there 
+	print(list_dbs(client, mode='names'))
+	print(list_dbs(client, mode='cursors'))
+
+	# temp_db = client["test2_database"]
+	# temp_db2 = client["test3_database"]
+
+	
+	# posts = temp_db.posts #we need to use this .notation to make sure it's there 
+	# posts2 = temp_db2.posts
 
 	# post_data = {
 	# 	'title':'Python and MongoDB',
@@ -62,7 +93,8 @@ if __name__ == "__main__":
 	# }
 
 	# result = posts.insert_one(post_data)
-	# print("one post: {}".format(result.inserted_id))
+	# result = posts2.insert_one(post_data)
+	# # print("one post: {}".format(result.inserted_id))
 
 	# post_1= {
 	# 	'title':'AA',
@@ -83,4 +115,4 @@ if __name__ == "__main__":
 	# }
 
 	# new_result = posts.insert_many([post_1, post_2, post_3])
-	# print("multiple hosts: {}".format(new_result.inserted_ids))
+	# new_result = posts2.insert_many([post_1, post_2, post_3])
