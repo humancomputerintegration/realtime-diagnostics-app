@@ -55,9 +55,9 @@ def drop_db(client,database_name):
 
 def list_dbs(client, mode = 'names'):
 	valid_lists = {'names': client.list_database_names(),
-					'cursors': client.list_database()}
-	throw_error = lambda : raise Exception('Not a valid list DB mode')
-	return valid_lists.get(mode, throw_error())
+					'cursors': client.list_databases()}
+	throw_error = lambda : ValueError('Not a mode')
+	return valid_lists.get(mode, throw_error)
 	
 # def get_collection(collection_name):
 
@@ -78,6 +78,8 @@ if __name__ == "__main__":
 
 	print(list_dbs(client, mode='names'))
 	print(list_dbs(client, mode='cursors'))
+
+	
 
 	# temp_db = client["test2_database"]
 	# temp_db2 = client["test3_database"]
