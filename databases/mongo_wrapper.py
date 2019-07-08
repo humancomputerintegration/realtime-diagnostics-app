@@ -134,8 +134,7 @@ def unit_tests():
 	print("beginning unit tests for mongo_wrapper.py")
 	print("------------------------------------------------")
 
-
-if __name__ == "__main__":
+def bad_test():
 	print("starting the tests")
 	client = open_connection('localhost',27017,'root',"humancomputerintegration")
 	# pprint(admin_command(client, "serverStatus"))
@@ -181,6 +180,5 @@ if __name__ == "__main__":
 	drop_collection(stuff, "dummycollection")
 	drop_collection(stuff2, "dummycollection")
 
-	# drop_dbs(client, ["test2_database"])
-	# drop_dbs(client, ["test3_database"])
-	drop_dbs(client, ["test2_database", "test3_database"])
+if __name__ == "__main__":
+	bad_test()
