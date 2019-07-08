@@ -74,7 +74,18 @@ def drop_db(client,database_name):
 	client.drop_database(database_name)
 	print(client.list_database_names())
 	return;
-	
+
+def drop_dbs(client, database_names):
+	if(isinstance(database_names, list)):
+		for name in database_names:
+			print("Droppping ::", name)
+			drop_db(client, name)
+		print("finished dropping all of the databases")
+		return;
+
+	print("Not a valid list of database names")
+	return;
+
 def createUser(database, username, password, hierarchy="user",roles=["read"]):
 	database.command("createUser", hierarchy, pwd = password, roles=roles)
 	print("Created {} with {} and {} roles".format(username, hierarchy, roles))
@@ -113,7 +124,7 @@ def insert(collection, many:bool, docs):
 		print("Inserting one document into the collection")
 		collection.insert_one(docs)
 	print("done")
-		
+	
 # def get_collection(collection_name):
 
 # def insert_document():
@@ -169,3 +180,7 @@ if __name__ == "__main__":
 
 	drop_collection(stuff, "dummycollection")
 	drop_collection(stuff2, "dummycollection")
+
+	# drop_dbs(client, ["test2_database"])
+	# drop_dbs(client, ["test3_database"])
+	drop_dbs(client, ["test2_database", "test3_database"])
