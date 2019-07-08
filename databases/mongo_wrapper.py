@@ -54,7 +54,7 @@ def create_db(client, new_database):
 	if new_database in client.list_database_names():
 		print("Database already exists -- returning none")
 		return None 
-	temp_coll = client[new_database].testcollection.insert_one({'DUMMY':0})
+	temp_coll = client[new_database].dummycollection.insert_one({'DUMMY':0})
 	print("finished creating database::", new_database)
 	return client[new_database]
 
@@ -84,7 +84,7 @@ def updateUser(database, username, password, hierarchy="user",roles=["read"]):
 	print("updated user")
 
 #This function will only create a temporary collection until a document is inserted
-def create_collection(database, new_collection, doc:dict):
+def create_collection(database, new_collection):
 	if (new_collection in database.list_collection_names()):
 		print("Collection already exit - function ending")	
 		return;
@@ -96,7 +96,7 @@ def get_collection(database, collection_name):
 		print("Collection does not exist in this database -exitting")
 		return None
 	return database.collection_name
-	
+
 def drop_collection(database, collection_name):
 	if not (collection_name in database.list_collection_names()):
 		print("Collection doesn't exist in this database - exitting")
@@ -105,20 +105,15 @@ def drop_collection(database, collection_name):
 	print("Post drop ::",database.list_collection_names())
 	return;
 
-def insert(collection, docs):
-	for x in range(0,2):
-		docs[x]
-
-	# collection.insert_one(docs)
-
-	# # insert_many(ordered = False)
-	# collection.insert_many(docs)
-
-# def insert_record(client, database_name, collection_name, records):
-# 	if(records == None):
-
-
-
+def insert(collection, many:bool, docs):
+	if(many):
+		print("Inserting multiple documents into the collection")
+		collection.insert_many(docs)
+	else:
+		print("Inserting one document into the collection")
+		collection.insert_one(docs)
+	print("done")
+		
 # def get_collection(collection_name):
 
 # def insert_document():
@@ -140,50 +135,37 @@ if __name__ == "__main__":
 	print(list_dbs(client, mode='names'))
 
 	stuff = get_db(client, "test2_database")
-	# create_collection(stuff, "testcollection")
-	# create_collection(stuff, "oiwjeroiwjrowirj")
-	# drop_collection(stuff, "oiwjeroiwjrowirj")
-	# drop_collection(stuff, "testcollection")
-	# print(stuff.list_collection_names())
+	stuff2 = get_db(client, "test3_database")
 
-	# drop_db(client, "test2_database")
-	# drop_db(client, "test3_database")
-	# print(list_dbs(client, mode='cursors'))
-
-
-
-
+	tcoll1 = create_collection(stuff, "testcollection")
+	tcoll2 = create_collection(stuff2, "oiwjeroiwjrowirj")
 	
-	# posts = temp_db.posts #we need to use this .notation to make sure it's there 
-	# posts2 = temp_db2.posts
+	post_data = {
+		'title':'Python and MongoDB',
+		'content':'OIJOIJOIJ',
+		'author':'ted'
+	}
 
-	# post_data = {
-	# 	'title':'Python and MongoDB',
-	# 	'content':'OIJOIJOIJ',
-	# 	'author':'ted'
-	# }
+	post1= {
+		'title':'AA',
+		'content':'BB',
+		'author':'CC'
+	}
 
-	# result = posts.insert_one(post_data)
-	# result = posts2.insert_one(post_data)
-	# # print("one post: {}".format(result.inserted_id))
+	post2= {
+		'title':'DD',
+		'content':'EE',
+		'author':'FF'
+	}
 
-	# post_1= {
-	# 	'title':'AA',
-	# 	'content':'BB',
-	# 	'author':'CC'
-	# }
+	post3= {
+		'title':'GG',
+		'content':'HH',
+		'author':'II'
+	}
 
-	# post_2= {
-	# 	'title':'DD',
-	# 	'content':'EE',
-	# 	'author':'FF'
-	# }
+	insert(tcoll1, False, post_data)
+	insert(tcoll2, True, [post1,post2,post3])
 
-	# post_3= {
-	# 	'title':'GG',
-	# 	'content':'HH',
-	# 	'author':'II'
-	# }
-
-	# new_result = posts.insert_many([post_1, post_2, post_3])
-	# new_result = posts2.insert_many([post_1, post_2, post_3])
+	drop_collection(stuff, "dummycollection")
+	drop_collection(stuff2, "dummycollection")
