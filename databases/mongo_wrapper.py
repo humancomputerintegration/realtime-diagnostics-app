@@ -37,8 +37,11 @@ def open_connection(host:str, port:int, username, password):
 def close_connection(client):
 	client.close()
 
-#Database & User Functions
+def admin_command(client, cmd):
+	print("beginning admin command")
+	return client.admin.command(cmd)
 
+#Database & User Functions
 def list_dbs(client, mode = 'names'):
 	valid_lists = {'names': client.list_database_names(),
 					'cursors': client.list_databases()}
@@ -80,19 +83,48 @@ def updateUser(database, username, password, hierarchy="user",roles=["read"]):
 	datbase.command("updateUser", hierarchy, pwd = password, roles=roles)
 	print("updated user")
 
+#This function will only create a temporary collection until a document is inserted
+def create_collection(database, new_collection, doc:dict):
+	if (new_collection in database.list_collection_names()):
+		print("Collection already exit - function ending")	
+		return;
+	
+	return database.new_collection 
 
-def insert_record(client, database_name, collection_name, records):
-	if(records == None):
+def get_collection(database, collection_name):
+	if not (new_collection in database.list_collections_names()):
+		print("Collection does not exist in this database -exitting")
+		return None
+	return database.collection_name
+	
+def drop_collection(database, collection_name):
+	if not (collection_name in database.list_collection_names()):
+		print("Collection doesn't exist in this database - exitting")
+		return;
+	database.drop_collection(collection_name)
+	print("Post drop ::",database.list_collection_names())
+	return;
+
+def insert(collection, docs):
+	for x in range(0,2):
+		docs[x]
+
+	# collection.insert_one(docs)
+
+	# # insert_many(ordered = False)
+	# collection.insert_many(docs)
+
+# def insert_record(client, database_name, collection_name, records):
+# 	if(records == None):
 
 
-def create_collection(client, database_name, new_collection):
 
 # def get_collection(collection_name):
 
 # def insert_document():
 # def find_document(query requirements):
  
-def unit_test():
+def unit_tests():
 	print("beginning unit tests for mongo_wrapper.py")
 	print("------------------------------------------------")
 
@@ -100,17 +132,22 @@ def unit_test():
 if __name__ == "__main__":
 	print("starting the tests")
 	client = open_connection('localhost',27017,'root',"humancomputerintegration")
-	# serverStatusResult=client.admin.command("serverStatus")
-	# pprint(serverStatusResult)
+	# pprint(admin_command(client, "serverStatus"))
 
-	temp_db = create_db(client, "test2_database")
-	temp_db2 = create_db(client, "test3_database")
-	# temp_db = client["test2_database"]
-	# temp_db2 = client["test3_database"]
+	temp_db = create_db(client, "test2_database") # temp_db = client["test2_database"]
+	temp_db2 = create_db(client, "test3_database") 	# temp_db2 = client["test3_database"]
 
 	print(list_dbs(client, mode='names'))
-	drop_db(client, "test2_database")
-	drop_db(client, "test3_database")
+
+	stuff = get_db(client, "test2_database")
+	# create_collection(stuff, "testcollection")
+	# create_collection(stuff, "oiwjeroiwjrowirj")
+	# drop_collection(stuff, "oiwjeroiwjrowirj")
+	# drop_collection(stuff, "testcollection")
+	# print(stuff.list_collection_names())
+
+	# drop_db(client, "test2_database")
+	# drop_db(client, "test3_database")
 	# print(list_dbs(client, mode='cursors'))
 
 
