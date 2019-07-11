@@ -1,8 +1,0 @@
-Make sure you have Apache (Starting APACHE = "systemctl start httpd.service"
-
-When you start a server make sure you enable cgi
-	(enable cgi = "python3 -m http.server --bind localhost --cgi 8000")
-
-Make sure you get rid of any escape sequences that might be in a string when you submit a form (I just used - .strip() - to get rid of anything)
-
-Make sure you check that your apache instance and ur python directories are the same. (Check with import sys, sys.version, sys.prefix)
