@@ -1,7 +1,7 @@
 # Realtime Diagnostics for Nigerian Doctors Without Relying on Internet
 
 
-![demo](/demos/demo.gif)
+![demo](/demos/demo2.gif)
 
 Our goal is to build a proof-of-concept end-to-end system that: (1) Runs computational diagnostics on a simple phone interface. We have been implementing a prototype application on the Android platform that doctors in Nigeria will be able to utilize, quickly and efficiently, while on patient calls. This application allows to run a state-of-the-art iterative diagnosis on a simple commodity mobile phone, i.e., doctors can input symptoms and iteratively explore potential diagnosis, including rare conditions they might never been trained for. And, (2) Enables realtime knowledge to upload into the interface, e.g., geographical spreading infectious diseases, complex medical queries on rare conditions, etc. This all happens even when internet coverage (3G and above) is not present. To achieve this we compress and encrypt small queries from the app into 2G text messages that we send to and from a centralized server.
 
