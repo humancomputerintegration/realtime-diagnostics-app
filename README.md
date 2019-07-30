@@ -9,3 +9,4 @@ Our goal is to build a proof-of-concept end-to-end system that: (1) Runs computa
 This project is led by Prof. Pedro Lopes (Computer Science) and Prof. Andrey Rzhetsky (Medicine) of the University of Chicago. The main developers behind the Android application and 2G server are Eva Tuecke and Ted Kim. The diagnostics tool was developed by Chao Zhang and Hanxin Zhang.
 
 ## License
+This project is open source, see LICENSE.md.  
