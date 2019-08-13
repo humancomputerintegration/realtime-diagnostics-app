@@ -1,7 +1,0 @@
-TODO:
-
-Implement a Python wrapper for our healthcare database design.
-
-Things and Parameters to include: 
-
-Age/Sex/Previous Symptoms/Diagnosis
