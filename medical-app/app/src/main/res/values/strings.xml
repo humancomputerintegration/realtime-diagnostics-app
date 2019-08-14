@@ -4,6 +4,7 @@
     <string name="welcome_header">MobileMedicine v0.1</string>
     <string name="start_diagnosis_button">Start Diagnosis</string>
     <string name="outbreak_check_button">Check for Outbreaks</string>
+    <string name="search_disease_button">Search Disease</string>
 
 
     <!--activity_patient_info.xml option-->
@@ -25,4 +26,10 @@
     <string name="add_symptom_button">Add Symptom</string>
     <string name="symptom_list_header">Patient\'s Current Symptoms</string>
     <string name="remove_symptom_button">Delete</string>
+
+    <!--activity_search_disease.xml options-->
+    <string name="enter_disease_button">Enter disease</string>
+    <string name="disease_information_header">Disease Information</string>
+    <string name="compare_button">Compare to most recent diagnosis</string>
+
 </resources>
