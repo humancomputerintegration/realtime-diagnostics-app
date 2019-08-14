@@ -10,16 +10,18 @@ import datetime
 #Todo make sure you implement a usage with **kwargs - which might help reduce the number of functions we need
 def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=5, filter_key=["MMEI:","FROM:"]):
 	db_client = mw.open_connection('localhost',27017,'root',"humancomputerintegration")
-	collection = prepare_collection(db_client, "proto_test_db", "proto_test_coll")
+	db_collection = prepare_collection(db_client, "proto_test_db", "proto_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
 																	'medical_assets/SymptomList.csv')
 
 	running = True
 	arduino_port = serial.Serial(port_name, baud_rate)
-	info_counter = 0 
-	info = tuple()
+	
+		
 
 	print("Starting the SMS listener")
+	from_pnum = None 
+	raw_text = None
 
 	while (running):
 		while (arduino_port.inWaiting() == 0):
@@ -30,14 +32,21 @@ def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=5, filter_key=[
 		data_tag = processed_data[:ign]
 
 		if(data_tag in filter_key):
-			info = info + (processed_data[ign:], ) #singleton tuple
-			info_counter += 1
-			# print(processed_data[ign:])
+			if(data_tag == filter_key[0]):
+				raw_text = processed_data[5:]
+			elif(data_tag == filter_key[1]):
+				from_pnum = processed_data[5:]
+			else:
+				print("error")
 
-		if(info_counter == 2):
-			print(info)
-			info_counter = 0 
-			info = tuple()
+			print(raw_text, " ==", from_pnum)
+
+			if(from_pnum != None and raw_text != None):
+				sd = pd(db_collection,from_pnum, raw_text)
+				mw.insert(db_collection, sd)
+				print("inserted")
+				from_pnum = None
+				raw_text = None
 
 	mw.close_connection(db_client)
 
@@ -66,7 +75,6 @@ def process_dictionaries(umlsdis, umlssymp):
 
 	return umls_to_medical_term, ind_to_dis_umls, ind_to_symp_umls
 
-
 def prepare_collection(client, dbname: str, coll_name:str):
 	db = mw.create_db(client, dbname)
 	if(db == None):
@@ -81,40 +89,36 @@ def prepare_collection(client, dbname: str, coll_name:str):
 def process_data(collection, source, raw_text):
 	ts = datetime.datetime.now().timestamp()
 
-	
 	#Storing source and time related information
 	struct_data = dict()
 	struct_data["from"] = source
 	struct_data["timestamp"] = ts
 
 	#Storing data about the patient
-	info = raw_text.split(";")
-	struct_data["patient id"] = info[0]
-	struct_data["patient weight"] = 
-	struct_data["patient height"] = 
-	struct_data["symptoms"] = info[1]
-	struct_data["diagnosis"] = info[2]
+	payload = raw_text.split(";")
+	struct_data["patient id"] = payload[0]
+	struct_data["patient weight"] = payload[1] 
+	struct_data["patient height"] = payload[2]
+	struct_data["symptoms_umls"] = payload[1]
+	struct_data["diagnosis_umls"] = payload[2]
+	struct_data["symptoms_name"] = payload[2]
+	struct_data["diagnosis_name"] = payload[2]
 	
 	return struct_data 
+	
+def pd(collection, source, rt):
+	ts = datetime.datetime.now().timestamp()
+
+	#Storing source and time related information
+	struct_data = dict()
+	struct_data["from"] = source
+	struct_data["timestamp"] = ts
+	struct_data["message"] = rt
+	return struct_data
 	
 def store_data(processed_data:dict):
 	mw.insert(client, processed_data)
 	return True
 
-
-def process_text(text):
-	
-	running = True
-	arduino_port = serial.Serial() #port_name, baud_rate
-	print(text)
-	return;
-
 if __name__ == "__main__":
 	sms_listener()
-	# print("DOes nothing when called")
-	# a, b, c = process_dictionaries('medical_assets/DiseaseList.csv','medical_assets/SymptomList.csv')
-	# print(a)
-	# print("------------------------")
-	# print(b)
-	# print("------------------------")
-	# print(c)
