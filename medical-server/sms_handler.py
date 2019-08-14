@@ -4,11 +4,11 @@ from databases import mongo_wrapper as mw
 import serial
 import threading
 import os
+import datetime
 
 #The ardunio should be flashed with the arduino file "sms_recv.ino"
-def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=6, filter_key=["MESG::","FROM::"]):
-	print("starting the SMS listener")
-
+#Todo make sure you implement a usage with **kwargs - which might help reduce the number of functions we need
+def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=5, filter_key=["MMEI:","FROM:"]):
 	db_client = mw.open_connection('localhost',27017,'root',"humancomputerintegration")
 	collection = prepare_collection(db_client, "proto_test_db", "proto_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
@@ -18,6 +18,9 @@ def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=6, filter_key=[
 	arduino_port = serial.Serial(port_name, baud_rate)
 	info_counter = 0 
 	info = tuple()
+
+	print("Starting the SMS listener")
+
 	while (running):
 		while (arduino_port.inWaiting() == 0):
 			pass
@@ -69,18 +72,30 @@ def prepare_collection(client, dbname: str, coll_name:str):
 	if(db == None):
 		db = mw.get_db(client, dbname)
 
-	collection = mw.create_collection(client, coll_name)
+	collection = mw.create_collection(db, coll_name)
 	if(collection == None):
-		collection = mw.get_collection(client, coll_name)
+		collection = mw.get_collection(db, coll_name)
 
 	return collection
 
-def process_data(collection, raw_text):
+def process_data(collection, source, raw_text):
+	ts = datetime.datetime.now().timestamp()
+
+	
+	#Storing source and time related information
+	struct_data = dict()
+	struct_data["from"] = source
+	struct_data["timestamp"] = ts
+
+	#Storing data about the patient
 	info = raw_text.split(";")
-	pid = info[0]
-	symp = info[1]
-	dis = info[2]
-	return 0
+	struct_data["patient id"] = info[0]
+	struct_data["patient weight"] = 
+	struct_data["patient height"] = 
+	struct_data["symptoms"] = info[1]
+	struct_data["diagnosis"] = info[2]
+	
+	return struct_data 
 	
 def store_data(processed_data:dict):
 	mw.insert(client, processed_data)
@@ -95,10 +110,11 @@ def process_text(text):
 	return;
 
 if __name__ == "__main__":
-	print("DOes nothing when called")
-	a, b, c = process_dictionaries('medical_assets/DiseaseList.csv','medical_assets/SymptomList.csv')
-	print(a)
-	print("------------------------")
-	print(b)
-	print("------------------------")
-	print(c)
+	sms_listener()
+	# print("DOes nothing when called")
+	# a, b, c = process_dictionaries('medical_assets/DiseaseList.csv','medical_assets/SymptomList.csv')
+	# print(a)
+	# print("------------------------")
+	# print(b)
+	# print("------------------------")
+	# print(c)
