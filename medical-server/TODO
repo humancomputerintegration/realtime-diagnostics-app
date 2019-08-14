@@ -1,3 +1,2 @@
-Database Stuff mostly figured out 
-
-FINALIZE -  arduino communication 2-way interface
+CRITICAL: Figure out encryption protocol between app & server
+CRITICAL: Create a docker image that can host the server regardless of platform
