@@ -83,13 +83,13 @@ def create_collection(database, new_collection):
 		print("Collection already exit - function ending")	
 		return None;
 	
-	return database.new_collection
+	return database[new_collection]
 
 def get_collection(database, collection_name):
 	if not (new_collection in database.list_collections_names()):
 		print("Collection does not exist in this database -exitting")
 		return None
-	return database.collection_name
+	return database[collection_name]
 
 def drop_collection(database, collection_name):
 	if not (collection_name in database.list_collection_names()):
@@ -99,7 +99,7 @@ def drop_collection(database, collection_name):
 	print("Post drop ::",database.list_collection_names())
 	return;
 
-def insert(collection, many:bool, docs):
+def insert(collection, docs, many = False):
 	if(many):
 		print("Inserting multiple documents into the collection")
 		collection.insert_many(docs)
