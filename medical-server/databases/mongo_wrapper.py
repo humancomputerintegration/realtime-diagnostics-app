@@ -5,29 +5,12 @@ from pymongo.uri_parser import parse_host
 
 #https://api.mongodb.com/python/current/api/pymongo/database.html
 
-
-#create_collection, more robust collection creation 
-#This method should only be used to specify options on creation
-
-#current_op = returns the current setion 
-#drop_collection(name_or_collection, session=None)
-#list_collections(session=None, filter=None, **kwargs)
-#command - very important = Issue a MongoDB command.
-
-#db.command("buildinfo")
-#db.command("collstats", collection_name)
-#db.command("filemd5", object_id, root=file_root) 
-
 #Client Functions 
 def open_connection(host:str, port:int, username, password):
 	uri = "mongodb://{}:{}@{}:{}/".format(username,password,host,port)
 	client = pymongo.MongoClient(uri,serverSelectionTimeoutMS=40)
 	try:
 		server_details = client.server_info()
-		# print("Connection Successful. Server details below:")
-		# print("------------------------------------------------")
-		# pprint(server_details)	
-		# print("------------------------------------------------")
 	except pymongo.errors.ServerSelectionTimeoutError as e:
 		print(e)
 		print("Possible Errors: Credentials, Host & Port, Internet Connection")	
@@ -98,9 +81,9 @@ def updateUser(database, username, password, hierarchy="user",roles=["read"]):
 def create_collection(database, new_collection):
 	if (new_collection in database.list_collection_names()):
 		print("Collection already exit - function ending")	
-		return;
+		return None;
 	
-	return database.new_collection 
+	return database.new_collection
 
 def get_collection(database, collection_name):
 	if not (new_collection in database.list_collections_names()):
@@ -124,12 +107,7 @@ def insert(collection, many:bool, docs):
 		print("Inserting one document into the collection")
 		collection.insert_one(docs)
 	print("done")
-	
-# def get_collection(collection_name):
-
-# def insert_document():
-# def find_document(query requirements):
- 
+	 
 def unit_tests():
 	print("beginning unit tests for mongo_wrapper.py")
 	print("------------------------------------------------")
