@@ -34,10 +34,11 @@ def list_dbs(client, mode = 'names'):
 # Note: A database will not be created until there is at 
 # least one record in the DB - so we create a dummy collection
 def create_db(client, new_database):
+	# print(client.list_databases_names())
+	print(new_database)
 	if new_database in client.list_database_names():
 		print("Database already exists -- returning none")
 		return None 
-	temp_coll = client[new_database].dummycollection.insert_one({'DUMMY':0})
 	print("finished creating database::", new_database)
 	return client[new_database]
 
@@ -80,13 +81,13 @@ def updateUser(database, username, password, hierarchy="user",roles=["read"]):
 #This function will only create a temporary collection until a document is inserted
 def create_collection(database, new_collection):
 	if (new_collection in database.list_collection_names()):
-		print("Collection already exit - function ending")	
+		print("Collection already exists - function ending")	
 		return None;
 	
 	return database[new_collection]
 
 def get_collection(database, collection_name):
-	if not (new_collection in database.list_collections_names()):
+	if not (collection_name in database.list_collection_names()):
 		print("Collection does not exist in this database -exitting")
 		return None
 	return database[collection_name]
@@ -101,12 +102,12 @@ def drop_collection(database, collection_name):
 
 def insert(collection, docs, many = False):
 	if(many):
-		print("Inserting multiple documents into the collection")
+		print("Inserting multiple documents into the collection", end = "")
 		collection.insert_many(docs)
 	else:
-		print("Inserting one document into the collection")
+		print("Inserting one document into the collection", end ="")
 		collection.insert_one(docs)
-	print("done")
+	print("-----> done")
 	 
 def unit_tests():
 	print("beginning unit tests for mongo_wrapper.py")
