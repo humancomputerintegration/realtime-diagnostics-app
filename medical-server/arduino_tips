@@ -1,6 +1,0 @@
-PROBLEM 1: 
-
-If you're getting permission errors to access the Ardunio + Fona combo (On Ubunutu), you need to grant read and write permissions to the user for that device. 
-
-Use "sudo chmod a+rw /dev/ttyACM0" to give the user the proper permissions. The arduino name in this example is "/dev/ttyACM0", but it may not be like that on your system, so double check what the arduino device is named. 
-
