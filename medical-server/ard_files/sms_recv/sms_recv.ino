@@ -68,18 +68,20 @@ void loop() {
       uint16_t smslen;
     
       if (fona.readSMS(slot, smsBuffer, 250, &smslen)) { // pass in buffer and max len!
-        Serial.print("MESG::");
+        Serial.print("MMEI:");
         Serial.println(smsBuffer);
-        Serial.print("FROM::");
+        Serial.print("FROM:");
         Serial.println(callerIDbuffer);
       }
       //Send back an automatic response
       //This process of messing around with the character buffers for a custom 
-//      message seems to take a long time, so I might just edit this out
-      char replyBuffer[250];
-      String replyString = String("You sent:: ") + smsBuffer;
-      replyString.toCharArray(replyBuffer, 250);
-      fona.sendSMS(callerIDbuffer, replyBuffer);
+      //message seems to take a long time, so I might just edit this out
+
+// Replying to stuff
+//      char replyBuffer[250];
+//      String replyString = String("You sent:: ") + smsBuffer;
+//      replyString.toCharArray(replyBuffer, 250);
+//      fona.sendSMS(callerIDbuffer, replyBuffer);
       fona.deleteSMS(slot);
     }
   }
