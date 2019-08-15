@@ -25,6 +25,9 @@
             android:name=".PatientInfoActivity"
             android:screenOrientation="portrait"></activity>
         <activity
+            android:name=".SearchDisease"
+            android:screenOrientation="portrait"></activity>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

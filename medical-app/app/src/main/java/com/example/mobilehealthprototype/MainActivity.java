@@ -53,6 +53,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, PDiagResult.class));
             }
         });
+
+        Button search = (Button) findViewById(R.id.searchDiseaseButton);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SearchDisease.class));
+            }
+        });
     }
 
     //Probably delete these later
@@ -65,4 +73,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, OutbreakScreens.class);
         startActivity(intent);
     }
+
 }
