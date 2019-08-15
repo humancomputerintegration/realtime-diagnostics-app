@@ -1,2 +1,7 @@
 CRITICAL: Figure out encryption protocol between app & server
 CRITICAL: Create a docker image that can host the server regardless of platform
+
+MAKE SURE YOU FIX THE DOUBLE EXISTENCE BUG IN THE MONGO_WRAPPER - Almost done
+IN ADDITION MAKE SURE YOU FIX THE DATABASE INSERT BUG - in Progress 
+
+REFRACTOR CODE - MAKE IT MORE MODULAR
