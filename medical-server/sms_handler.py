@@ -5,6 +5,7 @@ import serial
 import threading
 import os
 import datetime
+import time
 
 #The ardunio should be flashed with the arduino file "sms_recv.ino"
 #Todo make sure you implement a usage with **kwargs - which might help reduce the number of functions we need
