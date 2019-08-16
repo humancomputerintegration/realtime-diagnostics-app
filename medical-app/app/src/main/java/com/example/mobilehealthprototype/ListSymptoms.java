@@ -27,7 +27,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 //TODO: - Review https://github.com/ajithvgiri/search-dialog - for documentation
-//TODO - Maybe look at the above github to figure out how to do the searchavle dialoge from scratch
 //TODO Make sure that the button click animation for "Diagnose is visible"
 public class ListSymptoms extends AppCompatActivity {
     List<SearchListItem> allSymptoms = new ArrayList<>();

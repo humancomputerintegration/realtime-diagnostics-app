@@ -6,8 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+//Handles communnication protocol between the app & server -- needs to include encryption protocol
 public class CommunicationHandler {
-    //Handles the communication protocol between the app and the server
 
     //generates a compressed string of the information into the server
     public String generateHashID(int p_id){

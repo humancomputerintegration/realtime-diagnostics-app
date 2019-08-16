@@ -25,3 +25,5 @@ TODO: FIX BUGS ON PATIENT INFO ACTIVITY
 TODO: FIX UP THE AESTHETICS OF THE APP AND STUFF
 TODO: CREATE A LOADING SCREEN/LOADING ANIMATION
 TODO: Fix consistency of UI creation & logic behind activities (XML should only be materials, code should be for logic)
+TODO / Design Question: Maybe have the app check on each screen whether permissions are enabled
+

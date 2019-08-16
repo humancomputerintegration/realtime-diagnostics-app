@@ -17,7 +17,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    boolean permissions_granted = false;
+    boolean enable = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +33,15 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(permissions, PERMISSION_REQUEST_CODE);
             }
         }
+    }
 
+    public void checkPermissions(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissions_granted = (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED);
+            if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                enable = true;
+            }else{
+                enable = false;
+            }
         }
     }
 
@@ -44,14 +50,16 @@ public class MainActivity extends AppCompatActivity {
         diagnose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                checkPermissions();
                 AlertDialog.Builder builder = createAlertDialog();
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         builder.show();
                     }
                 }
-                if (permissions_granted) {
+                if (enable) {
                     startActivity(new Intent(MainActivity.this, PatientInfoActivity.class));
+
                 }
             }
         });
