@@ -26,8 +26,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-//TODO: - Review https://github.com/ajithvgiri/search-dialog - for documentation
-//TODO Make sure that the button click animation for "Diagnose is visible"
+//Review https://github.com/ajithvgiri/search-dialog - for Searchable Dialogue documentation
 public class ListSymptoms extends AppCompatActivity {
     List<SearchListItem> allSymptoms = new ArrayList<>();
     ArrayList<String> patientSymptoms = new ArrayList<String>();

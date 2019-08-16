@@ -7,4 +7,5 @@
     <color name="addColor">#34eb58</color>
     <color name="errorColor">#d61515</color>
     <color name="notAvailable">#9c9c9c</color>
+    <color name="transparentRed">#CCFF0000</color>
 </resources>

@@ -23,6 +23,8 @@
     <string name="initial_symptom_header">Put the symptoms of your patient below</string>
     <string name="initial_symptom_hint">headache, cough, backpain, etc</string>
     <string name="next_button">Next Step: Iterative Diagnosis</string>
+    <string name="warning_title">Information Warning</string>
+    <string name="warning_message">Information is missing from the patient infromation. The app won\'t be able to make the best diagnosis without it</string>
 
     <!--activity_list_symptoms.xml options-->
     <string name="diagnose_button">Diagnose</string>

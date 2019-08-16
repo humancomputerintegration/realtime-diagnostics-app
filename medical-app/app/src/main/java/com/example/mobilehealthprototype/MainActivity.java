@@ -51,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 checkPermissions();
-                AlertDialog.Builder builder = createAlertDialog();
+                AlertDialog.Builder bd = buildWarning(R.string.permissions_warning_title,
+                                                                    R.string.permissions_warning_message,
+                                                                                    R.string.button_close);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                        builder.show();
+                        bd.show();
                     }
                 }
                 if (enable) {
@@ -76,11 +78,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public AlertDialog.Builder createAlertDialog(){
+    public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(R.string.permissions_warning_message);
-        builder.setTitle(R.string.permissions_warning_title);
-        builder.setPositiveButton(R.string.button_close, new DialogInterface.OnClickListener() {
+        builder.setTitle(title_id);
+        builder.setMessage(message_id);
+        builder.setPositiveButton(pb, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 //do nothing
             }

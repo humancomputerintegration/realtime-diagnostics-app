@@ -1,10 +1,13 @@
 package com.example.mobilehealthprototype;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -24,18 +27,24 @@ public class PatientInfoActivity extends AppCompatActivity {
     }
 
     //Helper Functions
-    public void warnError(int header_id){
+    //TODO : Figure out how exactly I want to do this
+    public void warnError(int input_id, int header_id){
         TextView header = findViewById(header_id);
         String orig = header.getText().toString();
-        String mod_orig = (orig.contains("Please Enter")) ? orig : orig + "(Please Enter A Value)";
-        header.setText(mod_orig);
+//        String mod_orig = (orig.contains("Please Enter")) ? orig : orig + "(Please Enter A Value)";
+//        header.setText(mod_orig);
         header.setTextColor(getResources().getColor(R.color.errorColor));
+
+        if(input_id > 0){
+            EditText input = findViewById(input_id);
+            input.setBackgroundColor(getResources().getColor(R.color.transparentRed));
+        }
     }
 
-    public float checkValue(int id, int id2){
-        String parsed = ((TextView) findViewById(id)).getText().toString();
+    public float checkValue(int id1, int id2){
+        String parsed = ((TextView) findViewById(id1)).getText().toString();
         if(parsed == null || parsed.trim().equals("")){
-            warnError(id2);
+            warnError(id1, id2);
             return -1f;
         }
         return Float.parseFloat(parsed);
@@ -74,7 +83,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                 p_age = (int) checkValue(R.id.age_input, R.id.age_header);
                 p_height = checkValue(R.id.height_input, R.id.height_header);
                 p_weight = checkValue(R.id.weight_input, R.id.weight_header);
-                if(p_sex == null){  warnError(R.id.sex_option_header); }
+                if(p_sex == null){  warnError(0, R.id.sex_option_header); }
                 complete = (p_id > 0) & (p_age > 0) & (p_sex != null) &(p_height > 0) & (p_weight > 0);
 
                 if(complete) {
@@ -85,10 +94,24 @@ public class PatientInfoActivity extends AppCompatActivity {
                     intent.putExtra("height", p_height);
                     intent.putExtra("weight", p_weight);
                     startActivity(intent);
+                }else{
+                    AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
+                    wn.show();
                 }
             }
         });
     }
 
+    public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){
+        AlertDialog.Builder builder = new AlertDialog.Builder(PatientInfoActivity.this);
+        builder.setTitle(title_id);
+        builder.setMessage(message_id);
+        builder.setPositiveButton(pb, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                //do nothing
+            }
+        });
+        return builder;
+    }
 
 }
