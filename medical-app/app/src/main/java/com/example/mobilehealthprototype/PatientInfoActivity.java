@@ -72,7 +72,7 @@ public class PatientInfoActivity extends AppCompatActivity {
             public void onClick(View view){
                 p_id = (int) checkValue(R.id.pid_input, R.id.pid_header);
                 p_age = (int) checkValue(R.id.age_input, R.id.age_header);
-                p_height = checkValue(R.id.height_input, R.id.height_input);
+                p_height = checkValue(R.id.height_input, R.id.height_header);
                 p_weight = checkValue(R.id.weight_input, R.id.weight_header);
                 if(p_sex == null){  warnError(R.id.sex_option_header); }
                 complete = (p_id > 0) & (p_age > 0) & (p_sex != null) &(p_height > 0) & (p_weight > 0);
