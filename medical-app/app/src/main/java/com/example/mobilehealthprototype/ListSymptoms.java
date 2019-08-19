@@ -28,15 +28,19 @@ import java.util.List;
 
 //Review https://github.com/ajithvgiri/search-dialog - for Searchable Dialogue documentation
 public class ListSymptoms extends AppCompatActivity {
+    //important properties for the GUI to load in
     List<SearchListItem> allSymptoms = new ArrayList<>();
     ArrayList<String> patientSymptoms = new ArrayList<>();
     ListView currentSymptomListView;
     SymptomAdapter adp;
     SearchableDialog sd;
 
-    //TODO - figure out if 6 hash tables is REALLY necessary to have fast lookups
     //TODO - REduce the number of hashtables
     //TODO refactor the lookups because these are ALL not necessary
+    //name to umls (Symptoms)
+    //umls to index(Symptoms)
+    //index to name (symptoms)
+
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
     Hashtable<String, Integer> SympToIndex = new Hashtable<String, Integer>();
 
@@ -55,33 +59,11 @@ public class ListSymptoms extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_symptoms);
-
         handlePassedIntent();
         //TODO Make sure you add to the documentation that the CSV needs to be well behaved
         //TODO - Well behaved csv = UMLS code to empty field
         loadSymptoms("SymptomList.csv");
         setUpInterface();
-
-        Button diagnose = (Button) findViewById(R.id.continue_diagnose_button);
-        diagnose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ListSymptoms.this, DiagnosisProcess.class);
-                intent.putExtra("hid", p_id);
-                intent.putExtra("sex", p_sex);
-                intent.putExtra("age", p_age);
-                intent.putExtra("height", p_height);
-                intent.putExtra("weight", p_weight);
-                intent.putExtra("patient_symptoms", patientSymptoms);
-                intent.putExtra("stu", SympToUmls);
-                intent.putExtra("sti", SympToIndex);
-                intent.putExtra("uti", UmlsToIndex);
-                intent.putExtra("utsd", UmlsToSYDS);
-                intent.putExtra("its", IndexToSumls);
-                intent.putExtra("itd", IndexToDumls);
-                startActivity(intent);
-            }
-        });
     }
 
     public void handlePassedIntent(){
@@ -121,22 +103,21 @@ public class ListSymptoms extends AppCompatActivity {
         }
     }
 
-    //TODO - MAKE IT SO THAT THE TEXTBOX IS AUTOMATICALLY IN FOCUS AS YOU LOG IN
+    //TODO - Implement a Synonym-lookup feature here
     public void setUpInterface(){
+        //setting up the search view to look up symptoms
         sd = new SearchableDialog(ListSymptoms.this, allSymptoms,"Symptom Search");
         sd.setOnItemSelected(new OnSearchItemSelected(){
             public void onClick(int position, SearchListItem searchListItem){
                 String newSmp = searchListItem.getTitle();
                 if(!patientSymptoms.contains(newSmp)){
-//                    String temp = searchListItem.getTitle();
                     patientSymptoms.add(searchListItem.getTitle());
-//                    Log.d("TESTING", "SUCCESSFULLY PROCESSED :: " + temp);
                     ((SymptomAdapter) currentSymptomListView.getAdapter()).notifyDataSetChanged();
                 }
             }
         });
 
-        TextView addsymp = (TextView) findViewById(R.id.add_symptom_button);
+        TextView addsymp = findViewById(R.id.add_symptom_button);
         addsymp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 sd.show();
@@ -144,9 +125,30 @@ public class ListSymptoms extends AppCompatActivity {
         });
 
         //Sets up the ListView for the patient's current symptoms
-        currentSymptomListView = (ListView) findViewById(R.id.currentsymptomlist);
+        currentSymptomListView = findViewById(R.id.currentsymptomlist);
         adp = new SymptomAdapter(this, patientSymptoms);
         currentSymptomListView.setAdapter(adp);
+
+        Button diagnose = findViewById(R.id.continue_diagnose_button);
+        diagnose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListSymptoms.this, DiagnosisProcess.class);
+                intent.putExtra("hid", p_id);
+                intent.putExtra("sex", p_sex);
+                intent.putExtra("age", p_age);
+                intent.putExtra("height", p_height);
+                intent.putExtra("weight", p_weight);
+                intent.putExtra("patient_symptoms", patientSymptoms);
+                intent.putExtra("stu", SympToUmls);
+                intent.putExtra("sti", SympToIndex);
+                intent.putExtra("uti", UmlsToIndex);
+                intent.putExtra("utsd", UmlsToSYDS);
+                intent.putExtra("its", IndexToSumls);
+                intent.putExtra("itd", IndexToDumls);
+                startActivity(intent);
+            }
+        });
     }
 
     public class SymptomAdapter extends BaseAdapter implements ListAdapter {
@@ -169,10 +171,9 @@ public class ListSymptoms extends AppCompatActivity {
         }
 
         @Override
+        //necessary, but will never be used
         public long getItemId(int pos) {
-//            return list.get(pos).getId();
-            return 0;
-            //just return 0 if your list items do not have an Id variable.
+            return 0; //just return 0 if your list items do not have an Id variable.
         }
 
         @Override
@@ -186,7 +187,6 @@ public class ListSymptoms extends AppCompatActivity {
             if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.item_curr_symptom, null);
-                //my_custom_list_layout
             }
 
             //Handle TextView and display string from your list
@@ -194,11 +194,10 @@ public class ListSymptoms extends AppCompatActivity {
             listItemText.setText(list.get(position));
 
             //Handle buttons and add onClickListeners
-            Button deleteBtn = (Button)view.findViewById(R.id.delete_symptom_button);
+            Button deleteBtn = view.findViewById(R.id.delete_symptom_button);
             deleteBtn.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    //do something
                     list.remove(position); //or some other task
                     notifyDataSetChanged();
                 }
