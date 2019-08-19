@@ -29,12 +29,13 @@ import java.util.List;
 //Review https://github.com/ajithvgiri/search-dialog - for Searchable Dialogue documentation
 public class ListSymptoms extends AppCompatActivity {
     List<SearchListItem> allSymptoms = new ArrayList<>();
-    ArrayList<String> patientSymptoms = new ArrayList<String>();
+    ArrayList<String> patientSymptoms = new ArrayList<>();
     ListView currentSymptomListView;
     SymptomAdapter adp;
     SearchableDialog sd;
 
     //TODO - figure out if 6 hash tables is REALLY necessary to have fast lookups
+    //TODO - REduce the number of hashtables
     //TODO refactor the lookups because these are ALL not necessary
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
     Hashtable<String, Integer> SympToIndex = new Hashtable<String, Integer>();

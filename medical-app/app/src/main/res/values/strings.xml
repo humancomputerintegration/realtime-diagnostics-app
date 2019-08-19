@@ -34,6 +34,7 @@
 
     <!--activity_diagnosis_process.xml options-->
     <string name="diagnosis_results_header">Diagnosis Results</string>
+    <string name="final_confirmation_button">Confirm And Send </string>
 
-    <string name="final_confirmation_button">Confirm and Send To Server</string>
+
 </resources>

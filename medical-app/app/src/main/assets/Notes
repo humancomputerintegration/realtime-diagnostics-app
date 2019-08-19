@@ -3,13 +3,11 @@ TODO: SEE BELOW
 WEB VERSION
 
 ORDER OF IMPORTANCE:
-COMPLETE END TO END SYSTEM
+COMPLETE END TO END SYSTEM -- DONE
 ADAPTIVE DIAGNOSIS
-WEB VERSION
-IPAD
+Prepare for microsoft AI hackathon/conference --> This will include making the WEB VERSION
+                                              --> In addition to improving the app aesthetics
 
-Add Adaptive Diagnosis
-Prepare for microsoft AI hackathon/conference
 Refactor code -- Including fixing variable naming schemes and stuff
 Add Public/Private key encryption to the communication protocol
 Figure out what the character limit for sending SMS are for the communciation protocol
@@ -21,7 +19,6 @@ Slide Materials
 
 
 BUG FIXES:
-TODO: FIX BUGS ON PATIENT INFO ACTIVITY
 TODO: FIX UP THE AESTHETICS OF THE APP AND STUFF
 TODO: CREATE A LOADING SCREEN/LOADING ANIMATION
 TODO: Fix consistency of UI creation & logic behind activities (XML should only be materials, code should be for logic)
