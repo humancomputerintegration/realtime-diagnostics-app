@@ -6,6 +6,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+
+//TODO: Encryption Protocol
 //Handles communnication protocol between the app & server -- needs to include encryption protocol
 public class CommunicationHandler {
 
