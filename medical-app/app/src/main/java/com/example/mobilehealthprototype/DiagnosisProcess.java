@@ -49,7 +49,6 @@ public class DiagnosisProcess extends AppCompatActivity {
     Hashtable<Integer, String> IndexToSumls; //Index to a symptom UMLS
     Hashtable<String, Integer> DiseaseToIndex = new Hashtable<String, Integer>();
 
-//    ArrayList<String> distest = new ArrayList<>(); //TODO Delete this and all references
     int ncols, nrows;
     float[][] wm, symptom_vector, disease_vector;
 
@@ -84,8 +83,6 @@ public class DiagnosisProcess extends AppCompatActivity {
 
         setUpInterface();
 
-//        CommunicationHandler ch = new CommunicationHandler();
-//        test = ch.generateMessage(p_id);
     }
 
     //Layout Functions

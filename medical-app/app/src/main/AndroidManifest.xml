@@ -15,7 +15,6 @@
         <activity android:name=".testingIntent" />
         <activity android:name=".inprogress" />
         <activity android:name=".DiagnosisProcess" />
-        <activity android:name=".PDiagResult" />
         <activity
             android:name=".SendMessage"
             android:screenOrientation="portrait" />
