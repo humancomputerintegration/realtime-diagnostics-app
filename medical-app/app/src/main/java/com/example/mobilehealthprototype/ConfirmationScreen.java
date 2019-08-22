@@ -30,13 +30,12 @@ public class ConfirmationScreen extends AppCompatActivity {
     List<SearchListItem> allDiseases = new ArrayList<>();
     ArrayList<String> patientSymptoms;
 
-    Hashtable<String, String> SympToUmls; //Symptom to UMLS code
-    Hashtable<String, Integer> SympToIndex; //Symptom to index
-    Hashtable<String, String> UmlsToSYDS; //UMLS to Symptom or Disease
-    Hashtable<String, Integer> UmlsToIndex; //UMLS to index (will have duplicate indices)
-    Hashtable<Integer, String> IndexToDumls; //Index to a Disease UMLS
-    Hashtable<Integer, String> IndexToSumls; //Index to a symptom UMLS
-    Hashtable<String, Integer> DiseaseToIndex = new Hashtable<String, Integer>();
+    Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
+    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
+    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
+    Hashtable<String, String> DisToUmls = new Hashtable<>();
+    Hashtable<Integer,String> IndexToDis = new Hashtable<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class ConfirmationScreen extends AppCompatActivity {
                 CommunicationHandler ch = new CommunicationHandler();
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
                 for(int i = 0; i < patientSymptoms.size(); i++){
-                    tmp.add(new Integer(SympToIndex.get(patientSymptoms.get(i))));
+                    tmp.add(new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i)))));
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
@@ -92,13 +91,13 @@ public class ConfirmationScreen extends AppCompatActivity {
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
-        SympToUmls = new Hashtable<>((HashMap<String,String>)passedIntent.getSerializableExtra("stu"));
-        SympToIndex = new Hashtable<> ((HashMap<String,Integer>) passedIntent.getSerializableExtra("sti"));
-        UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
-        UmlsToSYDS = new Hashtable<> ((HashMap<String, String>) passedIntent.getSerializableExtra("utsd"));
-        IndexToSumls = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("its"));
-        IndexToDumls = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("itd"));
-        DiseaseToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("dti"));
+
+        SympToUmls = new Hashtable<>((HashMap<String, String>) passedIntent.getSerializableExtra("stu"));
+        IndexToSymp = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("its"));
+        UmlsToIndex = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
+        DisToUmls = new Hashtable<>((HashMap<String, String>) passedIntent.getSerializableExtra("dtu"));
+        IndexToDis = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itd"));
+
         diagnosed_disease = passedIntent.getStringExtra("diagnosed_disease_name");
         diagnosed_disease_prob = passedIntent.getFloatExtra("likelihood_of_disease", -1f);
         diagnosed_disease_index = passedIntent.getIntExtra("diagnosed_disease_index", -1);

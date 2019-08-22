@@ -79,9 +79,8 @@ public class DiagnosisProcess extends AppCompatActivity {
         disease_vector = matrixMultiply(wm, symptom_vector, nrows,ncols, ncols,1);
         mm_output = convertDiseaseVector(disease_vector, disease_vector.length);
 
-        top5Diseases = generateTop5(mm_output); // not generating properly
-        normalizeDiseaseVector(top5Diseases);
-        Log.d("TESTING", Arrays.toString(mm_output));
+        top5Diseases = generateTop5(mm_output);
+        top5Diseases = normalizeDiseaseVector(top5Diseases);
 
         setUpInterface();
     }
@@ -122,7 +121,7 @@ public class DiagnosisProcess extends AppCompatActivity {
             Float tprob = top5Diseases[i].getProb();
             String bmsg = dname + " (" + umlsd + ")" +  " - " + tprob;
             nbut.setText(bmsg);
-            nbut.setOnClickListener(new DiseaseClickListener(umlsd, tprob, UmlsToIndex.get(umlsd)));
+            nbut.setOnClickListener(new DiseaseClickListener(dname, umlsd, tprob, i));
             arrButtons[i] = nbut;
             ll.addView(nbut);
         }
@@ -177,6 +176,7 @@ public class DiagnosisProcess extends AppCompatActivity {
                     intent.putExtra("uti", UmlsToIndex);
                     intent.putExtra("dtu", DisToUmls);
                     intent.putExtra("itd", IndexToDis);
+                    Log.d("TESTING", diagnosedDisease);
                     intent.putExtra("diagnosed_disease_index", UmlsToIndex.get(DisToUmls.get(diagnosedDisease)));
                     intent.putExtra("likelihood_of_disease", ddProb);
                     intent.putExtra("diagnosed_UMLS", DisToUmls.get(diagnosedDisease));
@@ -201,20 +201,21 @@ public class DiagnosisProcess extends AppCompatActivity {
 
     //Custom class used to add additional functionality to this activity
     public class DiseaseClickListener implements View.OnClickListener {
-        String disease_name;
+        String disease_name, disease_umls;
         float percentage;
         int button_index;
 
-        public DiseaseClickListener(String disease_n, float percentage, int button_index) {
+        public DiseaseClickListener(String disease_n, String umls, float percentage, int button_index) {
             this.disease_name = disease_n;
+            this.disease_umls = umls;
             this.percentage = percentage;
             this.button_index = button_index;
         }
 
         @Override
         public void onClick(View v) {
-            diagnosedDisease = disease_name;
-            ddProb = percentage;
+            diagnosedDisease = this.disease_name;
+            ddProb = this.percentage;
             setOtherButtonsBgCol(button_index, arrButtons, Color.GRAY, Color.GREEN);
         }
     }
@@ -235,7 +236,8 @@ public class DiagnosisProcess extends AppCompatActivity {
         return temp;
     }
 
-    public void normalizeDiseaseVector(DiseaseProb[] dp){
+    public DiseaseProb[] normalizeDiseaseVector(DiseaseProb[] dp){
+        DiseaseProb[] ndv = new DiseaseProb[dp.length];
         float sum = 0;
         int len = dp.length;
 
@@ -245,8 +247,9 @@ public class DiagnosisProcess extends AppCompatActivity {
 
         for(int j =0; j < len; j++){
             float tprob = dp[j].getProb();
-            dp[j].setProb(tprob/sum);
+            ndv[j] = new DiseaseProb(dp[j].getUmls(), dp[j].getDisease(), tprob/sum);
         }
+        return ndv;
     }
 
     //the patientSymptom needs to be a vector for matrix multi - so it needs to be a 2d matrix
