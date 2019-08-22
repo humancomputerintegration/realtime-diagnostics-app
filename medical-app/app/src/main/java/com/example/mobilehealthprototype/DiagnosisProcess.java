@@ -63,7 +63,6 @@ public class DiagnosisProcess extends AppCompatActivity {
     String diagnosedDisease = null;
     float ddProb = -1f;
 
-    String test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +81,6 @@ public class DiagnosisProcess extends AppCompatActivity {
         normalizeDiseaseVector();
 
         setUpInterface();
-
     }
 
     //Layout Functions

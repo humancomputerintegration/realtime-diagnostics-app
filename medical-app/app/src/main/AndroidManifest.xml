@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ConfirmationScreen"></activity>
         <activity android:name=".testingIntent" />
-        <activity android:name=".inprogress" />
         <activity android:name=".DiagnosisProcess" />
         <activity
             android:name=".SendMessage"
