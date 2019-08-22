@@ -30,7 +30,7 @@ public class PatientInfoActivity extends AppCompatActivity {
     //TODO : Figure out how exactly I want to do this
     public void warnError(int input_id, int header_id){
         TextView header = findViewById(header_id);
-        String orig = header.getText().toString();
+//        String orig = header.getText().toString();
 //        String mod_orig = (orig.contains("Please Enter")) ? orig : orig + "(Please Enter A Value)";
 //        header.setText(mod_orig);
         header.setTextColor(getResources().getColor(R.color.errorColor));

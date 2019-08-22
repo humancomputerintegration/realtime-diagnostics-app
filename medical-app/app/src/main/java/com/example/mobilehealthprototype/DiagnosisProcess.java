@@ -25,13 +25,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-//TODO Refractor the code mess here
 public class DiagnosisProcess extends AppCompatActivity {
     Intent passedIntent;
     Sex p_sex;
@@ -40,14 +40,14 @@ public class DiagnosisProcess extends AppCompatActivity {
 
     List<SearchListItem> allDiseases = new ArrayList<>();
     ArrayList<String> patientSymptoms;
-    //TODO remove the amount of diciontary look ups we have to 4
-    Hashtable<String, String> SympToUmls; //Symptom to UMLS code
-    Hashtable<String, Integer> SympToIndex; //Symptom to index
-    Hashtable<String, String> UmlsToSYDS; //UMLS to Symptom or Disease
-    Hashtable<String, Integer> UmlsToIndex; //UMLS to index (will have duplicate indices)
-    Hashtable<Integer, String> IndexToDumls; //Index to a Disease UMLS
-    Hashtable<Integer, String> IndexToSumls; //Index to a symptom UMLS
-    Hashtable<String, Integer> DiseaseToIndex = new Hashtable<String, Integer>();
+
+    Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
+    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
+
+    //since UMLS are unique, you can reuse UmlsToIndex
+    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
+    Hashtable<String, String> DisToUmls = new Hashtable<>();
+    Hashtable<Integer,String> IndexToDis = new Hashtable<>();
 
     int ncols, nrows;
     float[][] wm, symptom_vector, disease_vector;
@@ -56,10 +56,11 @@ public class DiagnosisProcess extends AppCompatActivity {
     Button allWrongDiagnose;
     Button[] arrButtons = new Button[7];
 
-    //probable diseases & their respective correlation matrices
-    float[] top5floats = new float[5];
-    int[] top5DiseaseIndex = new int[5];
+    //result of disease matrix multiplication
+    DiseaseProb[] mm_output;
 
+    //probable diseases & their respective correlation matrices
+    DiseaseProb[] top5Diseases = new DiseaseProb[5];
     String diagnosedDisease = null;
     float ddProb = -1f;
 
@@ -70,17 +71,31 @@ public class DiagnosisProcess extends AppCompatActivity {
         handlePassedIntent();
         loadDiseases("DiseaseList.csv");
         findNumRowsCols("Dis_Sym_30.csv");
+        wm = new float[nrows][ncols];
         wm = loadWeightMatrix("Dis_Sym_30.csv", 1, 1);
-        symptom_vector = loadSymptoms();
-        disease_vector = matrixMultiply(wm, symptom_vector, nrows,ncols, ncols,1); //preliminary multiplication of the weight matrix to symptom vector
+        symptom_vector = loadPatientSymptoms(patientSymptoms);
+        //preliminary multiplication of the weight matrix to symptom vector
+        disease_vector = matrixMultiply(wm, symptom_vector, nrows,ncols, ncols,1);
+        mm_output = convertDiseaseVector(disease_vector, disease_vector.length);
 
-        float[] temp = flattenMatrix(disease_vector, disease_vector.length);
-        ArrayList<String> killme = probableDiseases(temp, 0.1f);
 
-        generateTop5(temp);
-        normalizeDiseaseVector();
+        top5Diseases = generateTop5(mm_output); // not generating properly
+        normalizeDiseaseVector(top5Diseases);
 
         setUpInterface();
+    }
+
+    public void handlePassedIntent(){
+        passedIntent = getIntent();
+        p_sex = (Sex) passedIntent.getSerializableExtra("sex");
+        p_id = passedIntent.getIntExtra("hid", -1);
+        p_age = passedIntent.getIntExtra("age", -1);
+        p_height = passedIntent.getFloatExtra("height",-1);
+        p_weight = passedIntent.getFloatExtra("weight",-1);
+        patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+        SympToUmls = new Hashtable<> ((HashMap<String,String>)passedIntent.getSerializableExtra("stu"));
+        IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
+        UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
     }
 
     //Layout Functions
@@ -101,14 +116,17 @@ public class DiagnosisProcess extends AppCompatActivity {
         ll = findViewById(R.id.diagnose_button_layout);
         for (int i = 0; i < 5; i++) {
             Button nbut = new Button(this);
-            String umlsd = IndexToDumls.get(top5DiseaseIndex[i]);
-            String bmsg = umlsd + " (" + UmlsToSYDS.get(umlsd) + ")" +  " - " + Float.toString(top5floats[i]);
+            String umlsd = top5Diseases[i].getUmls();
+            String dname = top5Diseases[i].getDisease();
+            Float tprob = top5Diseases[i].getProb();
+            String bmsg = dname + " (" + umlsd + ")" +  " - " + tprob;
             nbut.setText(bmsg);
-            nbut.setOnClickListener(new DiseaseClickListener(UmlsToSYDS.get(umlsd), top5floats[i], i));
+            nbut.setOnClickListener(new DiseaseClickListener(umlsd, tprob, UmlsToIndex.get(umlsd)));
             arrButtons[i] = nbut;
             ll.addView(nbut);
         }
 
+        //This button does not work correctly - todo - fix later
         allWrongDiagnose = new Button(this);
         allWrongDiagnose.setText("All of the above are incorrect diagnoses - I have a better one");
         allWrongDiagnose.setOnClickListener(new View.OnClickListener(){
@@ -154,22 +172,19 @@ public class DiagnosisProcess extends AppCompatActivity {
                     intent.putExtra("weight", p_weight);
                     intent.putExtra("patient_symptoms", patientSymptoms);
                     intent.putExtra("stu", SympToUmls);
-                    intent.putExtra("sti", SympToIndex);
+                    intent.putExtra("its", IndexToSymp);
                     intent.putExtra("uti", UmlsToIndex);
-                    intent.putExtra("utsd", UmlsToSYDS);
-                    intent.putExtra("its", IndexToSumls);
-                    intent.putExtra("itd", IndexToDumls);
-                    intent.putExtra("dti", DiseaseToIndex);
-                    intent.putExtra("diagnosed_disease_index", DiseaseToIndex.get(diagnosedDisease));
+                    intent.putExtra("dtu", DisToUmls);
+                    intent.putExtra("itd", IndexToDis);
+                    intent.putExtra("diagnosed_disease_index", UmlsToIndex.get(DisToUmls.get(diagnosedDisease)));
                     intent.putExtra("likelihood_of_disease", ddProb);
-                    intent.putExtra("diagnosed_UMLS", IndexToDumls.get(DiseaseToIndex.get(diagnosedDisease)));
+                    intent.putExtra("diagnosed_UMLS", DisToUmls.get(diagnosedDisease));
                     intent.putExtra("diagnosed_disease_name", diagnosedDisease);
                     startActivity(intent);
                 }
             }
         });
         ll.addView(nextStep);
-
     }
 
     public void setOtherButtonsBgCol(int ind, Button[] others, int non_sel_col, int selected_col){
@@ -183,7 +198,7 @@ public class DiagnosisProcess extends AppCompatActivity {
         }
     }
 
-    //Custom class used to add additional functionality to the thing
+    //Custom class used to add additional functionality to this activity
     public class DiseaseClickListener implements View.OnClickListener {
         String disease_name;
         float percentage;
@@ -203,115 +218,51 @@ public class DiagnosisProcess extends AppCompatActivity {
         }
     }
 
-    //TODO Fix this god awful function
-    public void generateTop5(float[] results){
-        float first, second, third, fourth, fifth;
-        int firsti, secondi, thirdi, fourthi, fifthi;
-        firsti = secondi = thirdi = fourthi = fifthi = -1;
-        first = second = third = fourth = fifth = Integer.MIN_VALUE;
-        String[] largest5 = new String[5];
-        for(int i = 0; i < results.length; i++){
-            if(results[i] > first){
-                fifth = fourth;
-                fourth = third;
-                third = second;
-                second = first;
-                first = results[i];
-                firsti = i;
-            }else if(results[i] > second){
-                fifth = fourth;
-                fourth = third;
-                third = second;
-                second = results[i];
-                secondi = i;
-            }else if(results[i] > third){
-                fifth = fourth;
-                fourth = third;
-                third = results[i];
-                thirdi = i;
-            }else if(results[i] > fourth){
-                fifth = fourth;
-                fourth = results[i];
-                fourthi = i;
-            }else if(results[i] > fifth){
-                fifth = results[i];
-                fifthi = i;
-            }
-        }
-        top5floats[0] = first;
-        top5DiseaseIndex[0] = firsti;
-        top5floats[1] = second;
-        top5DiseaseIndex[1] = secondi;
-        top5floats[2] = third;
-        top5DiseaseIndex[2] = thirdi;
-        top5floats[3] = fourth;
-        top5DiseaseIndex[3] = fourthi;
-        top5floats[4] = fifth;
-        top5DiseaseIndex[4] = fifthi;
+    //THIS ISN'T SORTING THE LIST
+    //TODO - MAKE SURE THAT THIS PROPERLY SORTS STUFF - IT DOESN'T RIGHT NOW
+    public DiseaseProb[] generateTop5(DiseaseProb[] results){
+        //Sort the list
+        Log.d("TESTING", Arrays.toString(results));
+        DiseaseProb[] top;
+        Arrays.sort(results); // this isn't working
+        //get the top 5 results
+        top = Arrays.copyOfRange(results, 0, 5);
+        Log.d("TESTING", Arrays.toString(results));
+        Log.d("TESTING", Arrays.toString(top));
+
+        return top;
     }
 
-    public void normalizeDiseaseVector(){
-        float sum = 0;
-        int len = top5floats.length;
-        for(int i = 0; i < len; i++){
-            sum += top5floats[i];
-        }
-        for(int j =0; j < len; j++){
-            top5floats[j] = top5floats[j]/sum;
-        }
-        Log.d("TESTING", "BEGINNING TO NORMALIZE TOP 5 VECTORS");
-        Log.d("Testing", Float.toString(sum));
-        Log.d("TESTING", Arrays.toString(top5floats));
-    }
-
-    public float[] flattenMatrix(float[][] m, int size){
-        float[] temp = new float[size];
+    //Flattens a 1D vector to an array of DiseaseProbs
+    public DiseaseProb[] convertDiseaseVector(float[][] m, int size){
+        DiseaseProb[] temp = new DiseaseProb[size];
         for(int i = 0; i < size; i++){
-            temp[i] = m[i][0];
+            temp[i] = new DiseaseProb(DisToUmls.get(IndexToDis.get(i)),IndexToDis.get(i), m[i][0]);
         }
         return temp;
     }
 
-    public ArrayList<String> probableDiseases(float[] target, float threshold){
-        ArrayList<String> diseases = new ArrayList<>();
-        for(int i = 0; i < target.length; i++){
-            if(target[i] > threshold){
-                diseases.add(UmlsToSYDS.get(IndexToDumls.get(i)));
-            }
+    public void normalizeDiseaseVector(DiseaseProb[] dp){
+        float sum = 0;
+        int len = dp.length;
+
+        for(int i =0; i < len; i++){
+            sum += dp[i].getProb();
         }
-        return diseases;
+
+        for(int j =0; j < len; j++){
+            float tprob = dp[j].getProb();
+            dp[j].setProb(tprob/sum);
+        }
     }
 
-    public float[] dropValues(float[] target, float threshhold){
-        ArrayList<Float> results = new ArrayList<Float>();
-        float[] newM = null;
-        int dropped = 0;
-        for(int i = 0; i < target.length; i++){
-            if(target[i] < threshhold){
-                dropped++;
-                results.add(target[i]);
-            }
-        }
-
-        newM = new float[target.length - dropped];
-        int j = 0;
-        for(Float f: results){
-            newM[j++] = (float) (f != null ? f : -1.0);
-        }
-        return newM;
-    }
-
-    //Make sure you explain why this needs to return a 2 dimension array
-    //TODO rename this function to something that doesn't conflict with ListSymptom.java
-    public float[][] loadSymptoms(){
+    //the patientSymptom needs to be a vector for matrix multi - so it needs to be a 2d matrix
+    public float[][] loadPatientSymptoms(ArrayList<String> ps){
         float[][] ph = new float[ncols][1];
-        String placeholder;
-        for(int i = 0; i < patientSymptoms.size(); i++){
-            placeholder = patientSymptoms.get(i);
-            int vec_index =UmlsToIndex.get(SympToUmls.get(placeholder));
-//            Log.d("TESTING", placeholder);
-//            Log.d("TESTING", Integer.toString(vec_index));
-            ph[vec_index][0] = 1f;
+        int vector_index;
+        for(int i = 0; i < ps.size(); i++){
+            vector_index = UmlsToIndex.get(SympToUmls.get(ps.get(i)));
+            ph[vector_index][0] = 1f;
         }
         return ph;
     }
@@ -327,10 +278,9 @@ public class DiagnosisProcess extends AppCompatActivity {
             int index = 0;
             while((nl = reader.readLine()) != null){
                 temp = nl.split(",");
-                UmlsToSYDS.put(temp[0], temp[1]);
-                IndexToDumls.put(index, temp[0]);
+                DisToUmls.put(temp[1], temp[0]);
+                IndexToDis.put(index, temp[1]);
                 UmlsToIndex.put(temp[0], index);
-                DiseaseToIndex.put(temp[1], index);
                 index += 1;
                 SearchListItem t = new SearchListItem(0, temp[1]);
                 allDiseases.add(t);
@@ -338,29 +288,11 @@ public class DiagnosisProcess extends AppCompatActivity {
             reader.close(); //make sure you close the reader after opening a file
         }catch (IOException e){
             e.printStackTrace();
-            Log.d("ERROR", "AN ERROR HAS OCCURRED IN LOADSYMPTOMS");
+            Log.d("ERROR", "AN ERROR HAS OCCURRED IN LOADDISEASES");
         }
     }
 
-    //Helper Functions
-    public void handlePassedIntent(){
-        passedIntent = getIntent();
-        p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
-        p_age = passedIntent.getIntExtra("age", -1);
-        p_height = passedIntent.getFloatExtra("height",-1);
-        p_weight = passedIntent.getFloatExtra("weight",-1);
-        patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
-        SympToUmls = new Hashtable<> ((HashMap<String,String>)passedIntent.getSerializableExtra("stu"));
-        SympToIndex = new Hashtable<> ((HashMap<String,Integer>) passedIntent.getSerializableExtra("sti"));
-        UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
-        UmlsToSYDS = new Hashtable<> ((HashMap<String, String>) passedIntent.getSerializableExtra("utsd"));
-        IndexToSumls = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("its"));
-        IndexToDumls = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("itd"));
-    }
-
-    //Due to the structure of the CSV, we need to subtract 1 from the total to get an
-    //accurate response
+    //Due to the structure of the CSV, we need to subtract 1 from the total to get an accurate pair
     public void findNumRowsCols(String fname){
         String nl;
         int row_count, col_count;
@@ -379,7 +311,7 @@ public class DiagnosisProcess extends AppCompatActivity {
             nrows = row_count;
             return;
         } catch (IOException e) {
-            Log.d("TESTING", "ERROR NumRowColMatrixLabels");
+            Log.d("TESTING", "ERROR findNumRowsCols");
             Log.d("TESTING", e.toString());
         }
     }
@@ -389,7 +321,6 @@ public class DiagnosisProcess extends AppCompatActivity {
         String nl;
         String[] temp = null;
         float[][] weight_matrix = new float[nrows][ncols];
-        wm = new float[nrows][ncols];
 
         try{
             InputStreamReader is = new InputStreamReader(getAssets().open(fname));
@@ -414,24 +345,25 @@ public class DiagnosisProcess extends AppCompatActivity {
 
     public float[][] matrixMultiply(float[][] fm, float[][] sm, int r1, int c1, int r2, int c2){
         if(c1 != r2) {
-            System.out.println("Error - the dimensions of the matrix do not match");
+            Log.d("ERROR", "The dimensions of the matrices are wrong for multiplication");
             return null;
         }
 
-        float[][] mproduct = new float[r1][c2];
+        float[][] matrix_product = new float[r1][c2];
         for(int i = 0; i < r1; i++) {
             for (int j = 0; j < c2; j++) {
                 for (int k = 0; k < c1; k++) {
-                    mproduct[i][j] += fm[i][k] * sm[k][j];
+                    matrix_product[i][j] += fm[i][k] * sm[k][j];
                 }
             }
         }
-        return mproduct;
+        return matrix_product;
     }
 
     //This causes a decent amount of app slowdown - the screen also go black from how heavy
     // the processing takes
     //but checks if the validated matrix is close to the file
+    //TODO: Maybe delete - not likely to use this during run time
     public boolean validateMatrix(String fname, float[][] sub_matrix){
         String nl;
         String[] temp;

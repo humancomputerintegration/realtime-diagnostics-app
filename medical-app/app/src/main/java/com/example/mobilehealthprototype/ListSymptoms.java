@@ -42,13 +42,8 @@ public class ListSymptoms extends AppCompatActivity {
     //index to name (symptoms)
 
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
-    Hashtable<String, Integer> SympToIndex = new Hashtable<String, Integer>();
-
-    Hashtable<String, String> UmlsToSYDS = new Hashtable<String, String>(); //umls to symptom & diseases
-    Hashtable<String, Integer> UmlsToIndex = new Hashtable<String, Integer>(); //umls to index
-
-    Hashtable<Integer, String> IndexToDumls = new Hashtable<Integer, String>();
-    Hashtable<Integer, String> IndexToSumls = new Hashtable<Integer, String>();
+    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
+    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
 
     Intent passedIntent;
     Sex p_sex;
@@ -77,7 +72,6 @@ public class ListSymptoms extends AppCompatActivity {
 
     //Loads up all the symptoms from the file into our activity
     public void loadSymptoms(String fname){ //ArrayList<String>
-        //TODO Add a dictionary that allows for easy look up between symptoms and results
         try{
             InputStreamReader is = new InputStreamReader(getAssets().open(fname));
             BufferedReader reader = new BufferedReader(is);
@@ -88,10 +82,8 @@ public class ListSymptoms extends AppCompatActivity {
             while((nl = reader.readLine()) != null){
                 temp = nl.split(",");
                 SympToUmls.put(temp[1], temp[0]);
-                SympToIndex.put(temp[1], index);
                 UmlsToIndex.put(temp[0], index);
-                UmlsToSYDS.put(temp[0], temp[1]);
-                IndexToSumls.put(index, temp[0]);
+                IndexToSymp.put(index, temp[1]);
                 index++;
                 SearchListItem t = new SearchListItem(0, temp[1]);
                 allSymptoms.add(t);
@@ -103,7 +95,7 @@ public class ListSymptoms extends AppCompatActivity {
         }
     }
 
-    //TODO - Implement a Synonym-lookup feature here
+    //TODO - Implement a Synonym-lookup feature
     public void setUpInterface(){
         //setting up the search view to look up symptoms
         sd = new SearchableDialog(ListSymptoms.this, allSymptoms,"Symptom Search");
@@ -141,11 +133,8 @@ public class ListSymptoms extends AppCompatActivity {
                 intent.putExtra("weight", p_weight);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
-                intent.putExtra("sti", SympToIndex);
                 intent.putExtra("uti", UmlsToIndex);
-                intent.putExtra("utsd", UmlsToSYDS);
-                intent.putExtra("its", IndexToSumls);
-                intent.putExtra("itd", IndexToDumls);
+                intent.putExtra("its",IndexToSymp);
                 startActivity(intent);
             }
         });
