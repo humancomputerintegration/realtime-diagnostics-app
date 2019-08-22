@@ -18,7 +18,13 @@ public class DiseaseProb implements Comparable<DiseaseProb>{
     @Override
     public int compareTo(DiseaseProb dp){
         float result = this.prob - dp.prob;
-        return (int) result;
+        if(result == 0){
+            return 0;
+        }else if (result < 0){
+            return -1;
+        }else{
+            return 1;
+        }
     }
 
     public String getUmls(){

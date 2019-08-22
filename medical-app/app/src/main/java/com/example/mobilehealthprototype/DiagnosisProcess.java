@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -78,9 +79,9 @@ public class DiagnosisProcess extends AppCompatActivity {
         disease_vector = matrixMultiply(wm, symptom_vector, nrows,ncols, ncols,1);
         mm_output = convertDiseaseVector(disease_vector, disease_vector.length);
 
-
         top5Diseases = generateTop5(mm_output); // not generating properly
         normalizeDiseaseVector(top5Diseases);
+        Log.d("TESTING", Arrays.toString(mm_output));
 
         setUpInterface();
     }
@@ -218,18 +219,10 @@ public class DiagnosisProcess extends AppCompatActivity {
         }
     }
 
-    //THIS ISN'T SORTING THE LIST
-    //TODO - MAKE SURE THAT THIS PROPERLY SORTS STUFF - IT DOESN'T RIGHT NOW
     public DiseaseProb[] generateTop5(DiseaseProb[] results){
-        //Sort the list
-        Log.d("TESTING", Arrays.toString(results));
         DiseaseProb[] top;
-        Arrays.sort(results); // this isn't working
-        //get the top 5 results
+        Arrays.sort(results, Collections.reverseOrder());
         top = Arrays.copyOfRange(results, 0, 5);
-        Log.d("TESTING", Arrays.toString(results));
-        Log.d("TESTING", Arrays.toString(top));
-
         return top;
     }
 

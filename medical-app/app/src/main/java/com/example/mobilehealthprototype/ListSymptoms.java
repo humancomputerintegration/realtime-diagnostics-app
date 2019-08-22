@@ -35,12 +35,6 @@ public class ListSymptoms extends AppCompatActivity {
     SymptomAdapter adp;
     SearchableDialog sd;
 
-    //TODO - REduce the number of hashtables
-    //TODO refactor the lookups because these are ALL not necessary
-    //name to umls (Symptoms)
-    //umls to index(Symptoms)
-    //index to name (symptoms)
-
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
     Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
     Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
