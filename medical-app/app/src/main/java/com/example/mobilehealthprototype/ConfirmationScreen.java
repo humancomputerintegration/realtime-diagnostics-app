@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.ajithvgiri.searchdialog.SearchListItem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -53,11 +52,12 @@ public class ConfirmationScreen extends AppCompatActivity {
                 CommunicationHandler ch = new CommunicationHandler();
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
                 for(int i = 0; i < patientSymptoms.size(); i++){
-                    tmp.add(new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i)))));
+                    tmp.add(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))));
+                    //new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))))
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                sendMessage("17737549904",toSend);
+                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
 
                 Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
                 startActivity(intent);

@@ -93,7 +93,7 @@ public class DiagnosisProcess extends AppCompatActivity {
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
-        SympToUmls = new Hashtable<> ((HashMap<String,String>)passedIntent.getSerializableExtra("stu"));
+        SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
         IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
         UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
     }
