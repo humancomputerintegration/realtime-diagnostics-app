@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileMedicine Prototype v0.6</string>
+    <string name="app_name">MobileMedicine Prototype v0.7</string>
 
     <!--activity_main.xml strings-->
     <string name="welcome_header">MobileMedicine v0.6</string>
