@@ -30,7 +30,7 @@
     <string name="diagnose_button">Diagnose</string>
     <string name="add_symptom_button">Add Symptom</string>
     <string name="symptom_list_header">Patient\'s Current Symptoms</string>
-    <string name="remove_symptom_button">Delete</string>
+    <string name="remove_symptom_button">DELETE</string>
 
     <!--activity_diagnosis_process.xml options-->
     <string name="diagnosis_results_header">Diagnosis Results</string>

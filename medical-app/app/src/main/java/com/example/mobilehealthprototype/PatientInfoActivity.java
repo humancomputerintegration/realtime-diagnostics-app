@@ -3,6 +3,8 @@ package com.example.mobilehealthprototype;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -76,7 +78,9 @@ public class PatientInfoActivity extends AppCompatActivity {
         foption.setOnClickListener(onRBClick);
 
         Button next_step = (Button) findViewById(R.id.next_step_button);
-        next_step.setBackgroundColor(getResources().getColor(R.color.addColor));
+        Drawable ns_design = getResources().getDrawable(R.drawable.next_button);
+        next_step.setBackground(ns_design);
+
         next_step.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
                 p_id = (int) checkValue(R.id.pid_input, R.id.pid_header);

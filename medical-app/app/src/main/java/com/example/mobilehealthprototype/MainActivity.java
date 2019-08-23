@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     boolean enable = true;
+    boolean outbreak_enabled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,14 +70,18 @@ public class MainActivity extends AppCompatActivity {
 
         //TODO Actually configure this "OUTBREAK" button & activities
         Button outbreak = (Button) findViewById(R.id.outbreakButton);
-        outbreak.setEnabled(false); //delete this line once we're ready to create an outbreak screen
-        outbreak.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, OutbreakScreens.class));
-//                Intent i = new Intent(MainActivity.this, testingIntent.class);
-//                startActivity(i);
-            }
-        });
+        if(!outbreak_enabled){
+            outbreak.setEnabled(false); //delete this line once we're ready to create an outbreak screen
+            outbreak.setBackgroundColor(getResources().getColor(R.color.disabled_gray));
+        }else{
+            outbreak.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view) {
+                    Intent i = new Intent(MainActivity.this, OutbreakScreens.class);
+                    startActivity(i);
+                }
+            });
+        }
+
     }
 
     public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){
