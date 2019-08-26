@@ -1,3 +1,4 @@
-Main Screen - Done
-Patient Info Activity - Done
-ListSymptoms - Done
+PatientInfoActivity - Need to adjust what is mandatory or not
+                    - fix how we show errors - no alert dialogs, but rather red alerts
+
+                    - finalize color schemes

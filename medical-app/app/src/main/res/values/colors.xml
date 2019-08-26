@@ -11,5 +11,10 @@
     <color name="maroon">#800000</color>
     <color name="gray">#D6D6CE</color>
     <color name="disabled_gray">#A9A9A9</color>
+    <color name="black">#000000</color>
 
+    <!--Final draft color schemes for the app-->
+    <!--<color name="main"></color>-->
+    <!--<color name="secondary"></color>-->
+    <!--<color name=""></color>-->
 </resources>

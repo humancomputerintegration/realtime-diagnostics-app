@@ -29,18 +29,25 @@ public class PatientInfoActivity extends AppCompatActivity {
     }
 
     //Helper Functions
-    //TODO : Figure out how exactly I want to do this
     public void warnError(int input_id, int header_id){
         TextView header = findViewById(header_id);
-//        String orig = header.getText().toString();
-//        String mod_orig = (orig.contains("Please Enter")) ? orig : orig + "(Please Enter A Value)";
-//        header.setText(mod_orig);
+        String orig = header.getText().toString();
+        String mod_orig = (orig.contains("*")) ? orig : orig + "*";
+        header.setText(mod_orig);
         header.setTextColor(getResources().getColor(R.color.errorColor));
 
-        if(input_id > 0){
-            EditText input = findViewById(input_id);
-            input.setBackgroundColor(getResources().getColor(R.color.transparentRed));
-        }
+//        if(input_id > 0){
+//            EditText input = findViewById(input_id);
+//            input.setBackgroundColor(getResources().getColor(R.color.transparentRed));
+//        }
+    }
+
+    public void removeError(int input_id, int header_id){
+        TextView header = findViewById(header_id);
+        String orig = header.getText().toString();
+        String mod_orig = (orig.contains("*")) ? orig.substring(0, orig.length()-1) : orig;
+        header.setText(mod_orig);
+        header.setTextColor(getResources().getColor(R.color.black));
     }
 
     public float checkValue(int id1, int id2){
@@ -48,6 +55,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         if(parsed == null || parsed.trim().equals("")){
             warnError(id1, id2);
             return -1f;
+        }else{
+            removeError(id1, id2);
         }
         return Float.parseFloat(parsed);
     }
@@ -98,10 +107,12 @@ public class PatientInfoActivity extends AppCompatActivity {
                     intent.putExtra("height", p_height);
                     intent.putExtra("weight", p_weight);
                     startActivity(intent);
-                }else{
-                    AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
-                    wn.show();
                 }
+                //removed alertdialog because Pedro thinks its bad design (will comment in case of future implementations)
+//                else{
+//                    AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
+//                    wn.show();
+//                }
             }
         });
     }
