@@ -21,6 +21,10 @@ public class PatientInfoActivity extends AppCompatActivity {
     float p_weight, p_height;
     boolean complete = false;
 
+//    TODO - Sex Age - mandatory
+//    TODO - Height, Weight, ID - Optional
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +39,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         String mod_orig = (orig.contains("*")) ? orig : orig + "*";
         header.setText(mod_orig);
         header.setTextColor(getResources().getColor(R.color.errorColor));
-
 //        if(input_id > 0){
 //            EditText input = findViewById(input_id);
 //            input.setBackgroundColor(getResources().getColor(R.color.transparentRed));
@@ -50,10 +53,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         header.setTextColor(getResources().getColor(R.color.black));
     }
 
-    public float checkValue(int id1, int id2){
+    public float checkValue(int id1, int id2, boolean required){
         String parsed = ((TextView) findViewById(id1)).getText().toString();
         if(parsed == null || parsed.trim().equals("")){
-            warnError(id1, id2);
+            if(required){ warnError(id1, id2); }
             return -1f;
         }else{
             removeError(id1, id2);
@@ -61,11 +64,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         return Float.parseFloat(parsed);
     }
 
-    //Function that creates the logic & handling behind the activity
+    //Function that creates the logic & handling behind UI of the activity
     public void setUpInterface(){
-        //Radio button setup
-        RadioButton moption = (RadioButton) findViewById(R.id.Male_option);
-        RadioButton foption = (RadioButton) findViewById(R.id.Female_option);
+        RadioButton moption = findViewById(R.id.Male_option);
+        RadioButton foption = findViewById(R.id.Female_option);
 
         View.OnClickListener onRBClick = new View.OnClickListener() {
             public void onClick(View view){
@@ -92,12 +94,13 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         next_step.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                p_id = (int) checkValue(R.id.pid_input, R.id.pid_header);
-                p_age = (int) checkValue(R.id.age_input, R.id.age_header);
-                p_height = checkValue(R.id.height_input, R.id.height_header);
-                p_weight = checkValue(R.id.weight_input, R.id.weight_header);
+                p_id = (int) checkValue(R.id.pid_input, R.id.pid_header, false);
+                p_age = (int) checkValue(R.id.age_input, R.id.age_header, true);
+                p_height = checkValue(R.id.height_input, R.id.height_header, false);
+                p_weight = checkValue(R.id.weight_input, R.id.weight_header, false);
                 if(p_sex == null){  warnError(0, R.id.sex_option_header); }
-                complete = (p_id > 0) & (p_age > 0) & (p_sex != null) &(p_height > 0) & (p_weight > 0);
+                complete = (p_age > 0) & (p_sex != null);
+                //(p_id > 0) & (p_age > 0) & (p_sex != null) &(p_height > 0) & (p_weight > 0); //original version
 
                 if(complete) {
                     Intent intent = new Intent(PatientInfoActivity.this, ListSymptoms.class);
@@ -109,24 +112,24 @@ public class PatientInfoActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 //removed alertdialog because Pedro thinks its bad design (will comment in case of future implementations)
-//                else{
-//                    AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
-//                    wn.show();
-//                }
+                // else{
+                //AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
+                //wn.show();
+                //}
             }
         });
     }
 
-    public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){
-        AlertDialog.Builder builder = new AlertDialog.Builder(PatientInfoActivity.this);
-        builder.setTitle(title_id);
-        builder.setMessage(message_id);
-        builder.setPositiveButton(pb, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                //do nothing
-            }
-        });
-        return builder;
-    }
+//    public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){
+//        AlertDialog.Builder builder = new AlertDialog.Builder(PatientInfoActivity.this);
+//        builder.setTitle(title_id);
+//        builder.setMessage(message_id);
+//        builder.setPositiveButton(pb, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                //do nothing
+//            }
+//        });
+//        return builder;
+//    }
 
 }
