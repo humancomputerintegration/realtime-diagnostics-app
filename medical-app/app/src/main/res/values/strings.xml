@@ -36,6 +36,7 @@
     <string name="diagnosis_results_header">Diagnosis Results</string>
     <string name="continue_button">CONTINUE</string>
     <string name="final_confirmation_button">Confirm And Send </string>
-
+    <string name="all_wrong_alternative">All of the above are incorrect diagnoses - I have a better one</string>
+    <string name="all_wrong_continue">All of the above are incorrect but I still need a diagnosis</string>
 
 </resources>

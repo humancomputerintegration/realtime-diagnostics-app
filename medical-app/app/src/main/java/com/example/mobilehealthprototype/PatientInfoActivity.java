@@ -89,7 +89,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         foption.setOnClickListener(onRBClick);
 
         Button next_step = (Button) findViewById(R.id.next_step_button);
-        Drawable ns_design = getResources().getDrawable(R.drawable.next_button);
+        Drawable ns_design = getResources().getDrawable(R.drawable.rounded_button);
         next_step.setBackground(ns_design);
 
         next_step.setOnClickListener(new View.OnClickListener(){

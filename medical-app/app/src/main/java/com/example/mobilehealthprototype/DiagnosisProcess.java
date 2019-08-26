@@ -2,10 +2,13 @@ package com.example.mobilehealthprototype;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +57,8 @@ public class DiagnosisProcess extends AppCompatActivity {
     float[][] wm, symptom_vector, disease_vector;
 
     SearchableDialog sd;
-    Button allWrongDiagnose;
+    Button allWrongAlternative;
+    Button allWrongContinue;
     Button[] arrButtons = new Button[7];
 
     //result of disease matrix multiplication
@@ -98,15 +102,27 @@ public class DiagnosisProcess extends AppCompatActivity {
         UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
     }
 
+    public String floatToPercent(float f, int num_decimals){
+        int end_index = 0;
+        if(f < 10f){
+            end_index += 2;
+        }else{
+            end_index += 3;
+        }
+        end_index += num_decimals;
+        return Float.toString(f*100).substring(0,end_index) + "%";
+    }
+
     //Layout Functions
     public void setUpInterface(){
         sd = new SearchableDialog(DiagnosisProcess.this, allDiseases,"Disease Search");
         sd.setOnItemSelected(new OnSearchItemSelected(){
             public void onClick(int position, SearchListItem searchListItem){
                 diagnosedDisease = searchListItem.getTitle();
+                ddProb = 1f;
                 if(diagnosedDisease != null){
-                    String t = diagnosedDisease + " - (Click this button again to change the disease)";
-                    allWrongDiagnose.setText(t);
+                    String t = diagnosedDisease + " - (Click button to change your selection)";
+                    allWrongAlternative.setText(t);
                 }
             }
         });
@@ -114,45 +130,49 @@ public class DiagnosisProcess extends AppCompatActivity {
         //Set up the Button option Views
         LinearLayout ll;
         ll = findViewById(R.id.diagnose_button_layout);
+        Drawable ns_design = getResources().getDrawable(R.drawable.rounded_button);
         for (int i = 0; i < 5; i++) {
-            Button nbut = new Button(this);
             String umlsd = top5Diseases[i].getUmls();
             String dname = top5Diseases[i].getDisease();
             Float tprob = top5Diseases[i].getProb();
-            String bmsg = dname + " (" + umlsd + ")" +  " - " + tprob;
-            nbut.setText(bmsg);
+            String bmsg = dname + " - " + floatToPercent(tprob, 2);
+            Button nbut = CustomButton.createButton(this, R.drawable.rounded_button, bmsg,
+                                                            Color.GRAY, 3, Color.BLACK);
             nbut.setOnClickListener(new DiseaseClickListener(dname, umlsd, tprob, i));
+
             arrButtons[i] = nbut;
             ll.addView(nbut);
         }
 
-        //This button does not work correctly - todo - fix later
-        allWrongDiagnose = new Button(this);
-        allWrongDiagnose.setText("All of the above are incorrect diagnoses - I have a better one");
-        allWrongDiagnose.setOnClickListener(new View.OnClickListener(){
+        String st = String.valueOf(R.string.all_wrong_alternative);
+        allWrongAlternative = CustomButton.createButton(this, R.drawable.rounded_button,
+                        R.string.all_wrong_alternative, Color.GREEN, 4, Color.RED);
+        allWrongAlternative.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 sd.show();
-                setOtherButtonsBgCol(5, arrButtons, Color.GRAY, Color.GREEN);
+                setOtherButtonsBgCol(5, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
             }
         });
-        arrButtons[5] = allWrongDiagnose;
-        ll.addView(allWrongDiagnose);
 
-        Button allWrongContinue = new Button(this);
-        allWrongContinue.setText("All of the above are incorrect but I still need a diagnosis");
+        arrButtons[5] = allWrongAlternative;
+        ll.addView(allWrongAlternative);
+
+        String st2 = String.valueOf(R.string.all_wrong_continue);
+        allWrongContinue = CustomButton.createButton(this, R.drawable.rounded_button,
+                        R.string.all_wrong_continue, Color.GREEN, 4, Color.RED);
         arrButtons[6] = allWrongContinue;
         allWrongContinue.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
+                setOtherButtonsBgCol(6, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
                 diagnosedDisease = null;
                 ddProb = -1f;
             }
         });
         ll.addView(allWrongContinue);
 
-        Button nextStep= new Button(this);
-        nextStep.setText("CONTINUE");
-        nextStep.setBackgroundColor(Color.GREEN);
+        Button nextStep = CustomButton.createButton(this,R.drawable.rounded_button, R.string.continue_button, Color.BLUE, 4, Color.BLACK);
         nextStep.setTextColor(Color.WHITE);
+
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,13 +208,16 @@ public class DiagnosisProcess extends AppCompatActivity {
         ll.addView(nextStep);
     }
 
-    public void setOtherButtonsBgCol(int ind, Button[] others, int non_sel_col, int selected_col){
+    public void setOtherButtonsBgCol(int ind, Button[] others, int button_name, int non_sel_col, int selected_col){
         for(int i = 0; i < others.length ; i++){
             Button temp = others[i];
+            Drawable button_design = getResources().getDrawable(button_name);
             if(i != ind){
-                temp.setBackgroundColor(non_sel_col);
+                DrawableCompat.setTint(button_design, non_sel_col);
+                temp.setBackground(button_design);
             }else{
-                temp.setBackgroundColor(selected_col);
+                DrawableCompat.setTint(button_design, selected_col);
+                temp.setBackground(button_design);
             }
         }
     }
@@ -216,7 +239,8 @@ public class DiagnosisProcess extends AppCompatActivity {
         public void onClick(View v) {
             diagnosedDisease = this.disease_name;
             ddProb = this.percentage;
-            setOtherButtonsBgCol(button_index, arrButtons, Color.GRAY, Color.GREEN);
+            Drawable button_temp = getResources().getDrawable(R.drawable.next_button);
+            setOtherButtonsBgCol(button_index, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
         }
     }
 
