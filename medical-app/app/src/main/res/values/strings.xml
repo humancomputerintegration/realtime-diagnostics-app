@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">MobileMedicine Prototype v0.7</string>
+    <string name="app_name">MobileMedicine Prototype v0.8</string>
 
     <!--activity_main.xml strings-->
-    <string name="welcome_header">MobileMedicine v0.6</string>
+    <string name="welcome_header">MobileMedicine v0.8</string>
     <string name="start_diagnosis_button">Start Diagnosis</string>
     <string name="outbreak_check_button">Check for Outbreaks</string>
     <string name="permissions_warning_title">SMS Permissions Warning</string>
@@ -34,6 +34,7 @@
 
     <!--activity_diagnosis_process.xml options-->
     <string name="diagnosis_results_header">Diagnosis Results</string>
+    <string name="continue_button">CONTINUE</string>
     <string name="final_confirmation_button">Confirm And Send </string>
 
 
