@@ -8,17 +8,6 @@
     android:orientation="vertical"
     tools:context=".ListSymptoms">
 
-    <TextView
-        android:id="@+id/current_symptoms_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/symptom_list_header"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@+id/currentsymptomlist"
-        app:layout_constraintTop_toBottomOf="@+id/add_symptom_button"
-        tools:layout_editor_absoluteX="0dp" />
-
     <Button
         android:id="@+id/add_symptom_button"
         android:layout_width="match_parent"
@@ -27,16 +16,19 @@
         android:background="@drawable/next_button"
         android:text="@string/add_symptom_button"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/current_symptoms_header"
+        app:layout_constraintBottom_toTopOf="@+id/currentsymptomlist"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
     <ListView
         android:id="@+id/currentsymptomlist"
-        android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_width="410dp"
+        android:layout_height="519dp"
         app:layout_constraintBottom_toTopOf="@+id/continue_diagnose_button"
-        app:layout_constraintTop_toBottomOf="@+id/current_symptoms_header"></ListView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_symptom_button"></ListView>
 
     <Button
         android:id="@+id/continue_diagnose_button"
@@ -47,10 +39,8 @@
         android:text="@string/diagnose_button"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentsymptomlist" />
+        app:layout_constraintTop_toBottomOf="@+id/currentsymptomlist"
+        tools:layout_editor_absoluteX="0dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
