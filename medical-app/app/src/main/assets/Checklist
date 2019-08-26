@@ -1,4 +1,2 @@
-PatientInfoActivity - Need to adjust what is mandatory or not
-                    - fix how we show errors - no alert dialogs, but rather red alerts
-
-                    - finalize color schemes
+PatientInfoActivity - finalize color schemes
+ListSymptomsActivity - fix the formatting with the button layouts, and update the buttons with the custom class
