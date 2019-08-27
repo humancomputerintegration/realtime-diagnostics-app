@@ -4,21 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    boolean enable = true;
+    boolean diagnose_enable = true;
     boolean outbreak_enabled = false;
+    boolean query_enabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
     public void checkPermissions(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
-                enable = true;
+                diagnose_enable = true;
             }else{
-                enable = false;
+                diagnose_enable = false;
             }
         }
     }
@@ -54,25 +55,38 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 checkPermissions();
                 AlertDialog.Builder bd = buildWarning(R.string.permissions_warning_title,
-                                                                    R.string.permissions_warning_message,
-                                                                                    R.string.button_close);
+                                                    R.string.permissions_warning_message, R.string.button_close);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     if (checkSelfPermission(Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                         bd.show();
                     }
                 }
-                if (enable) {
+                if (diagnose_enable) {
                     startActivity(new Intent(MainActivity.this, PatientInfoActivity.class));
-
                 }
             }
         });
 
+        //TODO Actually configure a Query activity once the server is done being set up
+        Button query_pinfo = findViewById(R.id.queryButton);
+        if(!query_enabled){
+            query_pinfo.setEnabled(query_enabled);
+            CustomButton.changeButtonColor(query_pinfo, R.color.disabled_gray, 3, R.color.black);
+        }else{
+            query_pinfo.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View view){
+                    Intent i = new Intent(MainActivity.this, PatientQuery.class);
+                    startActivity(i);
+                }
+            });
+        }
+
         //TODO Actually configure this "OUTBREAK" button & activities
-        Button outbreak = (Button) findViewById(R.id.outbreakButton);
+        Button outbreak = findViewById(R.id.outbreakButton);
         if(!outbreak_enabled){
-            outbreak.setEnabled(false); //delete this line once we're ready to create an outbreak screen
-            outbreak.setBackgroundColor(getResources().getColor(R.color.disabled_gray));
+            //TODO: delete line below once we're ready to create an outbreak tracking activity
+            outbreak.setEnabled(outbreak_enabled);
+            CustomButton.changeButtonColor(outbreak, R.color.disabled_gray, 3, R.color.black);
         }else{
             outbreak.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view) {

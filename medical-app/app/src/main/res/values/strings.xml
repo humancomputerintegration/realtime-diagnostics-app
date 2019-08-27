@@ -2,8 +2,9 @@
     <string name="app_name">MobileMedicine Prototype v0.8</string>
 
     <!--activity_main.xml strings-->
-    <string name="welcome_header">MobileMedicine v0.8</string>
+    <string name="welcome_header">@string/app_name</string>
     <string name="start_diagnosis_button">Start Diagnosis</string>
+    <string name="retrieve_patient_info_button">Query Patient Info</string>
     <string name="outbreak_check_button">Check for Outbreaks</string>
     <string name="permissions_warning_title">SMS Permissions Warning</string>
     <string name="permissions_warning_message">In order to use mobile medicine (SMS Version) you need

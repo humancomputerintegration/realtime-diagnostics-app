@@ -3,6 +3,7 @@ package com.example.mobilehealthprototype;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.widget.Button;
 
 public class CustomButton {
@@ -37,9 +38,17 @@ public class CustomButton {
         return temp;
     }
 
-//    public static void changeButton(Context cm, ){
-//
-//    }
+    public static void changeButtonColor(Button button, int fill_color){
+        GradientDrawable gd = (GradientDrawable) button.getBackground();
+        gd.setColor(fill_color);
+        return;
+    }
+
+    public static void changeButtonColor(Button button, int fill_color, int stroke, int stroke_col){
+        GradientDrawable gd = (GradientDrawable) button.getBackground();
+        gd.setColor(fill_color);
+        gd.setStroke(stroke, stroke_col);
+    }
 
 
 }

@@ -9,6 +9,7 @@
     <color name="notAvailable">#9c9c9c</color>
     <color name="transparentRed">#CCFF0000</color>
     <color name="maroon">#800000</color>
+    <color name="maroon_monochromatic">#671515</color>
     <color name="gray">#D6D6CE</color>
     <color name="disabled_gray">#A9A9A9</color>
     <color name="black">#000000</color>
