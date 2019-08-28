@@ -2,6 +2,7 @@ package com.example.mobilehealthprototype;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Context;
@@ -59,7 +60,8 @@ public class DiagnosisProcess extends AppCompatActivity {
     SearchableDialog sd;
     Button allWrongAlternative;
     Button allWrongContinue;
-    Button[] arrButtons = new Button[7];
+    Button[] arrButtons = new Button[6]; //todo - change 6 to 7 once we start implementing adaptive diagnosis
+    //the reason why it is is 6 is to prevent bug crashes
 
     //result of disease matrix multiplication
     DiseaseProb[] mm_output;
@@ -68,6 +70,9 @@ public class DiagnosisProcess extends AppCompatActivity {
     DiseaseProb[] top5Diseases = new DiseaseProb[5];
     String diagnosedDisease = null;
     float ddProb = -1f;
+
+    //UI Stuff
+    int STROKE_WIDTH = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,17 +132,17 @@ public class DiagnosisProcess extends AppCompatActivity {
             }
         });
 
-        //Set up the Button option Views
+        //Set up the Button option Views for the 5 diseases
         LinearLayout ll;
         ll = findViewById(R.id.diagnose_button_layout);
-        Drawable ns_design = getResources().getDrawable(R.drawable.rounded_button);
         for (int i = 0; i < 5; i++) {
             String umlsd = top5Diseases[i].getUmls();
             String dname = top5Diseases[i].getDisease();
             Float tprob = top5Diseases[i].getProb();
             String bmsg = dname + " - " + floatToPercent(tprob, 2);
             Button nbut = CustomButton.createButton(this, R.drawable.rounded_button, bmsg,
-                                                            Color.GRAY, 3, Color.BLACK);
+                                                            R.color.noSelection, STROKE_WIDTH,
+                                                            R.color.noSelectionAccent);
             nbut.setOnClickListener(new DiseaseClickListener(dname, umlsd, tprob, i));
 
             arrButtons[i] = nbut;
@@ -146,33 +151,33 @@ public class DiagnosisProcess extends AppCompatActivity {
 
         String st = String.valueOf(R.string.all_wrong_alternative);
         allWrongAlternative = CustomButton.createButton(this, R.drawable.rounded_button,
-                        R.string.all_wrong_alternative, Color.GREEN, 4, Color.RED);
+                        R.string.all_wrong_alternative, R.color.noSelection, STROKE_WIDTH, R.color.noSelectionAccent);
         allWrongAlternative.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 sd.show();
-                setOtherButtonsBgCol(5, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
+                setOtherButtonsBgCol(5, arrButtons, R.drawable.rounded_button, R.color.selectionColor, R.color.noSelection);
             }
         });
 
         arrButtons[5] = allWrongAlternative;
         ll.addView(allWrongAlternative);
 
-        String st2 = String.valueOf(R.string.all_wrong_continue);
-        allWrongContinue = CustomButton.createButton(this, R.drawable.rounded_button,
-                        R.string.all_wrong_continue, Color.GREEN, 4, Color.RED);
-        arrButtons[6] = allWrongContinue;
-        allWrongContinue.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View view){
-                setOtherButtonsBgCol(6, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
-                diagnosedDisease = null;
-                ddProb = -1f;
-            }
-        });
-        ll.addView(allWrongContinue);
+        //TODO: Disabled for now - enable when "ADAPTIVE DIAGNOSIS" portion is starting to be implemented
+//        String st2 = String.valueOf(R.string.all_wrong_continue);
+//        allWrongContinue = CustomButton.createButton(this, R.drawable.rounded_button,
+//                        R.string.all_wrong_continue, Color.GREEN, 4, Color.RED);
+//        arrButtons[6] = allWrongContinue;
+//        allWrongContinue.setOnClickListener(new View.OnClickListener(){
+//            public void onClick(View view){
+//                setOtherButtonsBgCol(6, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
+//                diagnosedDisease = null;
+//                ddProb = -1f;
+//            }
+//        });
+//        ll.addView(allWrongContinue);
 
-        Button nextStep = CustomButton.createButton(this,R.drawable.rounded_button, R.string.continue_button, Color.BLUE, 4, Color.BLACK);
-        nextStep.setTextColor(Color.WHITE);
-
+        Button nextStep = findViewById(R.id.confirmDisease);
+        CustomButton.changeButtonColor(this, nextStep, R.color.colorPrimary, STROKE_WIDTH, R.color.colorAccent);
         nextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,19 +210,16 @@ public class DiagnosisProcess extends AppCompatActivity {
                 }
             }
         });
-        ll.addView(nextStep);
     }
 
-    public void setOtherButtonsBgCol(int ind, Button[] others, int button_name, int non_sel_col, int selected_col){
+    public void setOtherButtonsBgCol(int ind, Button[] others, int button_name, int selected_col, int non_sel_col){
         for(int i = 0; i < others.length ; i++){
             Button temp = others[i];
             Drawable button_design = getResources().getDrawable(button_name);
             if(i != ind){
-                DrawableCompat.setTint(button_design, non_sel_col);
-                temp.setBackground(button_design);
+                CustomButton.changeButtonColor(this, temp, non_sel_col, STROKE_WIDTH, R.color.noSelectionAccent);
             }else{
-                DrawableCompat.setTint(button_design, selected_col);
-                temp.setBackground(button_design);
+                CustomButton.changeButtonColor(this, temp, selected_col, STROKE_WIDTH , R.color.selectionColorAccent);
             }
         }
     }
@@ -240,7 +242,7 @@ public class DiagnosisProcess extends AppCompatActivity {
             diagnosedDisease = this.disease_name;
             ddProb = this.percentage;
             Drawable button_temp = getResources().getDrawable(R.drawable.next_button);
-            setOtherButtonsBgCol(button_index, arrButtons, R.drawable.rounded_button, Color.GRAY, Color.GREEN);
+            setOtherButtonsBgCol(button_index, arrButtons, R.drawable.rounded_button, R.color.selectionColor, R.color.noSelection);
         }
     }
 

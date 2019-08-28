@@ -3,6 +3,7 @@ package com.example.mobilehealthprototype;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 public class PatientInfoActivity extends AppCompatActivity {
     Sex p_sex = null;
@@ -88,9 +90,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         moption.setOnClickListener(onRBClick);
         foption.setOnClickListener(onRBClick);
 
-        Button next_step = (Button) findViewById(R.id.next_step_button);
-        Drawable ns_design = getResources().getDrawable(R.drawable.rounded_button);
-        next_step.setBackground(ns_design);
+        Button next_step = findViewById(R.id.next_step_button);
+        CustomButton.changeButtonColor(this, next_step, R.color.colorPrimary, 3, R.color.colorAccent);
 
         next_step.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
@@ -111,7 +112,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                     intent.putExtra("weight", p_weight);
                     startActivity(intent);
                 }
-                //removed alertdialog because Pedro thinks its bad design (will comment in case of future implementations)
+                //TODO:removed alertdialog because Pedro thinks its bad design (will comment in case people need it for future implementations)
                 // else{
                 //AlertDialog.Builder wn = buildWarning(R.string.warning_title, R.string.warning_message, R.string.close);
                 //wn.show();

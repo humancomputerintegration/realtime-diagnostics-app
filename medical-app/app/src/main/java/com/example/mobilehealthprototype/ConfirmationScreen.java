@@ -35,15 +35,14 @@ public class ConfirmationScreen extends AppCompatActivity {
     Hashtable<String, String> DisToUmls = new Hashtable<>();
     Hashtable<Integer,String> IndexToDis = new Hashtable<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation_screen);
 
         handlePassedIntent();
-        TextView confirmation_details = (TextView) findViewById(R.id.confirmation_details);
-        confirmation_details.setText(constructConfirmationDetails());
+//        TextView confirmation_details = (TextView) findViewById(R.id.confirmation_details);
+//        confirmation_details.setText(constructConfirmationDetails());
 
         Button confirmation_button = (Button) findViewById(R.id.final_confirmation);
         confirmation_button.setOnClickListener(new View.OnClickListener() {

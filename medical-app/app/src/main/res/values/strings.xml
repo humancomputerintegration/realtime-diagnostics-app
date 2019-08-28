@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileMedicine Prototype v0.8</string>
+    <string name="app_name">MobileMedicine Prototype v0.9</string>
 
     <!--activity_main.xml strings-->
     <string name="welcome_header">@string/app_name</string>
@@ -36,8 +36,18 @@
     <!--activity_diagnosis_process.xml options-->
     <string name="diagnosis_results_header">Diagnosis Results</string>
     <string name="continue_button">CONTINUE</string>
-    <string name="final_confirmation_button">Confirm And Send </string>
     <string name="all_wrong_alternative">All of the above are incorrect diagnoses - I have a better one</string>
     <string name="all_wrong_continue">All of the above are incorrect but I still need a diagnosis</string>
+
+    <!--activity_confirmation_screen.xml options-->
+    <string name="diagnosis_summary_header">Diagnosis Summary</string>
+    <string name="final_confirmation_button">Confirm And Send</string>
+    <string name="input_id_header">Patient\'s ID number</string>
+    <string name="input_sex_header">Patient\'s Sex</string>
+    <string name="input_height_header">Patient\'s Height</string>
+    <string name="input_weight_header">Patient\'s Weight</string>
+    <string name="input_symptoms">Patient\'s Symptoms</string>
+    <string name="input_diagnosed_disease">Diagnosed Disease</string>
+
 
 </resources>

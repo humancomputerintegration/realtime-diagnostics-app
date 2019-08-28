@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Button query_pinfo = findViewById(R.id.queryButton);
         if(!query_enabled){
             query_pinfo.setEnabled(query_enabled);
-            CustomButton.changeButtonColor(query_pinfo, R.color.disabled_gray, 3, R.color.black);
+            CustomButton.changeButtonColor(this, query_pinfo, R.color.disabled_gray, 3, R.color.disabled_gray_accent);
         }else{
             query_pinfo.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view){
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         if(!outbreak_enabled){
             //TODO: delete line below once we're ready to create an outbreak tracking activity
             outbreak.setEnabled(outbreak_enabled);
-            CustomButton.changeButtonColor(outbreak, R.color.disabled_gray, 3, R.color.black);
+            CustomButton.changeButtonColor(this, outbreak, R.color.disabled_gray, 3, R.color.disabled_gray_accent);
         }else{
             outbreak.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view) {

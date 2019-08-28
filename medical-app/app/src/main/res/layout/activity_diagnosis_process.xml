@@ -8,16 +8,15 @@
 
     <LinearLayout
         android:id="@+id/diagnose_button_layout"
-        android:layout_width="0dp"
+        android:layout_width="397dp"
         android:layout_height="0dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginLeft="9dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginRight="9dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginBottom="26dp"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/confirmDisease"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"></LinearLayout>
 
@@ -25,12 +24,26 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="31dp"
         android:text="@string/diagnosis_results_header"
         android:textColor="@android:color/black"
+        android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/diagnose_button_layout"
-        app:layout_constraintEnd_toEndOf="@+id/diagnose_button_layout"
-        app:layout_constraintStart_toStartOf="@+id/diagnose_button_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/confirmDisease"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/next_button"
+        android:text="@string/continue_button"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diagnose_button_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

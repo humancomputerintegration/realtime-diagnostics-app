@@ -2,6 +2,8 @@ package com.example.mobilehealthprototype;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.ajithvgiri.searchdialog.OnSearchItemSelected;
 import com.ajithvgiri.searchdialog.SearchListItem;
@@ -49,7 +52,7 @@ public class ListSymptoms extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_symptoms);
         handlePassedIntent();
-        //TODO Make sure you add to the documentation that the CSV needs to be well behaved
+        //TODO - Make sure you add to the documentation that the CSV needs to be well behaved
         //TODO - Well behaved csv = UMLS code to empty field
         loadSymptoms("SymptomList.csv");
         setUpInterface();
@@ -91,7 +94,7 @@ public class ListSymptoms extends AppCompatActivity {
 
     //TODO - Implement a Synonym-lookup feature
     public void setUpInterface(){
-        //setting up the search view to look up symptoms
+        //Setting up the search view to look up symptoms
         sd = new SearchableDialog(ListSymptoms.this, allSymptoms,"Symptom Search");
         sd.setOnItemSelected(new OnSearchItemSelected(){
             public void onClick(int position, SearchListItem searchListItem){
@@ -103,7 +106,8 @@ public class ListSymptoms extends AppCompatActivity {
             }
         });
 
-        TextView addsymp = findViewById(R.id.add_symptom_button);
+        Button addsymp = findViewById(R.id.add_symptom_button);
+        CustomButton.changeButtonColor(this, addsymp, R.color.colorPrimaryDark,3, R.color.colorPrimaryDarkAccent);
         addsymp.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 sd.show();
@@ -116,6 +120,8 @@ public class ListSymptoms extends AppCompatActivity {
         currentSymptomListView.setAdapter(adp);
 
         Button diagnose = findViewById(R.id.continue_diagnose_button);
+        CustomButton.changeButtonColor(this, diagnose, R.color.colorPrimary,3, R.color.colorAccent);
+
         diagnose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
