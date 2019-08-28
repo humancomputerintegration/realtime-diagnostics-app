@@ -1,6 +1,7 @@
 package com.example.mobilehealthprototype;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
@@ -38,16 +39,16 @@ public class CustomButton {
         return temp;
     }
 
-    public static void changeButtonColor(Button button, int fill_color){
+    public static void changeButtonColor(Context cm, Button button, int res_col){
         GradientDrawable gd = (GradientDrawable) button.getBackground();
-        gd.setColor(fill_color);
+        gd.setColor(cm.getResources().getColor(res_col));
         return;
     }
 
-    public static void changeButtonColor(Button button, int fill_color, int stroke, int stroke_col){
+    public static void changeButtonColor(Context cm, Button button, int res_col, int stroke, int res_stroke){
         GradientDrawable gd = (GradientDrawable) button.getBackground();
-        gd.setColor(fill_color);
-        gd.setStroke(stroke, stroke_col);
+        gd.setColor(cm.getResources().getColor(res_col));
+        gd.setStroke(stroke, cm.getResources().getColor(res_stroke));
     }
 
 
