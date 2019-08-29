@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#800000</color>
+    <color name="colorAccent">#671515</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDarkAccent">#013B33</color>
+    <color name="noSelection">@color/choose_disease</color>
+    <color name="noSelectionAccent">#FFFFFF</color>
+    <color name="selectionColor">#4A4949</color>
+    <color name="selectionColorAccent">#FFFFFF</color>
+    <color name="errorColor">#d61515</color>
+    <color name="notAvailable">#9c9c9c</color>
+    <color name="transparentRed">#CCFF0000</color>
+    <color name="maroon">#800000</color>
+    <color name="maroon_accent">#671515</color>
+    <color name="maroon_accent2">#8E4626</color>
+    <color name="gray">#D6D6CE</color>
+
+    <color name="gray_accent">#AFAFA2</color>
+    <color name="choose_disease">#D6D6CE</color>
+    <color name="choose_disease_accent">#AFAFA2</color>
+    <color name="disabled_gray">#A9A9A9</color>
+    <color name="disabled_gray_accent">#7D7D7D</color>
+    <color name="black">#000000</color>
+
+    <!--Final draft color schemes for the app-->
+    <!--<color name="main"></color>-->
+    <!--<color name="secondary"></color>-->
+    <!--<color name=""></color>-->
+</resources>
