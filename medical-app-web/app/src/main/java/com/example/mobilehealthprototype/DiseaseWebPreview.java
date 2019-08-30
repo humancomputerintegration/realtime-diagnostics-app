@@ -47,9 +47,9 @@ public class DiseaseWebPreview extends AppCompatActivity {
         setUpInterface();
 
         //TODO: These should not be naked like this, but I'm running out of time
-        String sk = "3b4066fbe4774c6da3a47e7a5399b440";
-        String host = "https://bingtril.cognitiveservices.azure.com";
-        String endpoint = "/bing/v7.0";
+        String sk = diagnosed_disease.replace(' ', '+');
+        String host = "https://www.bing.com/search?q=";
+        String addr = host+sk;
 
 //        WebSearcher ws = new WebSearcher(sk, host, endpoint);
 //        ws.SearchInternet(diagnosed_disease);
@@ -62,7 +62,8 @@ public class DiseaseWebPreview extends AppCompatActivity {
         });
         wv.getSettings().setDomStorageEnabled(true);
         wv.getSettings().setJavaScriptEnabled(true);
-        wv.loadUrl("https://www.reddit.com/");
+
+        wv.loadUrl(addr);
     }
 
     public void setUpInterface(){
