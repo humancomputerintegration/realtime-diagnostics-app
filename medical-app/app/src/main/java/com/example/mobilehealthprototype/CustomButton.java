@@ -51,5 +51,15 @@ public class CustomButton {
         gd.setStroke(stroke, cm.getResources().getColor(res_stroke));
     }
 
+    public static void changeButtonText(Context cm, Button button, int text_col){
+        button.setTextColor(cm.getResources().getColor(text_col));
+    }
+
+    public static void changeButtonText(Context cm, Button button, int text_col, int font_size){
+        button.setTextColor(cm.getResources().getColor(text_col));
+        button.setTextSize(font_size);
+    }
+
+
 
 }

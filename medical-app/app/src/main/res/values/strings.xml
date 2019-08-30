@@ -42,12 +42,16 @@
     <!--activity_confirmation_screen.xml options-->
     <string name="diagnosis_summary_header">Diagnosis Summary</string>
     <string name="final_confirmation_button">Confirm And Send</string>
-    <string name="input_id_header">Patient\'s ID number</string>
-    <string name="input_sex_header">Patient\'s Sex</string>
-    <string name="input_height_header">Patient\'s Height</string>
-    <string name="input_weight_header">Patient\'s Weight</string>
+    <string name="input_id_header">Patient\'s ID number:</string>
+    <string name="input_sex_header">Sex:</string>
+    <string name="input_age_header">Age:</string>
+    <string name="input_height_header">Height:</string>
+    <string name="input_weight_header">Weight:</string>
     <string name="input_symptoms">Patient\'s Symptoms</string>
-    <string name="input_diagnosed_disease">Diagnosed Disease</string>
+    <string name="input_diagnosed_disease">Disease:</string>
 
+    <!--activity_confirm_information_sent.xml options-->
+    <string name="confirm_information_sent">Information Sending</string>
+    <string name="done">DONE</string>
 
 </resources>

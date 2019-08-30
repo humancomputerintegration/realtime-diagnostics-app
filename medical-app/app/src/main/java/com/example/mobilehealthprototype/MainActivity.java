@@ -17,7 +17,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    boolean diagnose_enable = true;
+    boolean diagnose_enable;
     boolean outbreak_enabled = false;
     boolean query_enabled = false;
 
@@ -25,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        diagnose_enable = true;
         askPermissions();
         setUpInterface();
+
     }
 
     public void askPermissions(){

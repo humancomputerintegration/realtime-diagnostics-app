@@ -13,106 +13,167 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_button"
         android:text="@string/final_confirmation_button"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/results_summary_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="51dp"
         android:text="@string/diagnosis_summary_header"
         android:textColor="@android:color/black"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/pid"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="24dp"
+        android:layout_height="28dp"
+        android:text="@string/input_age_header"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/psex"
+        app:layout_constraintStart_toStartOf="@+id/pid2"
+        app:layout_constraintTop_toBottomOf="@+id/pid2" />
+
+    <TextView
+        android:id="@+id/pid2"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:text="@string/input_id_header"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintBottom_toTopOf="@+id/pid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/results_summary_header" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/psex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginBottom="23dp"
         android:text="@string/input_sex_header"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView7"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintBottom_toTopOf="@+id/pheight"
+        app:layout_constraintStart_toStartOf="@+id/pid"
+        app:layout_constraintTop_toBottomOf="@+id/pid" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/pheight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginBottom="27dp"
         android:text="@string/input_height_header"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintBottom_toTopOf="@+id/pweight"
+        app:layout_constraintStart_toStartOf="@+id/psex"
+        app:layout_constraintTop_toBottomOf="@+id/psex" />
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/pweight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginBottom="22dp"
         android:text="@string/input_weight_header"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintBottom_toTopOf="@+id/diagn_dis"
+        app:layout_constraintStart_toStartOf="@+id/pheight"
+        app:layout_constraintTop_toBottomOf="@+id/pheight" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/diagn_dis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginBottom="30dp"
-        android:text="@string/input_symptoms"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView10"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginLeft="23dp"
-        android:layout_marginBottom="288dp"
         android:text="@string/input_diagnosed_disease"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/final_confirmation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintStart_toStartOf="@+id/pweight"
+        app:layout_constraintTop_toBottomOf="@+id/pweight" />
+
+    <TextView
+        android:id="@+id/input_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pid"
+        app:layout_constraintEnd_toEndOf="@+id/input_pid"
+        app:layout_constraintTop_toTopOf="@+id/pid" />
+
+    <TextView
+        android:id="@+id/input_pid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pid2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/pid2"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/input_s"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/psex"
+        app:layout_constraintEnd_toEndOf="@+id/input_a"
+        app:layout_constraintTop_toTopOf="@+id/psex" />
+
+    <TextView
+        android:id="@+id/input_h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/pheight"
+        app:layout_constraintEnd_toEndOf="@+id/input_s"
+        app:layout_constraintTop_toTopOf="@+id/pheight" />
+
+    <TextView
+        android:id="@+id/input_w"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:gravity="right"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeStepGranularity="2sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pweight"
+        app:layout_constraintEnd_toEndOf="@+id/input_h"
+        app:layout_constraintTop_toTopOf="@+id/pweight" />
+
+    <TextView
+        android:id="@+id/input_dd"
+        android:layout_width="174dp"
+        android:layout_height="23dp"
+        android:gravity="right"
+        android:text="TextView"
+        android:textColor="@android:color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/diagn_dis"
+        app:layout_constraintEnd_toEndOf="@+id/input_w"
+        app:layout_constraintTop_toTopOf="@+id/diagn_dis"
+        app:layout_constraintVertical_bias="1.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+//TODO - Allow Patient Resource Accessing from the app
 public class PatientQuery extends AppCompatActivity {
 
     @Override

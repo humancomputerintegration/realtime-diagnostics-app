@@ -35,16 +35,20 @@ public class ConfirmationScreen extends AppCompatActivity {
     Hashtable<String, String> DisToUmls = new Hashtable<>();
     Hashtable<Integer,String> IndexToDis = new Hashtable<>();
 
+    int STROKE_WIDTH = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation_screen);
 
         handlePassedIntent();
-//        TextView confirmation_details = (TextView) findViewById(R.id.confirmation_details);
-//        confirmation_details.setText(constructConfirmationDetails());
+        setUpInterface();
+    }
 
-        Button confirmation_button = (Button) findViewById(R.id.final_confirmation);
+    public void setUpInterface(){
+        Button confirmation_button = findViewById(R.id.final_confirmation);
+        CustomButton.changeButtonColor(this, confirmation_button,R.color.colorPrimary,
+                                                                STROKE_WIDTH, R.color.colorAccent);
         confirmation_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,16 +56,50 @@ public class ConfirmationScreen extends AppCompatActivity {
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
                 for(int i = 0; i < patientSymptoms.size(); i++){
                     tmp.add(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))));
-                    //new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))))
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+                sendMessage(R.string.server_number,toSend);
 
-                Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
+                Intent intent = new Intent(ConfirmationScreen.this, ConfirmInformationSent.class);
                 startActivity(intent);
             }
         });
+
+        //These do not need checks because these will always be required
+        TextView is = findViewById(R.id.input_s);
+        is.setText((p_sex == Sex.MALE)? "male" : "female");
+
+        TextView iage = findViewById(R.id.input_a);
+        iage.setText(convertFloat((float) p_age));
+
+
+        TextView ipid = findViewById(R.id.input_pid);
+        String temp = convertFloat((float) p_id);
+        ipid.setText(temp);
+        if(temp.contains("No")){ipid.setTextColor(getResources().getColor(R.color.gray));}
+
+
+        TextView ih = findViewById(R.id.input_h);
+        temp = convertFloat(p_height);
+        ih.setText(temp);
+        if(temp.contains("No")) {ih.setTextColor(getResources().getColor(R.color.gray));}
+
+        TextView iw = findViewById(R.id.input_w);
+        temp = convertFloat(p_weight);
+        iw.setText(convertFloat(p_weight));
+        if(temp.contains("No")) {iw.setTextColor(getResources().getColor(R.color.gray));}
+
+        TextView idd = findViewById(R.id.input_dd);
+        idd.setText(diagnosed_disease);
+    }
+
+    public String convertFloat(float n){
+        if(n < 0){
+            return "Nothing was inputted";
+        }else{
+            return Float.toString(n);
+        }
     }
 
     public String constructConfirmationDetails(){
@@ -102,9 +140,9 @@ public class ConfirmationScreen extends AppCompatActivity {
         diagnosed_disease_index = passedIntent.getIntExtra("diagnosed_disease_index", -1);
     }
 
-    private void sendMessage(String phone_num, String msg){
+    private void sendMessage(int phone_num_resource, String msg){
         SmsManager sm = SmsManager.getDefault();
-        sm.sendTextMessage(phone_num, null, msg, null, null);
+        sm.sendTextMessage(getString(phone_num_resource), null, msg, null, null);
     }
 
 
