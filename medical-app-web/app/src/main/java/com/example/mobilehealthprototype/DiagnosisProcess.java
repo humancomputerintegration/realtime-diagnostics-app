@@ -43,6 +43,8 @@ public class DiagnosisProcess extends AppCompatActivity {
     int p_id, p_age;
     float p_height, p_weight;
 
+    int mode;
+
     List<SearchListItem> allDiseases = new ArrayList<>();
     ArrayList<String> patientSymptoms;
 
@@ -96,15 +98,32 @@ public class DiagnosisProcess extends AppCompatActivity {
 
     public void handlePassedIntent(){
         passedIntent = getIntent();
-        p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
-        p_age = passedIntent.getIntExtra("age", -1);
-        p_height = passedIntent.getFloatExtra("height",-1);
-        p_weight = passedIntent.getFloatExtra("weight",-1);
-        patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
-        SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
-        IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
-        UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
+        mode = passedIntent.getIntExtra("mode", -1);
+        if(mode == 1){
+            p_sex = (Sex) passedIntent.getSerializableExtra("sex");
+            p_id = passedIntent.getIntExtra("hid", -1);
+            p_age = passedIntent.getIntExtra("age", -1);
+            p_height = passedIntent.getFloatExtra("height",-1);
+            p_weight = passedIntent.getFloatExtra("weight",-1);
+            patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+            SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
+            IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
+            UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
+
+        }else if(mode == 2){
+            p_sex = (Sex) passedIntent.getSerializableExtra("sex");
+            p_id = passedIntent.getIntExtra("hid", -1);
+            p_age = passedIntent.getIntExtra("age", -1);
+            p_height = passedIntent.getFloatExtra("height",-1);
+            p_weight = passedIntent.getFloatExtra("weight",-1);
+            patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+            SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
+            IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
+            UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
+            DisToUmls = new Hashtable<> ((HashMap<String, String>) passedIntent.getSerializableExtra("dtu"));
+            IndexToDis = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("itd"));
+        }
+
     }
 
     public String floatToPercent(float f, int num_decimals){
@@ -189,7 +208,8 @@ public class DiagnosisProcess extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }else {
-                    Intent intent = new Intent(DiagnosisProcess.this, ConfirmationScreen.class);
+//                    Intent intent = new Intent(DiagnosisProcess.this, ConfirmationScreen.class);
+                    Intent intent = new Intent(DiagnosisProcess.this, DiseaseWebPreview.class);
                     intent.putExtra("hid", p_id);
                     intent.putExtra("sex", p_sex);
                     intent.putExtra("age", p_age);
@@ -201,7 +221,6 @@ public class DiagnosisProcess extends AppCompatActivity {
                     intent.putExtra("uti", UmlsToIndex);
                     intent.putExtra("dtu", DisToUmls);
                     intent.putExtra("itd", IndexToDis);
-                    Log.d("TESTING", diagnosedDisease);
                     intent.putExtra("diagnosed_disease_index", UmlsToIndex.get(DisToUmls.get(diagnosedDisease)));
                     intent.putExtra("likelihood_of_disease", ddProb);
                     intent.putExtra("diagnosed_UMLS", DisToUmls.get(diagnosedDisease));
@@ -215,11 +234,12 @@ public class DiagnosisProcess extends AppCompatActivity {
     public void setOtherButtonsBgCol(int ind, Button[] others, int button_name, int selected_col, int non_sel_col){
         for(int i = 0; i < others.length ; i++){
             Button temp = others[i];
-            Drawable button_design = getResources().getDrawable(button_name);
             if(i != ind){
                 CustomButton.changeButtonColor(this, temp, non_sel_col, STROKE_WIDTH, R.color.noSelectionAccent);
+                CustomButton.changeButtonText(this, temp, R.color.noSelectionTextColor);
             }else{
                 CustomButton.changeButtonColor(this, temp, selected_col, STROKE_WIDTH , R.color.selectionColorAccent);
+                CustomButton.changeButtonText(this, temp, R.color.selectionTextColor);
             }
         }
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileMedicine Prototype v0.9</string>
+    <string name="app_name">MobileMedicine Prototype v0.9 w/ Azure</string>
 
     <!--activity_main.xml strings-->
     <string name="welcome_header">@string/app_name</string>
@@ -49,5 +49,11 @@
     <string name="input_symptoms">Patient\'s Symptoms</string>
     <string name="input_diagnosed_disease">Diagnosed Disease</string>
 
+    <!--activity_web_preview.xml options-->
+    <string name="back">Go Back To Selection</string>
+    <string name="confirm_and_send">Send Diagnosis Information to Server</string>
+
+    <!--activity_information_sent.xml options-->
+    <string name="confirm_information_sent">Information successfully sent to the server</string>
 
 </resources>

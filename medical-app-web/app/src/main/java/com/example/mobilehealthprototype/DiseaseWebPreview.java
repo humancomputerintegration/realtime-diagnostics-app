@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.ajithvgiri.searchdialog.SearchListItem;
 
@@ -16,8 +18,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-public class ConfirmationScreen extends AppCompatActivity {
-    Intent passedIntent;
+public class DiseaseWebPreview extends AppCompatActivity {
+
     Sex p_sex;
     int p_id, p_age;
     float p_height, p_weight;
@@ -35,16 +37,63 @@ public class ConfirmationScreen extends AppCompatActivity {
     Hashtable<String, String> DisToUmls = new Hashtable<>();
     Hashtable<Integer,String> IndexToDis = new Hashtable<>();
 
+    int STROKE_WIDTH = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirmation_screen);
+        setContentView(R.layout.activity_disease_web_preview);
 
         handlePassedIntent();
+        setUpInterface();
 
-        Button confirmation_button = (Button) findViewById(R.id.final_confirmation);
-        confirmation_button.setOnClickListener(new View.OnClickListener() {
-            @Override
+        //TODO: These should not be naked like this, but I'm running out of time
+        String sk = "3b4066fbe4774c6da3a47e7a5399b440";
+        String host = "https://bingtril.cognitiveservices.azure.com";
+        String endpoint = "/bing/v7.0";
+
+//        WebSearcher ws = new WebSearcher(sk, host, endpoint);
+//        ws.SearchInternet(diagnosed_disease);
+
+        WebView wv= findViewById(R.id.disease_webviewer);
+        wv.setWebViewClient(new WebViewClient(){
+            public void onPageFinished(WebView view, String url) {
+                Log.d("TESTING", "WebPage is done loading");
+            }
+        });
+        wv.getSettings().setDomStorageEnabled(true);
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.loadUrl("https://www.reddit.com/");
+    }
+
+    public void setUpInterface(){
+
+
+        Button back = findViewById(R.id.go_back);
+        CustomButton.changeButtonColor(this, back, R.color.colorPrimary, STROKE_WIDTH, R.color.colorAccent);
+        CustomButton.changeButtonText(this, back, R.color.white);
+        back.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent backwards = new Intent(DiseaseWebPreview.this, DiagnosisProcess.class);
+                backwards.putExtra("mode", 2);
+                backwards.putExtra("hid", p_id);
+                backwards.putExtra("sex", p_sex);
+                backwards.putExtra("age", p_age);
+                backwards.putExtra("height", p_height);
+                backwards.putExtra("weight", p_weight);
+                backwards.putExtra("patient_symptoms", patientSymptoms);
+                backwards.putExtra("stu", SympToUmls);
+                backwards.putExtra("its", IndexToSymp);
+                backwards.putExtra("uti", UmlsToIndex);
+                backwards.putExtra("dtu", DisToUmls);
+                backwards.putExtra("itd", IndexToDis);
+                startActivity(backwards);
+            }
+        });
+
+        Button sendToServ = findViewById(R.id.send_to_server);
+        CustomButton.changeButtonColor(this, sendToServ, R.color.colorPrimary, STROKE_WIDTH, R.color.colorAccent);
+        CustomButton.changeButtonText(this, sendToServ, R.color.white);
+        sendToServ.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view) {
                 CommunicationHandler ch = new CommunicationHandler();
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
@@ -54,34 +103,17 @@ public class ConfirmationScreen extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
-
-                Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
-                startActivity(intent);
+//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+                Log.d("TESTING", toSend);
+                Intent sendToServ = new Intent(DiseaseWebPreview.this, ConfirmationScreen.class);
+                startActivity(sendToServ);
             }
         });
-    }
-
-    public String constructConfirmationDetails(){
-        String spid = Integer.toString(p_id);
-        String spage = Integer.toString(p_age);
-        String spsex = (p_sex == Sex.MALE) ? "M" : "F";
-        String spheight = Float.toString(p_height);
-        String spweight = Float.toString(p_weight);
-
-        String sddprob = Float.toString(diagnosed_disease_prob);
-
-        String fp = spid + "\n" + spage + "\n" + spsex + "\n" + spheight + "\n" + spweight + "\n";
-        String sp = fp + "Patient Symptoms::" + "\n";
-        for(int i = 0; i < patientSymptoms.size(); i++){
-            sp = sp + patientSymptoms.get(i) + "\n";
-        }
-        String tp = sp + "Doctor Diagnosis::" + "\n" + diagnosed_disease + " with probability: " + sddprob;
-        return tp;
+        return;
     }
 
     public void handlePassedIntent(){
-        passedIntent = getIntent();
+        Intent passedIntent = getIntent();
         p_sex = (Sex) passedIntent.getSerializableExtra("sex");
         p_id = passedIntent.getIntExtra("hid", -1);
         p_age = passedIntent.getIntExtra("age", -1);
@@ -104,6 +136,4 @@ public class ConfirmationScreen extends AppCompatActivity {
         SmsManager sm = SmsManager.getDefault();
         sm.sendTextMessage(phone_num, null, msg, null, null);
     }
-
-
 }
