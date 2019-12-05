@@ -13,11 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".InformationSent"></activity>
-        <activity android:name=".DiseaseWebPreview" />
+        <activity android:name=".DiseasePrediction" />
         <activity android:name=".PatientQuery" />
         <activity android:name=".ConfirmationScreen" />
         <activity android:name=".testingIntent" />
-        <activity android:name=".DiagnosisProcess" />
+        <activity android:name=".DiagnosisResult" />
+        <activity android:name=".AdaptiveDiagnosis" />
         <activity
             android:name=".SendMessage"
             android:screenOrientation="portrait" />

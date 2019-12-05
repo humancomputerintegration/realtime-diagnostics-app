@@ -125,7 +125,7 @@ public class ListSymptoms extends AppCompatActivity {
         diagnose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ListSymptoms.this, DiagnosisProcess.class);
+                Intent intent = new Intent(ListSymptoms.this, AdaptiveDiagnosis.class);
                 intent.putExtra("mode", 1);
                 intent.putExtra("hid", p_id);
                 intent.putExtra("sex", p_sex);
