@@ -228,8 +228,8 @@ public class DiseasePrediction extends AppCompatActivity {
                 Log.d("TESTING", toSend);
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
-                Intent restart = new Intent(DiseasePrediction.this, MainActivity.class);
-                startActivity(restart);
+                //Intent restart = new Intent(DiseasePrediction.this, MainActivity.class);
+                //startActivity(restart);
             }
         });
         return;

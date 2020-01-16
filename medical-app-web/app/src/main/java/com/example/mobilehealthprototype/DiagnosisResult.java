@@ -37,12 +37,13 @@ public class DiagnosisResult extends AppCompatActivity {
     ArrayList<String> patientSymptoms;
 
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
-    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
-
-    //since UMLS are unique, you can reuse UmlsToIndex
-    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
-    Hashtable<String, String> DisToUmls = new Hashtable<>();
-    Hashtable<Integer,String> IndexToDis = new Hashtable<>();
+    Hashtable<String, String> UmlsToSymp= new Hashtable<String, String>();
+    Hashtable<Integer, String> IndexToUmls_s = new Hashtable<Integer, String>();
+    Hashtable<String, Integer> UmlsToIndex_s = new Hashtable<String, Integer>();
+    Hashtable<String, Integer> UmlsToIndex_d = new Hashtable<String, Integer>();
+    Hashtable<Integer, String> IndexToUmls_d = new Hashtable<Integer, String>();
+    Hashtable<String, String> DisToUmls = new Hashtable<String, String>();
+    Hashtable<String,String> UmlsToDis = new Hashtable<String,String>();
 
     int ncols, nrows;
     float[][] wm, symptom_vector, disease_vector;
@@ -69,10 +70,13 @@ public class DiagnosisResult extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnosis_result);
         handlePassedIntent();
-        loadDiseases("DiseaseList.csv");
-        findNumRowsCols("Dis_Sym_30.csv");
+        //loadDiseases("DiseaseList.csv");
+        //findNumRowsCols("Dis_Sym_30.csv");
+        loadDiseases("DiseaseList_new.csv");
+        findNumRowsCols("DiseaseSymptomMatrix_quantitative.csv");
         wm = new float[nrows][ncols];
-        wm = loadWeightMatrix("Dis_Sym_30.csv", 1, 1);
+        //wm = loadWeightMatrix("Dis_Sym_30.csv", 1, 1);
+        wm = loadWeightMatrix("DiseaseSymptomMatrix_quantitative.csv", 1, 1);
         symptom_vector = loadPatientSymptoms(patientSymptoms);
         //preliminary multiplication of the weight matrix to symptom vector
         disease_vector = matrixMultiply(wm, symptom_vector, nrows,ncols, ncols,1);
@@ -95,8 +99,14 @@ public class DiagnosisResult extends AppCompatActivity {
             p_weight = passedIntent.getFloatExtra("weight",-1);
             patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
             SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
-            IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
-            UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
+            UmlsToSymp = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("uts"));
+            IndexToUmls_s = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itus"));
+            UmlsToIndex_s = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utis"));
+
+            DisToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("dtu"));
+            UmlsToDis = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("utd"));
+            IndexToUmls_d = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itud"));
+            UmlsToIndex_d = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utid"));
 
         }else if(mode == 2){
             p_sex = (Sex) passedIntent.getSerializableExtra("sex");
@@ -106,10 +116,14 @@ public class DiagnosisResult extends AppCompatActivity {
             p_weight = passedIntent.getFloatExtra("weight",-1);
             patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
             SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
-            IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
-            UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
-            DisToUmls = new Hashtable<> ((HashMap<String, String>) passedIntent.getSerializableExtra("dtu"));
-            IndexToDis = new Hashtable<> ((HashMap<Integer, String>) passedIntent.getSerializableExtra("itd"));
+            UmlsToSymp = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("uts"));
+            IndexToUmls_s = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itus"));
+            UmlsToIndex_s = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utis"));
+
+            DisToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("dtu"));
+            UmlsToDis = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("utd"));
+            IndexToUmls_d = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itud"));
+            UmlsToIndex_d = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utid"));
         }
 
     }
@@ -146,7 +160,7 @@ public class DiagnosisResult extends AppCompatActivity {
             String umlsd = top5Diseases[i].getUmls();
             String dname = top5Diseases[i].getDisease();
             Float tprob = top5Diseases[i].getProb();
-            String bmsg = dname + " - " + floatToPercent(tprob, 2);
+            String bmsg = dname + " - " + floatToPercent(tprob, 0);
             Button nbut = CustomButton.createButton(this, R.drawable.rounded_button, bmsg,
                                                             R.color.noSelection, STROKE_WIDTH,
                                                             R.color.noSelectionAccent);
@@ -197,7 +211,7 @@ public class DiagnosisResult extends AppCompatActivity {
                     dialog.show();
                 }else {
 //                    Intent intent = new Intent(DiagnosisProcess.this, ConfirmationScreen.class);
-                    Intent intent = new Intent(DiagnosisResult.this, DiseasePrediction.class);
+                    Intent intent = new Intent(DiagnosisResult.this, ConfirmationScreen.class);
                     intent.putExtra("hid", p_id);
                     intent.putExtra("sex", p_sex);
                     intent.putExtra("age", p_age);
@@ -205,15 +219,20 @@ public class DiagnosisResult extends AppCompatActivity {
                     intent.putExtra("weight", p_weight);
                     intent.putExtra("patient_symptoms", patientSymptoms);
                     intent.putExtra("stu", SympToUmls);
-                    intent.putExtra("its", IndexToSymp);
-                    intent.putExtra("uti", UmlsToIndex);
+                    intent.putExtra("uts", UmlsToSymp);
                     intent.putExtra("dtu", DisToUmls);
-                    intent.putExtra("itd", IndexToDis);
-                    intent.putExtra("diagnosed_disease_index", UmlsToIndex.get(DisToUmls.get(diagnosedDisease)));
+                    intent.putExtra("utd", UmlsToDis);
+                    intent.putExtra("itud", IndexToUmls_d);
+                    intent.putExtra("itus", IndexToUmls_s);
+                    intent.putExtra("utid", UmlsToIndex_d);
+                    intent.putExtra("utis", UmlsToIndex_s);
+                    intent.putExtra("diagnosed_disease_index", UmlsToIndex_d.get(DisToUmls.get(diagnosedDisease)));
                     intent.putExtra("likelihood_of_disease", ddProb);
                     intent.putExtra("diagnosed_UMLS", DisToUmls.get(diagnosedDisease));
                     intent.putExtra("diagnosed_disease_name", diagnosedDisease);
+                    System.out.println("Going to comfirmation");
                     startActivity(intent);
+                    System.out.println("comfirmation");
                 }
             }
         });
@@ -265,7 +284,7 @@ public class DiagnosisResult extends AppCompatActivity {
     public DiseaseProb[] convertDiseaseVector(float[][] m, int size){
         DiseaseProb[] temp = new DiseaseProb[size];
         for(int i = 0; i < size; i++){
-            temp[i] = new DiseaseProb(DisToUmls.get(IndexToDis.get(i)),IndexToDis.get(i), m[i][0]);
+            temp[i] = new DiseaseProb(IndexToUmls_d.get(i),UmlsToDis.get(IndexToUmls_d.get(i)), m[i][0]);
         }
         return temp;
     }
@@ -291,7 +310,7 @@ public class DiagnosisResult extends AppCompatActivity {
         float[][] ph = new float[ncols][1];
         int vector_index;
         for(int i = 0; i < ps.size(); i++){
-            vector_index = UmlsToIndex.get(SympToUmls.get(ps.get(i)));
+            vector_index = UmlsToIndex_s.get(SympToUmls.get(ps.get(i)));
             ph[vector_index][0] = 1f;
         }
         return ph;
@@ -309,8 +328,6 @@ public class DiagnosisResult extends AppCompatActivity {
             while((nl = reader.readLine()) != null){
                 temp = nl.split(",");
                 DisToUmls.put(temp[1], temp[0]);
-                IndexToDis.put(index, temp[1]);
-                UmlsToIndex.put(temp[0], index);
                 index += 1;
                 SearchListItem t = new SearchListItem(0, temp[1]);
                 allDiseases.add(t);

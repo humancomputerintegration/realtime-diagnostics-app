@@ -37,18 +37,18 @@ public class SendMessage extends AppCompatActivity {
 
         Log.d("TESTING", alToString(patientSymptoms));
         pinfo = sexToString(p_sex) + "\nID = " + p_id + "\nAGE = "  + p_age + "\nHEIGHT=" + p_height + "m\nWEIGHT=" + p_weight +"kg";
-        sendMessage("8478686626",pinfo);
+        sendMessage("3122410651",pinfo);
 
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
-        sendMessage("8478686626",psymp);
+        sendMessage("3122410651",psymp);
 
 
 
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
-        sendMessage("8478686626", dtemp);
+        sendMessage("3122410651", dtemp);
     }
 
     public String sexToString(Sex s){
