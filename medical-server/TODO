@@ -5,3 +5,8 @@ MAKE SURE YOU FIX THE DOUBLE EXISTENCE BUG IN THE MONGO_WRAPPER - Almost done
 IN ADDITION MAKE SURE YOU FIX THE DATABASE INSERT BUG - in Progress 
 
 REFRACTOR CODE - MAKE IT MORE MODULAR
+
+Write some tests & documentation to make the code test and run with the arduino-defined SMS interfacer & Huawei one 
+
+Write a requirements install for both the ubuntu environment and python install
+(Potentially setup a virtualenv for python?)
