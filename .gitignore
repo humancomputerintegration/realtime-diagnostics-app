@@ -3,3 +3,4 @@ cred.json
 __pycache__/
 medical-server/sms.py
 .ipynb_checkpoints
+private.pem
