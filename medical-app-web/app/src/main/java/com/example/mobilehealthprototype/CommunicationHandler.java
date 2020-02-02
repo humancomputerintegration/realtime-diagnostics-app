@@ -6,9 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
-
-//TODO: Encryption Protocol
-//Handles communnication protocol between the app & server -- needs to include encryption protocol
+//Handles communication protocol between the app & server -- needs to include encryption protocol
 public class CommunicationHandler {
 
     //generates a compressed string of the information into the server
@@ -46,6 +44,10 @@ public class CommunicationHandler {
         String sh = fh + symps + ";" + diagnosedDiseaseIndex;
         Log.d("TESTING", sh);
         return sh;
+    }
+
+    public String encryptMessage(){
+        return "test";
     }
 
 }
