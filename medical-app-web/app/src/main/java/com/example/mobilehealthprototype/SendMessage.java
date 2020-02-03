@@ -45,8 +45,6 @@ public class SendMessage extends AppCompatActivity {
         //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
         sendMessage("8478686626",psymp);
 
-
-
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
         sendMessage("8478686626", dtemp);
@@ -85,6 +83,11 @@ public class SendMessage extends AppCompatActivity {
 
     private void sendMessage(String phone_num, String msg){
         SmsManager sm = SmsManager.getDefault();
-        sm.sendTextMessage(phone_num, null, msg, null, null);
+        String enc_msg = null;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            enc_msg = CommunicationHandler.encryptMessage(msg);
+        }
+        sm.sendTextMessage(phone_num, null, enc_msg, null, null);
     }
 }

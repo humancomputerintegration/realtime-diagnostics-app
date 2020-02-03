@@ -94,7 +94,7 @@ public class CommunicationHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public String encryptMessage(String raw_msg){
+    public static String encryptMessage(String raw_msg){
         Cipher cipher = null;
         String pubKeyString = null;
         try {
@@ -138,8 +138,8 @@ public class CommunicationHandler {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        Log.d("ERROR", "cipher: " + new String(cipherText));
-
+        Log.d("ERROR", "cipher= " + new String(cipherText));
+        return new String(cipherText);
     }
 
 }
