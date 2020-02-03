@@ -1,5 +1,4 @@
 ORDER OF IMPORTANCE:
-(Security -- Critical for deployment) Add Public/Private key encryption to the communication protocol
 
 //TODO: send over the highest probability disease (if not already picked)
 //Tell us which the doctor picked (3rd, fourth, fifth)
@@ -10,6 +9,5 @@ UI Stuff:
 TODO: Create Consistent Color Loading/usage in the app - IN the progress of doign
 TODO: Finalize Color Scheme for the app
 TODO: Fix DIAGNOSISPROCESS ACTIVITY LAYOUT
-TODO: Refactor Color.xml lol
 
 TODO: Make a list of important stuff for others to improve/implement in future additions
