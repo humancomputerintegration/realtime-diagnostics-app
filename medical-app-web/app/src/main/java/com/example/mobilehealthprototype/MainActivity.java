@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-  /*      //TODO Actually configure a Query activity once the server is done being set up
+        //TODO Actually configure a Query activity once the server is done being set up
         Button query_pinfo = findViewById(R.id.queryButton);
         if(!query_enabled){
             query_pinfo.setEnabled(query_enabled);
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-*/
+
     }
 
     public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){

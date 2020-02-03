@@ -37,17 +37,15 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
     ArrayList<String> patientSymptoms;
 
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
-    Hashtable<String, String> UmlsToSymp= new Hashtable<String, String>();
-    Hashtable<Integer, String> IndexToUmls_s = new Hashtable<Integer, String>();
-    Hashtable<String, Integer> UmlsToIndex_s = new Hashtable<String, Integer>();
-    Hashtable<String, Integer> UmlsToIndex_d = new Hashtable<String, Integer>();
-    Hashtable<Integer, String> IndexToUmls_d = new Hashtable<Integer, String>();
-    Hashtable<String, String> DisToUmls = new Hashtable<String, String>();
-    Hashtable<String,String> UmlsToDis = new Hashtable<String,String>();
+    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
 
-    int ncols=0, nrows=0, next_symp=0, last_symp=0;
+    //since UMLS are unique, you can reuse UmlsToIndex
+    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
+    Hashtable<String, String> DisToUmls = new Hashtable<>();
+    Hashtable<Integer,String> IndexToDis = new Hashtable<>();
+
+    int ncols, nrows, next_symp, last_symp;
     float[][] wm, symptom_vector;
-    String symptom_name;
     ArrayList<Integer> symptom_list = new ArrayList<>();
     ArrayList<Integer> disease_list = new ArrayList<>();
 
@@ -60,61 +58,89 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adaptive_diagnosis);
         handlePassedIntent();
-
+        loadDiseases("DiseaseList.csv");
+        findNumRowsCols("Dis_Sym_30.csv");
         wm = new float[nrows][ncols];
-        //wm = loadWeightMatrix("Dis_Sym_30.csv", 1, 1);
-        wm = loadWeightMatrix("DiseaseSymptomMatrix_quantitative.csv", 1, 1);
+        wm = loadWeightMatrix("Dis_Sym_30.csv", 1, 1);
 
-
-        if(mode==1){
+        if ((mode == 1)) {
             for(int i = 0; i < nrows; i++){
                 disease_list.add(i);
             }
             for(int j = 0; j < ncols; j++){
                 symptom_list.add(j);
             }
+
+            reduceMatrix1();
+            symptom_vector = loadPatientSymptoms(patientSymptoms);
+            next_symp = getNext_symp(wm, symptom_list, disease_list);
         }
-
-
-        symptom_vector = loadPatientSymptoms(patientSymptoms);
-        reduceMatrix();
-
-        next_symp = getNext_symp(wm, symptom_list, disease_list);
 
         setUpInterface();
     }
 
-
-
-    public void reduceMatrix() {
+    public void reduceMatrix0() {
         int ndis = disease_list.size(), idx_dis;
         int nsymp = symptom_list.size(), idx_symp;
         float min_weight, max_weight;
-        int NpatientSymp = patientSymptoms.size();
 
-        //filter diseases
         int i = 0;
         while(i<ndis){
             idx_dis = disease_list.get(i);
-            for(int p=0; p<NpatientSymp; p++){
-                idx_symp = UmlsToIndex_s.get(SympToUmls.get(patientSymptoms.get(p)));
-                if(wm[idx_dis][idx_symp] == 0.0) {
-                    disease_list.remove(i);
-                    i--;
-                    ndis--;
-                }
-                break;
+            if(wm[idx_dis][last_symp] != 0) {
+                disease_list.remove(i);
+                i--;
+                ndis--;
             }
             i++;
         }
 
-        //filter symptoms
-        for(int idx2 = 0; idx2 < NpatientSymp; idx2++){
-            for(int idx = 0; idx < nsymp; idx++){
-                if(symptom_list.get(idx) == UmlsToIndex_s.get(SympToUmls.get(patientSymptoms.get(idx2)))){
-                    symptom_list.remove(idx);
-                    nsymp--;
-                }
+        for(int idx = 0; idx < nsymp; idx++){
+            if(symptom_list.get(idx) == last_symp){
+                symptom_list.remove(idx);
+                nsymp--;
+            }
+        }
+
+        int j = 0;
+        while(j<nsymp){
+            idx_symp = symptom_list.get(j);
+            min_weight = 1;
+            max_weight = 0;
+            for(int idx = 0; idx < ndis; idx++){
+                idx_dis = disease_list.get(idx);
+                min_weight = min(min_weight, wm[idx_dis][idx_symp]);
+                max_weight = max(max_weight, wm[idx_dis][idx_symp]);
+            }
+            if(min_weight>0 || max_weight == 0){
+                symptom_list.remove(j);
+                j--;
+                nsymp--;
+            }
+            j++;
+        }
+    }
+
+    public void reduceMatrix1() {
+        int ndis = disease_list.size(), idx_dis;
+        int nsymp = symptom_list.size(), idx_symp;
+        float min_weight, max_weight;
+
+        int i = 0;
+        while(i<ndis){
+            idx_dis = disease_list.get(i);
+            if(wm[idx_dis][last_symp] == 0) {
+               disease_list.remove(i);
+               i--;
+               ndis--;
+           }
+            i++;
+        }
+
+        for(int idx = 0; idx < nsymp; idx++){
+            if(symptom_list.get(idx) == last_symp){
+                symptom_list.remove(idx);
+                nsymp--;
             }
         }
 
@@ -174,18 +200,9 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
-        nrows = passedIntent.getIntExtra("nrows", 0);
-        ncols = passedIntent.getIntExtra("ncols", 0);
         SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
-        UmlsToSymp = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("uts"));
-        IndexToUmls_s = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itus"));
-        UmlsToIndex_s = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utis"));
-
-        DisToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("dtu"));
-        UmlsToDis = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("utd"));
-        IndexToUmls_d = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itud"));
-        UmlsToIndex_d = new Hashtable<>((HashMap<String, Integer>) passedIntent.getSerializableExtra("utid"));
-
+        IndexToSymp = new Hashtable<> ((HashMap<Integer,String>) passedIntent.getSerializableExtra("its"));
+        UmlsToIndex = new Hashtable<> ((HashMap<String, Integer>) passedIntent.getSerializableExtra("uti"));
         if(mode==2){
             last_symp = passedIntent.getIntExtra("symptom_id", 0);
             disease_list = (ArrayList<Integer>) passedIntent.getSerializableExtra("dl");
@@ -199,8 +216,7 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
 
         LinearLayout ll;
         ll = findViewById(R.id.adaptive_diagnosis_layout);
-        last_symp = next_symp;
-        symptom_name = UmlsToSymp.get(IndexToUmls_s.get(last_symp));
+        final String symptom_name = IndexToSymp.get(last_symp);
         //String symptom_name = "Cough";
         Button nbut = CustomButton.createButton(this, R.drawable.rounded_button, symptom_name,
                 R.color.noSelection, STROKE_WIDTH,
@@ -212,12 +228,11 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         yes_but.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                patientSymptoms.add(symptom_name);
+                patientSymptoms.add(IndexToSymp.get(last_symp));
                 Intent intent;
                 reduceMatrix1();
                 next_symp = getNext_symp(wm, symptom_list, disease_list);
 
-                System.out.println(disease_list.size());
                 if(disease_list.size() <= 1){
                     intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
                     intent.putExtra("mode", 1);
@@ -234,18 +249,11 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 intent.putExtra("weight", p_weight);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
-                intent.putExtra("uts", UmlsToSymp);
-                intent.putExtra("dtu", DisToUmls);
-                intent.putExtra("utd", UmlsToDis);
-                intent.putExtra("itud", IndexToUmls_d);
-                intent.putExtra("itus", IndexToUmls_s);
-                intent.putExtra("utid", UmlsToIndex_d);
-                intent.putExtra("utis", UmlsToIndex_s);
+                intent.putExtra("uti", UmlsToIndex);
+                intent.putExtra("its",IndexToSymp);
                 intent.putExtra( "symptom_id", next_symp);
                 intent.putExtra("dl", disease_list);
                 intent.putExtra("sl", symptom_list);
-                intent.putExtra("ncols", ncols);
-                intent.putExtra("nrows", nrows);
                 startActivity(intent);
             }
         });
@@ -259,7 +267,6 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 reduceMatrix0();
                 next_symp = getNext_symp(wm, symptom_list, disease_list);
 
-                System.out.println(disease_list.size());
                 if(disease_list.size() <= 1){
                     intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
                     intent.putExtra("mode", 1);
@@ -275,18 +282,11 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 intent.putExtra("weight", p_weight);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
-                intent.putExtra("uts", UmlsToSymp);
-                intent.putExtra("dtu", DisToUmls);
-                intent.putExtra("utd", UmlsToDis);
-                intent.putExtra("itud", IndexToUmls_d);
-                intent.putExtra("itus", IndexToUmls_s);
-                intent.putExtra("utid", UmlsToIndex_d);
-                intent.putExtra("utis", UmlsToIndex_s);
+                intent.putExtra("uti", UmlsToIndex);
+                intent.putExtra("its",IndexToSymp);
                 intent.putExtra( "symptom_id", next_symp);
                 intent.putExtra("dl", disease_list);
                 intent.putExtra("sl", symptom_list);
-                intent.putExtra("ncols", ncols);
-                intent.putExtra("nrows", nrows);
                 startActivity(intent);
             }
         });
@@ -297,12 +297,60 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         float[][] ph = new float[ncols][1];
         int vector_index;
         for(int i = 0; i < ps.size(); i++){
-            vector_index = UmlsToIndex_s.get(SympToUmls.get(ps.get(i)));
+            vector_index = UmlsToIndex.get(SympToUmls.get(ps.get(i)));
             ph[vector_index][0] = 1f;
         }
         return ph;
     }
 
+    //TODO Add a dictionary that allows for easy look up between symptoms and results
+    public void loadDiseases(String fname){ //ArrayList<String>
+        try{
+            InputStreamReader is = new InputStreamReader(getAssets().open(fname));
+            BufferedReader reader = new BufferedReader(is);
+            String nl;
+            String[] temp;
+            nl = reader.readLine(); //skips the heading in the csv
+            int index = 0;
+            while((nl = reader.readLine()) != null){
+                temp = nl.split(",");
+                DisToUmls.put(temp[1], temp[0]);
+                IndexToDis.put(index, temp[1]);
+                UmlsToIndex.put(temp[0], index);
+                index += 1;
+                SearchListItem t = new SearchListItem(0, temp[1]);
+                allDiseases.add(t);
+            }
+            reader.close(); //make sure you close the reader after opening a file
+        }catch (IOException e){
+            e.printStackTrace();
+            Log.d("ERROR", "AN ERROR HAS OCCURRED IN LOADDISEASES");
+        }
+    }
+
+    //Due to the structure of the CSV, we need to subtract 1 from the total to get an accurate pair
+    public void findNumRowsCols(String fname){
+        String nl;
+        int row_count, col_count;
+        row_count = col_count = 0;
+
+        try {
+            InputStreamReader is = new InputStreamReader(getAssets().open(fname));
+            BufferedReader reader = new BufferedReader(is);
+            nl = reader.readLine(); //read the first line
+            col_count = (nl.split(",")).length - 1;
+            while((nl = reader.readLine()) != null) {
+                row_count = row_count + 1;
+            }
+            reader.close();
+            ncols = col_count;
+            nrows = row_count;
+            return;
+        } catch (IOException e) {
+            Log.d("TESTING", "ERROR findNumRowsCols");
+            Log.d("TESTING", e.toString());
+        }
+    }
 
     //returns null if something went wrong
     public float[][] loadWeightMatrix(String fname, int skip_r, int skip_c) {
@@ -314,7 +362,6 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
             InputStreamReader is = new InputStreamReader(getAssets().open(fname));
             BufferedReader reader = new BufferedReader(is);
             nl = reader.readLine(); //skip the first line of the CSV
-
 
             for(int r = 0; r < nrows; r++){
                 nl = reader.readLine();
@@ -349,97 +396,5 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         return matrix_product;
     }
 
-    public void reduceMatrix0() {
-        int ndis = disease_list.size(), idx_dis;
-        int nsymp = symptom_list.size(), idx_symp;
-        float min_weight, max_weight;
-
-        int i = 0;
-        while(i<ndis){
-            idx_dis = disease_list.get(i);
-            if(wm[idx_dis][last_symp] != 0) {
-                disease_list.remove(i);
-                i--;
-                ndis--;
-                if(ndis==1){
-                    return;
-                }
-            }
-            i++;
-        }
-
-        for(int idx = 0; idx < nsymp; idx++){
-            if(symptom_list.get(idx) == last_symp){
-                symptom_list.remove(idx);
-                nsymp--;
-            }
-        }
-
-        int j = 0;
-        while(j<nsymp){
-            idx_symp = symptom_list.get(j);
-            min_weight = 1;
-            max_weight = 0;
-            for(int idx = 0; idx < ndis; idx++){
-                idx_dis = disease_list.get(idx);
-                min_weight = min(min_weight, wm[idx_dis][idx_symp]);
-                max_weight = max(max_weight, wm[idx_dis][idx_symp]);
-            }
-            if(min_weight>0 || max_weight == 0){
-                symptom_list.remove(j);
-                j--;
-                nsymp--;
-            }
-            j++;
-        }
-    }
-    public void reduceMatrix1() {
-        int ndis = disease_list.size(), idx_dis;
-        int nsymp = symptom_list.size(), idx_symp;
-        float min_weight, max_weight;
-
-        int i = 0;
-        while(i<ndis){
-            idx_dis = disease_list.get(i);
-            if(wm[idx_dis][last_symp] == 0) {
-                disease_list.remove(i);
-                System.out.println("disease list");
-                System.out.println(disease_list.size());
-                i--;
-                ndis--;
-                if(ndis==1){
-                    return;
-                }
-            }
-            i++;
-        }
-
-        for(int idx = 0; idx < nsymp; idx++){
-            if(symptom_list.get(idx) == last_symp){
-                System.out.println("symptom list");
-                System.out.println(symptom_list.size());
-                symptom_list.remove(idx);
-                nsymp--;
-            }
-        }
-
-        int j = 0;
-        while(j<nsymp){
-            idx_symp = symptom_list.get(j);
-            min_weight = 1;
-            max_weight = 0;
-            for(int idx = 0; idx < ndis; idx++){
-                idx_dis = disease_list.get(idx);
-                min_weight = min(min_weight, wm[idx_dis][idx_symp]);
-                max_weight = max(max_weight, wm[idx_dis][idx_symp]);
-            }
-            if(min_weight>0 || max_weight == 0){
-                symptom_list.remove(j);
-                j--;
-                nsymp--;
-            }
-            j++;
-        }
-    }
 
 }

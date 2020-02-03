@@ -2,6 +2,8 @@ package com.example.mobilehealthprototype;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.ajithvgiri.searchdialog.OnSearchItemSelected;
 import com.ajithvgiri.searchdialog.SearchListItem;
@@ -36,17 +39,9 @@ public class ListSymptoms extends AppCompatActivity {
     SearchableDialog sd;
 
     Hashtable<String, String> SympToUmls= new Hashtable<String, String>();
-    Hashtable<String, String> UmlsToSymp= new Hashtable<String, String>();
-    Hashtable<Integer, String> IndexToUmls_s = new Hashtable<>();
-    Hashtable<String, Integer> UmlsToIndex_s = new Hashtable<>();
+    Hashtable<String, Integer> UmlsToIndex = new Hashtable<>();
+    Hashtable<Integer, String> IndexToSymp = new Hashtable<>();
 
-    Hashtable<String, Integer> UmlsToIndex_d = new Hashtable<>();
-    Hashtable<Integer, String> IndexToUmls_d = new Hashtable<>();
-    Hashtable<String, String> DisToUmls = new Hashtable<>();
-    Hashtable<String,String> UmlsToDis = new Hashtable<>();
-
-    int ncols=0, nrows=0;
-    float[][] wm;
     Intent passedIntent;
     Sex p_sex;
     int p_id, p_age;
@@ -59,8 +54,7 @@ public class ListSymptoms extends AppCompatActivity {
         handlePassedIntent();
         //TODO - Make sure you add to the documentation that the CSV needs to be well behaved
         //TODO - Well behaved csv = UMLS code to empty field
-        //wm = loadFiles("SymptomList.csv", "DiseaseList.csv", "Dis_Sym_30.csv");
-        wm = loadFiles("SymptomList_new.csv", "DiseaseList_new.csv", "DiseaseSymptomMatrix_quantitative.csv");
+        loadSymptoms("SymptomList.csv");
         setUpInterface();
     }
 
@@ -74,10 +68,9 @@ public class ListSymptoms extends AppCompatActivity {
     }
 
     //Loads up all the symptoms from the file into our activity
-    public float[][] loadFiles(String SymptomList, String DiseaseList, String WeightMatrix){ //ArrayList<String>
-        //Load SymptomList
+    public void loadSymptoms(String fname){ //ArrayList<String>
         try{
-            InputStreamReader is = new InputStreamReader(getAssets().open(SymptomList));
+            InputStreamReader is = new InputStreamReader(getAssets().open(fname));
             BufferedReader reader = new BufferedReader(is);
             String nl;
             String[] temp;
@@ -86,71 +79,16 @@ public class ListSymptoms extends AppCompatActivity {
             while((nl = reader.readLine()) != null){
                 temp = nl.split(",");
                 SympToUmls.put(temp[1], temp[0]);
-                UmlsToSymp.put(temp[0], temp[1]);
+                UmlsToIndex.put(temp[0], index);
+                IndexToSymp.put(index, temp[1]);
                 index++;
                 SearchListItem t = new SearchListItem(0, temp[1]);
                 allSymptoms.add(t);
             }
-            ncols=index;
             reader.close();
         }catch (IOException e){
             e.printStackTrace();
             Log.e("ERROR", "AN ERROR HAS OCCURRED IN LOADSYMPTOMS");
-        }
-        //Load DiseaseList
-        try{
-            InputStreamReader is = new InputStreamReader(getAssets().open(DiseaseList));
-            BufferedReader reader = new BufferedReader(is);
-            String nl;
-            String[] temp;
-            nl = reader.readLine(); //skips the heading in the csv
-            int index = 0;
-            while((nl = reader.readLine()) != null){
-                temp = nl.split(",");
-                DisToUmls.put(temp[1], temp[0]);
-                UmlsToDis.put(temp[0], temp[1]);
-                index++;
-                SearchListItem t = new SearchListItem(0, temp[1]);
-                allSymptoms.add(t);
-            }
-            nrows=index;
-            reader.close();
-        }catch (IOException e){
-            e.printStackTrace();
-            Log.e("ERROR", "AN ERROR HAS OCCURRED IN LOADDISEASES");
-        }
-        //Load WeightMatrix, and indexing diseases and symptoms
-        String nl;
-        String[] temp = null;
-        float[][] weight_matrix = new float[nrows][ncols];
-
-        try{
-            InputStreamReader is = new InputStreamReader(getAssets().open(WeightMatrix));
-            BufferedReader reader = new BufferedReader(is);
-            nl = reader.readLine(); //skip the first line of the CSV
-
-            //Index symptoms
-            temp = nl.substring(1,nl.length()).split(",");
-            for(int c = 0; c < ncols; c++){
-                UmlsToIndex_s.put(temp[c], c);
-                IndexToUmls_s.put(c, temp[c]);
-            }
-
-            for(int r = 0; r < nrows; r++){
-                nl = reader.readLine();
-                temp = nl.split(",");
-                UmlsToIndex_d.put(temp[0], r);
-                IndexToUmls_d.put(r, temp[0]);
-                for(int c = 0; c < ncols; c++){
-                    weight_matrix[r][c] = Float.parseFloat(temp[c + 1]);
-                }
-            }
-            reader.close();
-            return weight_matrix;
-        } catch (IOException e){
-            Log.d("TESTING", "AN ERROR HAS OCCURRED IN LOAD WM");
-            Log.d("TESTING", e.toString());
-            return null;
         }
     }
 
@@ -196,15 +134,8 @@ public class ListSymptoms extends AppCompatActivity {
                 intent.putExtra("weight", p_weight);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
-                intent.putExtra("uts", UmlsToSymp);
-                intent.putExtra("dtu", DisToUmls);
-                intent.putExtra("utd", UmlsToDis);
-                intent.putExtra("itud", IndexToUmls_d);
-                intent.putExtra("itus", IndexToUmls_s);
-                intent.putExtra("utid", UmlsToIndex_d);
-                intent.putExtra("utis", UmlsToIndex_s);
-                intent.putExtra("ncols", ncols);
-                intent.putExtra("nrows", nrows);
+                intent.putExtra("uti", UmlsToIndex);
+                intent.putExtra("its",IndexToSymp);
                 startActivity(intent);
             }
         });
