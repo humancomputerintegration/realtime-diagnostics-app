@@ -42,6 +42,7 @@ public class SendMessage extends AppCompatActivity {
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
+        //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
         sendMessage("8478686626",psymp);
 
 
