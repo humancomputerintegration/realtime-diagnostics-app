@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 //TODO: DELETE THIS LEGACY CLASS
-public class SendMessage extends AppCompatActivity {
+public class testMessage extends AppCompatActivity {
 
     Intent passedIntent;
     Sex p_sex;
@@ -28,6 +28,8 @@ public class SendMessage extends AppCompatActivity {
     String disease_umls;
     String disease_name;
 
+    CommunicationHandler ch = new CommunicationHandler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,34 +39,18 @@ public class SendMessage extends AppCompatActivity {
 
         Log.d("TESTING", alToString(patientSymptoms));
         pinfo = sexToString(p_sex) + "\nID = " + p_id + "\nAGE = "  + p_age + "\nHEIGHT=" + p_height + "m\nWEIGHT=" + p_weight +"kg";
-<<<<<<< HEAD
-        sendEncryptedMessage("8478686626",pinfo);
-=======
-        sendMessage("3122410651",pinfo);
->>>>>>> 27f2259f60f58d9526466418ab1ed19b579d127b
+        ch.sendEncryptedMessage(getApplicationContext(),"8478686626",pinfo );
 
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
-/*
-        <<<<<<< HEAD
-        sendMessage("3122410651",psymp);
-=======
+
         //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
-<<<<<<< HEAD
-        sendEncryptedMessage("8478686626",psymp);
+        ch.sendEncryptedMessage(getApplicationContext(),"8478686626",psymp );
 
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
-        sendEncryptedMessage("8478686626", dtemp);
-=======
-        sendMessage("8478686626",psymp);
->>>>>>> origin/master
-*/
-        String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
-        dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
-        sendMessage("3122410651", dtemp);
->>>>>>> 27f2259f60f58d9526466418ab1ed19b579d127b
+        ch.sendEncryptedMessage(getApplicationContext(),"8478686626", dtemp);
     }
 
     public String sexToString(Sex s){
