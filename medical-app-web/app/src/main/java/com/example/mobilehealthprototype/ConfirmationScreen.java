@@ -2,10 +2,13 @@ package com.example.mobilehealthprototype;
 
 import android.content.Intent;
 import android.os.Bundle;
+<<<<<<< HEAD
+=======
+import android.telephony.SmsManager;
+>>>>>>> 27f2259f60f58d9526466418ab1ed19b579d127b
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,10 +75,15 @@ public class ConfirmationScreen extends AppCompatActivity {
                 System.out.println(p_age);
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
+<<<<<<< HEAD
                 Log.d("TESTING", "IS THIS WORKING?"); //TODO: DELETE
                 ch.sendEncryptedMessage(getApplicationContext(), getString(R.string.server_number),toSend); //Check if this is working later
+=======
+                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
                 saveFile(toSend);
                 readFile();
+
+>>>>>>> 27f2259f60f58d9526466418ab1ed19b579d127b
 
                 Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
                 startActivity(intent);
