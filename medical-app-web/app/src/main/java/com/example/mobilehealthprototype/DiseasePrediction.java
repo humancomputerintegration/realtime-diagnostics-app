@@ -224,8 +224,7 @@ public class DiseasePrediction extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                //TODO FIX THIS
-                ch.sendEncryptedMessage(getApplicationContext(), getString(R.string.server_number),toSend); //Check if this is working later
+//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
                 Log.d("TESTING", toSend);
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
@@ -254,5 +253,10 @@ public class DiseasePrediction extends AppCompatActivity {
         diagnosed_disease = passedIntent.getStringExtra("diagnosed_disease_name");
         diagnosed_disease_prob = passedIntent.getFloatExtra("likelihood_of_disease", -1f);
         diagnosed_disease_index = passedIntent.getIntExtra("diagnosed_disease_index", -1);
+    }
+
+    private void sendMessage(String phone_num, String msg){
+        SmsManager sm = SmsManager.getDefault();
+        sm.sendTextMessage(phone_num, null, msg, null, null);
     }
 }

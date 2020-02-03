@@ -1,12 +1,13 @@
 package com.example.mobilehealthprototype;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.TextView;
 
 import com.ajithvgiri.searchdialog.SearchListItem;
 
@@ -53,8 +54,7 @@ public class ConfirmationScreen extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                Log.d("TESTING", "IS THIS WORKING?"); //TODO: DELETE
-                ch.sendEncryptedMessage(getApplicationContext(), getString(R.string.server_number),toSend); //Check if this is working later
+                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
 
                 Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
                 startActivity(intent);
@@ -99,4 +99,11 @@ public class ConfirmationScreen extends AppCompatActivity {
         diagnosed_disease_prob = passedIntent.getFloatExtra("likelihood_of_disease", -1f);
         diagnosed_disease_index = passedIntent.getIntExtra("diagnosed_disease_index", -1);
     }
+
+    private void sendMessage(String phone_num, String msg){
+        SmsManager sm = SmsManager.getDefault();
+        sm.sendTextMessage(phone_num, null, msg, null, null);
+    }
+
+
 }

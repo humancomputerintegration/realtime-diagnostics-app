@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+
 import java.util.ArrayList;
 
-//TODO: DELETE THIS LEGACY CLASS
 public class SendMessage extends AppCompatActivity {
 
     Intent passedIntent;
@@ -37,17 +37,17 @@ public class SendMessage extends AppCompatActivity {
 
         Log.d("TESTING", alToString(patientSymptoms));
         pinfo = sexToString(p_sex) + "\nID = " + p_id + "\nAGE = "  + p_age + "\nHEIGHT=" + p_height + "m\nWEIGHT=" + p_weight +"kg";
-        sendEncryptedMessage("8478686626",pinfo);
+        sendMessage("8478686626",pinfo);
 
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
         //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
-        sendEncryptedMessage("8478686626",psymp);
+        sendMessage("8478686626",psymp);
 
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
-        sendEncryptedMessage("8478686626", dtemp);
+        sendMessage("8478686626", dtemp);
     }
 
     public String sexToString(Sex s){
@@ -81,8 +81,13 @@ public class SendMessage extends AppCompatActivity {
         disease_name = passedIntent.getStringExtra("diagnosed_disease_name");
     }
 
-    public void sendEncryptedMessage(String phone_num, String msg){
-        CommunicationHandler ch = new CommunicationHandler();
-        ch.sendEncryptedMessage(getApplicationContext(), phone_num, msg);
+    private void sendMessage(String phone_num, String msg){
+        SmsManager sm = SmsManager.getDefault();
+        String enc_msg = null;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            enc_msg = CommunicationHandler.encryptMessage(msg);
+        }
+        sm.sendTextMessage(phone_num, null, enc_msg, null, null);
     }
 }
