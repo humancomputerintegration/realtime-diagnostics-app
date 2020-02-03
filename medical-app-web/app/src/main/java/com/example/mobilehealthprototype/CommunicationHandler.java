@@ -112,32 +112,15 @@ public class CommunicationHandler {
             e.printStackTrace();
         }
 
-        try {
-            cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            Log.d("ERROR","error in generating the cipher algorithm");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            Log.d("ERROR","error in generating the cipher padding");
-        }
-
-        try {
-            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-
         byte[] cipherText = new byte[0];
-        try {
+        try{
+            cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
             cipherText = cipher.doFinal(raw_msg.getBytes("UTF-8"));
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        }catch (Exception e){
             e.printStackTrace();
         }
+
         Log.d("ERROR", "cipher= " + new String(cipherText));
         return new String(cipherText);
     }
