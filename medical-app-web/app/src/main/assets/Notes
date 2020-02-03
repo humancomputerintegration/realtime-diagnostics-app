@@ -1,13 +1,1 @@
-ORDER OF IMPORTANCE:
-
-//TODO: send over the highest probability disease (if not already picked)
-//Tell us which the doctor picked (3rd, fourth, fifth)
-TODO: CREATE A LOADING SCREEN/LOADING ANIMATION
-
-
-UI Stuff:
-TODO: Create Consistent Color Loading/usage in the app - IN the progress of doign
-TODO: Finalize Color Scheme for the app
-TODO: Fix DIAGNOSISPROCESS ACTIVITY LAYOUT
-
-TODO: Make a list of important stuff for others to improve/implement in future additions
+THIS IS THE WEB VERSION OF THE APP - TO BE USED AS A DEMONSTRATION OF APP FUNCTIONALITY WITH WEB SUPPORT

@@ -1,0 +1,166 @@
+,Diseases
+A00,cholera
+A01,arthritis
+A15,tuberculosis
+A30,leprosy
+A37,pertussis
+A41,sepsis
+A52,syphilis
+A95,yellow fever
+A96,lassa fever
+B05,measles
+B08,exanthema
+B10,human herpesvirus 2
+B15,hepatitis a
+B16,hepatitis b
+B17,hepatitis c
+B20,acquired immuno-deficiency syndrome
+B37,candidiasis
+B4,mycoses
+B54,malaria
+B59,pneumocystis carinii pneumonia
+B73,onchocerciasis
+C19,colorectal carcinoma
+C22,primary carcinoma of the liver cells
+C25,pancreatic carcinoma
+C43,melanoma
+C56,malignant neoplasm of ovary
+C61,prostate carcinoma
+C62,malignant neoplasm of testis
+C79,neoplasm metastasis
+C80,neoplasm
+C85,lymphoma
+D02,lung carcinoma
+D05,breast carcinoma
+D06,cervix carcinoma
+D25,fibroid tumor
+D50,iron deficiency anemia
+D57,sickle cell anemia
+D61,pancytopenia
+D68,hemophilia a
+D69,thrombocytopaenia
+D70,neutropenia
+E00,iodine deficiency syndrome
+E03,hypothyroidism
+E05,thyrotoxicosis
+E1,diabetes mellitus
+E16,hypoglycemia
+E4,protein-energy malnutrition
+E50,vitamin a deficiency
+E55,vitamin d deficiency
+E60,zinc deficiency
+E66,obesity
+E78,hypercholesterolemia
+E80,hyperbilirubinemia
+E83,hypocalcemia
+E86,dehydration
+E87,overload fluid
+F03,dementia
+F1,delirium
+F10,chronic alcoholic intoxication
+F20,schizophrenia
+F22,delusion
+F23,psychotic disorder
+F31,bipolar disorder
+F33,mental depression
+F41,anxiety disorders
+F60,personality disorder
+F84,autistic disorder
+G03,meningitis
+G12,motor neuron disease
+G20,parkinson disease
+G30,alzheimer's disease
+G40,epilepsy
+G43,migraine disorders
+G44,headache disorders
+G45,transient ischemic attack
+G46,accident cerebrovascular
+G60,neuropathy
+G93,encephalopathy
+H02,filarial elephantiases
+H40,glaucoma
+H54,blindness
+H91,presbycusis
+I10,hypertensive disease
+I2,ischemia
+I21,myocardial infarction
+I25,coronary arteriosclerosis
+I26,embolism pulmonary
+I27,hypertension pulmonary
+I31,effusion pericardial
+I33,endocarditis
+I34,mitral valve insufficiency
+I35,stenosis aortic valve
+I36,tricuspid valve insufficiency
+I42,cardiomyopathy
+I49,cardiac arrhythmia
+I51,thrombus
+I61,brain hemorrhage
+I69,hemiparesis
+I73,peripheral vascular disease
+I82,deep vein thrombosis
+I89,lymphatic diseases
+J06,upper respiratory infection
+J11,influenza
+J18,pneumonia
+J20,bronchitis
+J22,lower respiratory tract infection
+J43,emphysema pulmonary
+J44,chronic obstructive airway disease
+J45,asthma
+J69,pneumonia aspiration
+J81,edema pulmonary
+J93,pneumothorax
+J96,respiratory failure
+J98,spasm bronchial
+K21,gastroesophageal reflux disease
+K27,ulcer peptic
+K29,gastritis
+K4,hernia
+K51,colitis
+K52,gastroenteritis
+K56,ileus
+K57,diverticulitis
+K64,hemorrhoids
+K66,adhesion
+K74,cirrhosis
+K80,biliary calculus
+K81,cholecystitis
+K85,pancreatitis
+L03,cellulitis
+L89,decubitus ulcer
+M00,degenerative polyarthritis
+M10,gout
+M54,chronic low back pain
+M81,osteoporosis
+M86,osteomyelitis
+N10,pyelonephritis
+N17,kidney failure acute
+N18,kidney disease
+N39,infection urinary tract
+N40,benign prostatic hypertrophy
+N76,vaginitis
+N80,endometriosis
+N99,chronic kidney failure
+O98,gonorrhea
+P27,chronic disease of respiratory system
+P71,neonatal disorder
+Q02,microcephaly
+Q40,congenital anomaly of gastrointestinal tract
+Q79,congenital musculoskeletal anomalies
+R00,tachycardia sinus
+R06,paroxysmal dyspnea
+R13,deglutition disorder
+R19,diarrheal disorder
+R41,confusion
+R45,affect labile
+R47,aphasia
+R62,failure to thrive
+R73,hyperglycemia
+R78,bacteremia
+R85,human papillomavirus
+T14,suicide attempt
+T48,common cold
+T78,allergic reaction
+Y92,athletic injuries
+I50,failure heart
