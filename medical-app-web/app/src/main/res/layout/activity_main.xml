@@ -18,7 +18,7 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/diagnosisButton"
         app:layout_constraintEnd_toEndOf="@+id/diagnosisButton"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@+id/diagnosisButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,36 +29,36 @@
         android:background="@drawable/main_screen_buttons"
         android:text="@string/start_diagnosis_button"
         android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/queryButton"
-        app:layout_constraintEnd_toEndOf="@+id/queryButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/queryButton"
-        app:layout_constraintTop_toBottomOf="@+id/app_title" />
-
-    <Button
-        android:id="@+id/queryButton"
-        android:layout_width="380dp"
-        android:layout_height="49dp"
-        android:background="@drawable/main_screen_buttons"
-        android:text="@string/retrieve_patient_info_button"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@+id/outbreakButton"
-        app:layout_constraintEnd_toEndOf="@+id/outbreakButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/outbreakButton"
-        app:layout_constraintTop_toBottomOf="@+id/diagnosisButton" />
-
-    <Button
-        android:id="@+id/outbreakButton"
-        android:layout_width="380dp"
-        android:layout_height="49dp"
-        android:background="@drawable/main_screen_buttons"
-        android:text="@string/outbreak_check_button"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/queryButton" />
+        app:layout_constraintTop_toBottomOf="@+id/app_title" />
 
+    <!-- <Button
+         android:id="@+id/queryButton"
+         android:layout_width="380dp"
+         android:layout_height="49dp"
+         android:background="@drawable/main_screen_buttons"
+         android:text="@string/retrieve_patient_info_button"
+         android:textColor="@android:color/white"
+         app:layout_constraintBottom_toTopOf="@+id/outbreakButton"
+         app:layout_constraintEnd_toEndOf="@+id/outbreakButton"
+         app:layout_constraintHorizontal_bias="0.5"
+         app:layout_constraintStart_toStartOf="@+id/outbreakButton"
+         app:layout_constraintTop_toBottomOf="@+id/diagnosisButt/>
+
+    <!- <Button
+         android:id="@+id/outbreakButton"
+         android:layout_width="380dp"
+         android:layout_height="49dp"
+         android:background="@drawable/main_screen_buttons"
+         android:text="@string/outbreak_check_button"
+         android:textColor="@android:color/white"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.5"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toBottomOf="@+id/queryButton" />
+ -->
 </androidx.constraintlayout.widget.ConstraintLayout>
