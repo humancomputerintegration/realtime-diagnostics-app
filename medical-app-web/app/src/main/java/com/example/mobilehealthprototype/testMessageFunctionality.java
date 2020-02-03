@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SendMessage extends AppCompatActivity {
+public class testMessageFunctionality extends AppCompatActivity {
 
     Intent passedIntent;
     Sex p_sex;

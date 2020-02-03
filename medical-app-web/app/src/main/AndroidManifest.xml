@@ -20,7 +20,7 @@
         <activity android:name=".DiagnosisResult" />
         <activity android:name=".AdaptiveDiagnosis" />
         <activity
-            android:name=".SendMessage"
+            android:name=".testMessageFunctionality"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ListSymptoms"
