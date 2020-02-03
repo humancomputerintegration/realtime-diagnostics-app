@@ -1,7 +1,14 @@
-CRITICAL: Figure out encryption protocol between app & server
+IN PROGRESS: ENCRYPTION
 CRITICAL: Create a docker image that can host the server regardless of platform
 
+ENCRYPTION NOTES: Need to figure out an encryption scheme that indicates uniqueness, to remove potential for easy spoofing 
+
 MAKE SURE YOU FIX THE DOUBLE EXISTENCE BUG IN THE MONGO_WRAPPER - Almost done
-IN ADDITION MAKE SURE YOU FIX THE DATABASE INSERT BUG - in Progress 
+IN ADDITION MAKE SURE YOU FIX THE DATABASE INSERT BUG - In Progress (Pretty sure I'm done)
 
 REFRACTOR CODE - MAKE IT MORE MODULAR
+
+Write some tests & documentation to make the code test and run with the arduino-defined SMS interfacer & Huawei one 
+
+Write a requirements install for both the ubuntu environment and python install
+(Potentially setup a virtualenv for python?)

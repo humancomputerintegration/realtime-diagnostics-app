@@ -42,10 +42,14 @@ public class SendMessage extends AppCompatActivity {
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
+/*
+        <<<<<<< HEAD
         sendMessage("3122410651",psymp);
-
-
-
+=======
+        //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
+        sendMessage("8478686626",psymp);
+>>>>>>> origin/master
+*/
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
         sendMessage("3122410651", dtemp);
@@ -84,6 +88,11 @@ public class SendMessage extends AppCompatActivity {
 
     private void sendMessage(String phone_num, String msg){
         SmsManager sm = SmsManager.getDefault();
-        sm.sendTextMessage(phone_num, null, msg, null, null);
+        String enc_msg = null;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            enc_msg = CommunicationHandler.encryptMessage(msg);
+        }
+        sm.sendTextMessage(phone_num, null, enc_msg, null, null);
     }
 }
