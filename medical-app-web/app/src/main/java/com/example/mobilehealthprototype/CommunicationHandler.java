@@ -3,9 +3,12 @@ package com.example.mobilehealthprototype;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.os.Build;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +30,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 //Handles communication protocol between the app & server -- needs to include encryption protocol
-public class CommunicationHandler {
+public class CommunicationHandler extends AppCompatActivity {
 
     //generates a compressed string of the information into the server
     public String generateHashID(int p_id){
@@ -67,10 +70,9 @@ public class CommunicationHandler {
     }
 
     //Reads a key from a file
-    private static String readKeyFile(String fname) throws IOException {
+    private String readKeyFile(Context cn, String fname) throws IOException {
         String strKeyPEM = "";
-        Context context = null;
-        AssetManager am = context.getAssets();
+        AssetManager am = cn.getAssets();
         InputStreamReader is = new InputStreamReader(am.open(fname));
         BufferedReader br = new BufferedReader(is);
         String line;
@@ -83,10 +85,17 @@ public class CommunicationHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static RSAPublicKey getPublicKeyFromString(String key) throws IOException, GeneralSecurityException {
-        String publicKeyPEM = key;
+        String publicKeyPEM = key; //TODO: HERE THE KEY IS NULL FOR SOME REASON
+        //TODO FIXED THE NULL KEY PROBLEM
+
         publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----\n", "");
         publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
-        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+        Log.d("TESTING", publicKeyPEM);
+
+//        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+        byte[] encoded = publicKeyPEM.getBytes("UTF-8"); //TODO:: PROBLEM LINE HERE
+        //TODO - this SEEMS to fix the problem
+
         KeyFactory kf = KeyFactory.getInstance("RSA");
         // the X509EncodedKeySpec line below is a little suspicious - may cause bugs in the future do more research into it
         RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
@@ -94,14 +103,17 @@ public class CommunicationHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static String encryptMessage(String raw_msg){
+    public String encryptMessage(Context cn, String rawMsg){
         Cipher cipher = null;
         String pubKeyString = null;
+
         try {
-            pubKeyString = readKeyFile(String.valueOf(R.string.pubkeyfilename));
+            pubKeyString = readKeyFile(cn, cn.getString(R.string.pubkeyfilename));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Log.d("TESTING", pubKeyString);
 
         RSAPublicKey pubKey = null;
         try {
@@ -112,34 +124,39 @@ public class CommunicationHandler {
             e.printStackTrace();
         }
 
-        try {
-            cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            Log.d("ERROR","error in generating the cipher algorithm");
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            Log.d("ERROR","error in generating the cipher padding");
-        }
-
-        try {
-            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-
+        //TODO problem lines
         byte[] cipherText = new byte[0];
         try {
-            cipherText = cipher.doFinal(raw_msg.getBytes("UTF-8"));
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
+            cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+            cipherText = cipher.doFinal(rawMsg.getBytes("UTF-8"));
+        }catch(Exception e){
+            return null;
         }
-        Log.d("ERROR", "cipher= " + new String(cipherText));
+
+        Log.d("TESTING", "cipher= " + new String(cipherText));
         return new String(cipherText);
+    }
+
+    public void sendEncryptedMessage(Context cn, String phone_num, String msg){
+        SmsManager sm = SmsManager.getDefault();
+        String enc_msg = null;
+        CommunicationHandler ch = new CommunicationHandler();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            enc_msg = ch.encryptMessage(cn, msg);
+        }
+        Log.d("TESTING", msg);
+
+        if(enc_msg == null){
+            Log.d("TESTING", "did not successfully encrypt message");
+        }
+        if(enc_msg == null){
+            Log.d("TESTING", "enc_msg is null!");
+        }
+        Log.d("TESTING", enc_msg);
+
+        sm.sendTextMessage(phone_num, null, enc_msg, null, null);
     }
 
 }
