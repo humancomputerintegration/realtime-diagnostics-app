@@ -85,9 +85,10 @@ public class testMessageFunctionality extends AppCompatActivity {
         SmsManager sm = SmsManager.getDefault();
         String enc_msg = null;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            enc_msg = CommunicationHandler.encryptMessage(msg);
-        }
+        //TODO
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            enc_msg = CommunicationHandler.encryptMessage(getApplicationContext(), msg);
+//        }
         sm.sendTextMessage(phone_num, null, enc_msg, null, null);
     }
 }

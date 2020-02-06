@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -54,8 +55,14 @@ public class ConfirmationScreen extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
-
+                //TODO DELETE THIS
+//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+//                String encToSend = null;
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//                    encToSend = ch.encryptMessage(toSend);
+//                }
+//                sendMessage("8478686626", encToSend); //TODO
+//                Log.d("TESTING", encToSend);
                 Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
                 startActivity(intent);
             }

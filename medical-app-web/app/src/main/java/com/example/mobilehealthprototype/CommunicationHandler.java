@@ -67,17 +67,28 @@ public class CommunicationHandler {
     }
 
     //Reads a key from a file
-    private static String readKeyFile(String fname) throws IOException {
+    private String readKeyFileCH(Context c, String fname) throws IOException {
         String strKeyPEM = "";
-        Context context = null;
-        AssetManager am = context.getAssets();
-        InputStreamReader is = new InputStreamReader(am.open(fname));
-        BufferedReader br = new BufferedReader(is);
+        Log.d("TESTING", "READING KEY FILE");
+        BufferedReader br = null;
+        try{
+            InputStreamReader is = new InputStreamReader(c.getAssets().open(fname));
+            br = new BufferedReader(is);
+        }catch (IOException e){
+            Log.d("TESTING", "Error with loading in file");
+            e.printStackTrace();
+        }
+
+        if(br == null){ Log.d("TESTING","failed to read file successfully"); }
+
         String line;
         while ((line = br.readLine()) != null) {
             strKeyPEM += line + "\n";
+            Log.d("TESTING", line);
         }
         br.close();
+        Log.d("TESTING", strKeyPEM);
+        Log.d("TESTING", "Was nothing printed??");
         return strKeyPEM;
     }
 
@@ -86,6 +97,7 @@ public class CommunicationHandler {
         String publicKeyPEM = key;
         publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----\n", "");
         publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
+        publicKeyPEM = publicKeyPEM.replace("\n","");
         byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         // the X509EncodedKeySpec line below is a little suspicious - may cause bugs in the future do more research into it
@@ -94,15 +106,7 @@ public class CommunicationHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public static String encryptMessage(String raw_msg){
-        Cipher cipher = null;
-        String pubKeyString = null;
-        try {
-            pubKeyString = readKeyFile(String.valueOf(R.string.pubkeyfilename));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public static String encryptMessage(String pubKeyString, String raw_msg){
         RSAPublicKey pubKey = null;
         try {
             pubKey = getPublicKeyFromString(pubKeyString);
@@ -113,6 +117,7 @@ public class CommunicationHandler {
         }
 
         byte[] cipherText = new byte[0];
+        Cipher cipher = null;
         try{
             cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);

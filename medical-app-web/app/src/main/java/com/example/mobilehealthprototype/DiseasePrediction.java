@@ -56,30 +56,6 @@ public class DiseasePrediction extends AppCompatActivity {
         loadDrug("DrugRecommendation.csv");
 
         setUpInterface();
-
-
-
- /*       //TODO: These should not be naked like this, but I'm running out of time
-        String sk = diagnosed_disease.replace(' ', '+');
-        String host = "https://www.bing.com/search?q=";
-        String addr = host+sk;
-
-        WebSearcher ws = new WebSearcher(sk, host, endpoint);
-        ws.SearchInternet(diagnosed_disease);
-
-        WebView wv= findViewById(R.id.disease_webviewer);
-        wv.setWebViewClient(new WebViewClient(){
-            public void onPageFinished(WebView view, String url) {
-                Log.d("TESTING", "WebPage is done loading");
-            }
-        });
-        wv.getSettings().setDomStorageEnabled(true);
-        wv.getSettings().setJavaScriptEnabled(true);
-
-        wv.loadUrl(addr);
-
-  */
-
     }
 
     public void loadPrediction(String fname){ //ArrayList<String>
@@ -99,7 +75,7 @@ public class DiseasePrediction extends AppCompatActivity {
             reader.close(); //make sure you close the reader after opening a file
         }catch (IOException e){
             e.printStackTrace();
-            Log.d("ERROR", "AN ERROR HAS OCCURRED IN LOADPREDICTION");
+            Log.d("ERROR", "AN ERROR HAS OCCURRED IN LOAD PREDICTION");
         }
     }
     public void loadDrug(String fname){ //ArrayList<String>
@@ -224,8 +200,23 @@ public class DiseasePrediction extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
-                Log.d("TESTING", toSend);
+                String encToSend = null;
+
+                String pubkey = null;
+                try {
+                    pubkey = readKeyFile("public.pem");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    encToSend = ch.encryptMessage(pubkey, toSend);
+                }
+                Log.d("TESTING", encToSend);
+                Log.d("TESTING", "LENGTH OF ENCRYTPED MESSAGEL" + Integer.toString(encToSend.length()));
+                sendMessage("8478686626", encToSend); //TODO
+//                  sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
                 Intent restart = new Intent(DiseasePrediction.this, MainActivity.class);
@@ -233,6 +224,25 @@ public class DiseasePrediction extends AppCompatActivity {
             }
         });
         return;
+    }
+
+    private String readKeyFile(String fname) throws IOException {
+        String strKeyPEM = "";
+        BufferedReader br = null;
+        try{
+            InputStreamReader is = new InputStreamReader(getAssets().open(fname));
+            br = new BufferedReader(is);
+        }catch (IOException e){
+            Log.d("TESTING", "Error with loading in file");
+            e.printStackTrace();
+        }
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            strKeyPEM += line + "\n";
+        }
+        br.close();
+        return strKeyPEM;
     }
 
     public void handlePassedIntent(){
