@@ -116,18 +116,23 @@ public class CommunicationHandler {
             e.printStackTrace();
         }
 
+        AsciiHandler ah = new AsciiHandler();
+
         byte[] cipherText = new byte[0];
+        String cipherTextComm = null;
         Cipher cipher = null;
         try{
             cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);
             cipherText = cipher.doFinal(raw_msg.getBytes("UTF-8"));
+            cipherTextComm = ah.encode(cipherText);
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        Log.d("ERROR", "cipher= " + new String(cipherText));
-        return new String(cipherText);
+        Log.d("TESTING", "cipher= " + new String(cipherText));
+//        return new String(cipherText);
+        return new String(cipherTextComm);
     }
 
 }

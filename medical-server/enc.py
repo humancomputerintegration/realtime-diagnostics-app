@@ -1,5 +1,6 @@
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+import base64
 
 def generate_keys(public_file='public.pem',private_file='private.pem', bsize=2048):
     gen_key = RSA.generate(bsize)
@@ -21,7 +22,7 @@ def decrypt(enc_msg, pkeyf= 'private.pem'):
 #The reason for smaller sized keys is for faster encryption/decryption
 #in addition to being able to fit under the text limit of SMS 
 # however, this comes at the expense of security (not to a serious extent)
-def testing(test_strings, write_new_keys=False, bsize=1500):
+def testing(test_strings, write_new_keys=False, bsize=1024):
     print("Testing encryption module with some test_strings")
     print("------------------------------------------------")
 
@@ -45,13 +46,13 @@ def testing(test_strings, write_new_keys=False, bsize=1500):
     # print(public_pem)
     cipher = PKCS1_OAEP.new(key=pubk)
     for ind,es in enumerate(enc_str):
-        tempc = cipher.encrypt(es)
+        tempc = base64.a85encode(cipher.encrypt(es))
         print("encrypted msg length {} = {}".format(ind, len(tempc)))
         ctxts.append(tempc)
 
     decrypt = PKCS1_OAEP.new(key=prik)
     for ct in ctxts:
-        tmpd = decrypt.decrypt(ct)
+        tmpd = decrypt.decrypt(base64.a85decode(ct))
         dmsg.append(tmpd)
 
     for index,result in enumerate(dmsg): 
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     test_strings.append("this is a test message")
     test_strings.append("this is a test message and I am testing if this works")
     test_strings.append('''this is a test message and I am testing if this works \\ 
-                with respec''')
+                with respect''')
 
-    testing(test_strings)
+    testing(test_strings, write_new_keys = True)
 
