@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import static java.lang.Boolean.TRUE;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
@@ -67,21 +69,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-  /*      //TODO Actually configure a Query activity once the server is done being set up
         Button query_pinfo = findViewById(R.id.queryButton);
+        query_enabled = TRUE;
         if(!query_enabled){
             query_pinfo.setEnabled(query_enabled);
             CustomButton.changeButtonColor(this, query_pinfo, R.color.disabled_gray, 3, R.color.disabled_gray_accent);
         }else{
             query_pinfo.setOnClickListener(new View.OnClickListener(){
+
+                @Override
                 public void onClick(View view){
+                    System.out.println("clicked");
                     Intent i = new Intent(MainActivity.this, PatientQuery.class);
                     startActivity(i);
                 }
             });
         }
 
-        //TODO Actually configure this "OUTBREAK" button & activities
+        Button oldPatient = findViewById(R.id.patientButton);
+
+        oldPatient.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, SelectPatient.class);
+                startActivity(i);
+            }
+        });
+
+
+  /*      //TODO Actually configure this "OUTBREAK" button & activities
         Button outbreak = findViewById(R.id.outbreakButton);
         if(!outbreak_enabled){
             //TODO: delete line below once we're ready to create an outbreak tracking activity

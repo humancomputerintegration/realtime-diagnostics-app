@@ -39,6 +39,7 @@
         android:layout_marginLeft="28dp"
         android:layout_marginTop="28dp"
         android:text="@string/input_id_header"
+        android:scrollbars="vertical"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"

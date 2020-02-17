@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/app_title"
-        android:layout_width="352dp"
-        android:layout_height="129dp"
+        android:layout_width="380dp"
+        android:layout_height="120dp"
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:lineSpacingExtra="24sp"
@@ -18,7 +18,7 @@
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/diagnosisButton"
         app:layout_constraintEnd_toEndOf="@+id/diagnosisButton"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/diagnosisButton"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,38 +27,42 @@
         android:layout_width="380dp"
         android:layout_height="49dp"
         android:background="@drawable/main_screen_buttons"
-        android:text="@string/start_diagnosis_button"
+        android:text="New Patient"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_title" />
+
+    <Button
+        android:id="@+id/patientButton"
+        android:layout_width="380dp"
+        android:layout_height="49dp"
+        android:background="@drawable/main_screen_buttons"
+        android:text="Old Patient"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diagnosisButton"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <Button
+        android:id="@+id/queryButton"
+        android:layout_width="380dp"
+        android:layout_height="49dp"
+        android:background="@drawable/main_screen_buttons"
+        android:text="Diagnosis Records"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_title" />
+        app:layout_constraintTop_toBottomOf="@+id/patientButton"
+        app:layout_constraintVertical_bias="0.4"/>
 
-    <!-- <Button
-         android:id="@+id/queryButton"
-         android:layout_width="380dp"
-         android:layout_height="49dp"
-         android:background="@drawable/main_screen_buttons"
-         android:text="@string/retrieve_patient_info_button"
-         android:textColor="@android:color/white"
-         app:layout_constraintBottom_toTopOf="@+id/outbreakButton"
-         app:layout_constraintEnd_toEndOf="@+id/outbreakButton"
-         app:layout_constraintHorizontal_bias="0.5"
-         app:layout_constraintStart_toStartOf="@+id/outbreakButton"
-         app:layout_constraintTop_toBottomOf="@+id/diagnosisButt/>
 
-    <!- <Button
-         android:id="@+id/outbreakButton"
-         android:layout_width="380dp"
-         android:layout_height="49dp"
-         android:background="@drawable/main_screen_buttons"
-         android:text="@string/outbreak_check_button"
-         android:textColor="@android:color/white"
-         app:layout_constraintBottom_toBottomOf="parent"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintHorizontal_bias="0.5"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toBottomOf="@+id/queryButton" />
- -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

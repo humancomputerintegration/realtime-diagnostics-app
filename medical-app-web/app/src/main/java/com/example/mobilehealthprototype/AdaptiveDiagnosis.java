@@ -290,6 +290,47 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button skip_but = findViewById(R.id.skip_button);
+        CustomButton.changeButtonColor(this, skip_but, R.color.colorPrimary, STROKE_WIDTH, R.color.colorAccent);
+        skip_but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                reduceMatrix_skip();
+                next_symp = getNext_symp(wm, symptom_list, disease_list);
+
+                System.out.println(disease_list.size());
+                if(disease_list.size() <= 1){
+                    intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
+                    intent.putExtra("mode", 1);
+                }
+                else{
+                    intent = new Intent(AdaptiveDiagnosis.this, AdaptiveDiagnosis.class);
+                    intent.putExtra("mode", 2);
+                }
+                intent.putExtra("hid", p_id);
+                intent.putExtra("sex", p_sex);
+                intent.putExtra("age", p_age);
+                intent.putExtra("height", p_height);
+                intent.putExtra("weight", p_weight);
+                intent.putExtra("patient_symptoms", patientSymptoms);
+                intent.putExtra("stu", SympToUmls);
+                intent.putExtra("uts", UmlsToSymp);
+                intent.putExtra("dtu", DisToUmls);
+                intent.putExtra("utd", UmlsToDis);
+                intent.putExtra("itud", IndexToUmls_d);
+                intent.putExtra("itus", IndexToUmls_s);
+                intent.putExtra("utid", UmlsToIndex_d);
+                intent.putExtra("utis", UmlsToIndex_s);
+                intent.putExtra( "symptom_id", next_symp);
+                intent.putExtra("dl", disease_list);
+                intent.putExtra("sl", symptom_list);
+                intent.putExtra("ncols", ncols);
+                intent.putExtra("nrows", nrows);
+                startActivity(intent);
+            }
+        });
     }
 
     //the patientSymptom needs to be a vector for matrix multi - so it needs to be a 2d matrix
@@ -413,6 +454,39 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
             }
             i++;
         }
+
+        for(int idx = 0; idx < nsymp; idx++){
+            if(symptom_list.get(idx) == last_symp){
+                System.out.println("symptom list");
+                System.out.println(symptom_list.size());
+                symptom_list.remove(idx);
+                nsymp--;
+            }
+        }
+
+        int j = 0;
+        while(j<nsymp){
+            idx_symp = symptom_list.get(j);
+            min_weight = 1;
+            max_weight = 0;
+            for(int idx = 0; idx < ndis; idx++){
+                idx_dis = disease_list.get(idx);
+                min_weight = min(min_weight, wm[idx_dis][idx_symp]);
+                max_weight = max(max_weight, wm[idx_dis][idx_symp]);
+            }
+            if(min_weight>0 || max_weight == 0){
+                symptom_list.remove(j);
+                j--;
+                nsymp--;
+            }
+            j++;
+        }
+    }
+
+    public void reduceMatrix_skip() {
+        int ndis = disease_list.size(), idx_dis;
+        int nsymp = symptom_list.size(), idx_symp;
+        float min_weight, max_weight;
 
         for(int idx = 0; idx < nsymp; idx++){
             if(symptom_list.get(idx) == last_symp){

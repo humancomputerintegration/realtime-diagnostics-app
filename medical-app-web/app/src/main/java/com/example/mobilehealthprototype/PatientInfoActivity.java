@@ -17,6 +17,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class PatientInfoActivity extends AppCompatActivity {
     Sex p_sex = null;
     int p_id, p_age;
@@ -100,9 +111,17 @@ public class PatientInfoActivity extends AppCompatActivity {
                 p_height = checkValue(R.id.height_input, R.id.height_header, false);
                 p_weight = checkValue(R.id.weight_input, R.id.weight_header, false);
                 if(p_sex == null){  warnError(0, R.id.sex_option_header); }
-                complete = (p_age > 0) & (p_sex != null);
+                complete = (p_age >= 0) & (p_sex != null);
                 //(p_id > 0) & (p_age > 0) & (p_sex != null) &(p_height > 0) & (p_weight > 0); //original version
 
+                String spid = Integer.toString(p_id);
+                String spage = Integer.toString(p_age);
+                String spsex = (p_sex == Sex.MALE) ? "M" : "F";
+                String spheight = Float.toString(p_height);
+                String spweight = Float.toString(p_weight);
+
+                String toSave = spid + "," + spage + "," + spsex + "," + spheight + "," + spweight + "\n";
+                saveFile(toSave);
                 if(complete) {
                     Intent intent = new Intent(PatientInfoActivity.this, ListSymptoms.class);
                     intent.putExtra("hid", p_id);
@@ -119,6 +138,37 @@ public class PatientInfoActivity extends AppCompatActivity {
                 //}
             }
         });
+    }
+
+    private void saveFile(String toSave) {
+        try {
+            FileOutputStream fileOutputStream = openFileOutput("PatientList.csv", MODE_APPEND);
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(fileOutputStream));
+            writer.write(toSave);
+            writer.flush();
+            writer.close();
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileInputStream fileInputStream = openFileInput("PatientList.csv");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                System.out.println(line);
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+            fileInputStream.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 //    public AlertDialog.Builder buildWarning(int title_id, int message_id, int pb){

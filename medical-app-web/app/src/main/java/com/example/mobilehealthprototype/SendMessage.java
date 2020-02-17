@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+
 import java.util.ArrayList;
 
-//TODO: DELETE THIS LEGACY CLASS
-public class testMessage extends AppCompatActivity {
+public class SendMessage extends AppCompatActivity {
 
     Intent passedIntent;
     Sex p_sex;
@@ -28,8 +28,6 @@ public class testMessage extends AppCompatActivity {
     String disease_umls;
     String disease_name;
 
-    CommunicationHandler ch = new CommunicationHandler();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,18 +37,18 @@ public class testMessage extends AppCompatActivity {
 
         Log.d("TESTING", alToString(patientSymptoms));
         pinfo = sexToString(p_sex) + "\nID = " + p_id + "\nAGE = "  + p_age + "\nHEIGHT=" + p_height + "m\nWEIGHT=" + p_weight +"kg";
-        ch.sendEncryptedMessage(getApplicationContext(),"8478686626",pinfo );
+        sendMessage("3122410651",pinfo);
 
         for (int i =0; i < patientSymptoms.size(); i++){
             psymp= (patientSymptoms.get(i)) + ", " + psymp;
         }
+        sendMessage("3122410651",psymp);
 
-        //TODO: GET RID OF MY PHONE NUMBER IN THE PROTOTYPE DEPLOYMENT VERSION
-        ch.sendEncryptedMessage(getApplicationContext(),"8478686626",psymp );
+
 
         String dtemp = "Disease index = " + disease_index + "(" + disease_name + ")";
         dtemp = dtemp + "-- probability = " + Float.toString(disease_percentage);
-        ch.sendEncryptedMessage(getApplicationContext(),"8478686626", dtemp);
+        sendMessage("3122410651", dtemp);
     }
 
     public String sexToString(Sex s){
@@ -84,8 +82,8 @@ public class testMessage extends AppCompatActivity {
         disease_name = passedIntent.getStringExtra("diagnosed_disease_name");
     }
 
-    public void sendEncryptedMessage(String phone_num, String msg){
-        CommunicationHandler ch = new CommunicationHandler();
-        ch.sendEncryptedMessage(getApplicationContext(), phone_num, msg);
+    private void sendMessage(String phone_num, String msg){
+        SmsManager sm = SmsManager.getDefault();
+        sm.sendTextMessage(phone_num, null, msg, null, null);
     }
 }

@@ -25,9 +25,9 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Do you have following symptom?"
+        android:text="Does the patient have following symptom or sign?"
         android:textColor="@android:color/black"
-        android:textSize="34sp"
+        android:textSize="28sp"
         app:layout_constraintBottom_toTopOf="@+id/diagnose_button_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -50,10 +50,24 @@
         app:layout_constraintTop_toBottomOf="@+id/diagnose_button_layout" />
 
     <Button
-        android:id="@+id/yes_button"
+        android:id="@+id/skip_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="88dp"
+        android:background="@drawable/next_button"
+        android:text="skip"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diagnose_button_layout" />
+
+    <Button
+        android:id="@+id/yes_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="168dp"
         android:background="@drawable/next_button"
         android:text="yes"
         android:textColor="@android:color/white"

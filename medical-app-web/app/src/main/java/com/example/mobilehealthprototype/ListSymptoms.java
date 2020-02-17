@@ -210,7 +210,7 @@ public class ListSymptoms extends AppCompatActivity {
         });
     }
 
-    public class SymptomAdapter extends BaseAdapter implements ListAdapter {
+    public static class SymptomAdapter extends BaseAdapter implements ListAdapter {
         private ArrayList<String> list = new ArrayList<String>();
         private Context context;
 
