@@ -20,6 +20,7 @@
         app:layout_constraintBottom_toTopOf="@+id/currentsymptomlist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
