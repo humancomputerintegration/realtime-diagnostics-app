@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, SelectPatient.class);
                 startActivity(i);
+                System.out.println("To patient list");
             }
         });
 
