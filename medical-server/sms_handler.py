@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json 
 import mongo_wrapper as mw
+import enc
 import serial
 import threading
 import os
