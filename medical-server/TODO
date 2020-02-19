@@ -12,3 +12,9 @@ Write some tests & documentation to make the code test and run with the arduino-
 
 Write a requirements install for both the ubuntu environment and python install
 (Potentially setup a virtualenv for python?)
+
+
+Make an installer 
+
+Make sure to rememmber to automatically start "mongod" at the start of every boot, to make recordind processes instant
+
