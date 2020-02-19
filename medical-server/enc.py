@@ -54,14 +54,17 @@ def testing(test_strings, write_new_keys=False, bsize=1024):
     cipher = PKCS1_OAEP.new(key=pubk)
     for ind,es in enumerate(enc_str):
         # tempc = base64.a85encode(cipher.encrypt(es))
-        tempc = cipher.encrypt(es)
+        tempc = base64.b64encode(cipher.encrypt(es))
+        # tempc = cipher.encrypt(es)
+        print(tempc)
         print("encrypted msg length {} = {}".format(ind, len(tempc)))
         ctxts.append(tempc)
 
     decrypt = PKCS1_OAEP.new(key=prik)
     for ct in ctxts:
         # tmpd = decrypt.decrypt(base64.a85decode(ct))
-        tmpd = decrypt.decrypt(ct)
+        tmpd = decrypt.decrypt(base64.b64decode(ct))
+        # tmpd = decrypt.decrypt(ct)
         dmsg.append(tmpd)
 
     for index,result in enumerate(dmsg): 
@@ -73,9 +76,9 @@ def testing(test_strings, write_new_keys=False, bsize=1024):
 if __name__ == "__main__":
     test_strings = []
     test_strings.append("this is a test message")
-    test_strings.append("this is a test message and I am testing if this works")
+    test_strings.append("test message")
     test_strings.append('''this is a test message and I am testing if this works \\ 
                 with respect''')
 
-    testing(test_strings, write_new_keys = True)
+    testing(test_strings, write_new_keys = False)
 
