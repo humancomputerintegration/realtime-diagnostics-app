@@ -13,11 +13,18 @@ def generate_keys(public_file='public.pem',private_file='private.pem', bsize=204
     file_out.write(pubkey)
     return gen_key
 
+
 def decrypt(enc_msg, pkeyf= 'private.pem'):
     prikey= RSA.import_key(open(pkeyf, 'rb').read())
     decrypter= PKCS1_OAEP.new(key=prikey) 
-    dec_msg = decrypt.decrypt(enc_msg)
+    dec_msg = decrypter.decrypt(enc_msg)
     return dec_msg 
+
+def encrypt(raw_msg, pubkeyf= 'public.pem'):
+    pubkey= RSA.import_key(open(pubkeyf, 'rb').read())
+    encrypter = PKCS1_OAEP.new(key=pubkeyf)
+    enc_msg = encrypter.encrypt(raw_msg)
+    return enc_msg
 
 #The reason for smaller sized keys is for faster encryption/decryption
 #in addition to being able to fit under the text limit of SMS 
