@@ -46,13 +46,15 @@ def testing(test_strings, write_new_keys=False, bsize=1024):
     # print(public_pem)
     cipher = PKCS1_OAEP.new(key=pubk)
     for ind,es in enumerate(enc_str):
-        tempc = base64.a85encode(cipher.encrypt(es))
+        # tempc = base64.a85encode(cipher.encrypt(es))
+        tempc = cipher.encrypt(es)
         print("encrypted msg length {} = {}".format(ind, len(tempc)))
         ctxts.append(tempc)
 
     decrypt = PKCS1_OAEP.new(key=prik)
     for ct in ctxts:
-        tmpd = decrypt.decrypt(base64.a85decode(ct))
+        # tmpd = decrypt.decrypt(base64.a85decode(ct))
+        tmpd = decrypt.decrypt(ct)
         dmsg.append(tmpd)
 
     for index,result in enumerate(dmsg): 

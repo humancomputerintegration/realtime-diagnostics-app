@@ -200,22 +200,24 @@ public class DiseasePrediction extends AppCompatActivity {
                 }
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                String encToSend = null;
-
-                String pubkey = null;
-                try {
-                    pubkey = readKeyFile("public.pem");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    encToSend = ch.encryptMessage(pubkey, toSend);
-                }
-                Log.d("TESTING", encToSend);
-                Log.d("TESTING", "LENGTH OF ENCRYTPED MESSAGEL" + Integer.toString(encToSend.length()));
-                sendMessage("8478686626", encToSend); //TODO
-//                  sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+//                String encToSend = null;
+//
+//                String pubkey = null;
+//                try {
+//                    pubkey = readKeyFile("public.pem");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//                    encToSend = ch.encryptMessage(pubkey, toSend);
+//                }
+//                Log.d("TESTING", encToSend);
+//                Log.d("TESTING", "LENGTH OF ENCRYTPED MESSAGE " + Integer.toString(encToSend.length()));
+//                String subset = encToSend.substring(0,70);
+//                sendMessage("8478686626", subset); //TODO
+//                sendMessage("8478686626", encToSend); //TODO
+                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
 
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
