@@ -135,4 +135,9 @@ public class CommunicationHandler {
         return new String(cipherTextComm);
     }
 
+    public String[] splitMessage(String msg, Integer parts){
+        String[] split_msg = null;
+        return split_msg;
+    }
+
 }
