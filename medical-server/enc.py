@@ -1,6 +1,28 @@
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Cipher import AES
 import base64
+import random 
+
+def encrypt_siv(key, raw_msg):
+    header = b'header'
+    data = raw_msg.encode()
+    cipher = AES.new(key, AES.MODE_SIV)
+    # cipher.update(header)
+    ctxt, tag = cipher.encrypt_and_digest(data)
+    # json_k = [ 'header', 'ciphertext', 'tag' ]
+    # json_v = [ base64.b64encode(x).decode('utf-8') for x in json_k ]
+    # result = json.dumps(dict(zip(json_k, json_v)))
+    return base64.b64encode(ctxt), base64.b64encode(tag)
+
+def decrypt_siv(key, enc_msg, tag):
+    cipher = AES.new(key, AES.MODE_SIV)
+    # cipher.update(header)
+    mod_enc_msg = base64.b64decode(enc_msg)
+    mod_tag = base64.b64decode(tag)
+    ptxt = cipher.decrypt_and_verify(mod_enc_msg, mod_tag)
+    return ptxt
+
 
 def generate_keys(public_file='public.pem',private_file='private.pem', bsize=2048):
     gen_key = RSA.generate(bsize)
@@ -73,12 +95,44 @@ def testing(test_strings, write_new_keys=False, bsize=1024):
     print("Passed")
     return True
 
+def testing_SIV(test_strings, key):
+    print("Testing encryption SIV module with some test_strings")
+    print("----------------------------------------------------")
+
+    ctxts,dmsg = [],[]
+
+    # cipher = AES.new(key, AES.MODE_SIV)
+    for ind,es, in enumerate(test_strings):
+        tempc = encrypt_siv(key, es)
+        print(tempc)
+        print("encrypted msg length {} = {}".format(ind, len(tempc[0])))
+        ctxts.append(tempc)
+
+
+    for (ct,tag) in ctxts:
+        tmpd = decrypt_siv(key, ct, tag)
+        print(tmpd)
+        dmsg.append(tmpd)
+
+    for index,result in enumerate(dmsg): 
+        assert result.decode() ==  test_strings[index]
+    print("------------------------------------------------")
+    print("Passed")
+    return True
+
 if __name__ == "__main__":
     test_strings = []
     test_strings.append("this is a test message")
     test_strings.append("test message")
     test_strings.append('''this is a test message and I am testing if this works \\ 
-                with respect''')
+        with respect''')
 
-    testing(test_strings, write_new_keys = False)
+    # testing(test_strings, write_new_keys = False)
 
+    key = b'0' * 32
+    # test_enc, test_header, test_tag = encrypt_siv(test_strings[1], key)
+    # test2 = decrypt_siv(test_enc,key,test_header,test_tag)
+
+    testing_SIV(test_strings, key)
+
+    
