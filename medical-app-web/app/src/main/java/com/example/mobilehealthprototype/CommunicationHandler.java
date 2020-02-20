@@ -136,8 +136,18 @@ public class CommunicationHandler {
         return new String(cipherTextComm);
     }
 
-    public String[] splitMessage(String msg, Integer parts){
-        String[] split_msg = null;
+    public String[] splitMessage(String msg, int parts, String tag){
+        String[] split_msg = new String[parts];
+        int slen = msg.length();
+        int substring_len = slen/parts;
+
+        for(int i = 0; i < parts; i++){
+            if(i == (parts - 1)){
+                split_msg[i] = tag + i + msg.substring(i * substring_len, slen);
+            }else{
+                split_msg[i] = tag + i + msg.substring(i * substring_len, (i+1)*substring_len);
+            }
+        }
         return split_msg;
     }
 
