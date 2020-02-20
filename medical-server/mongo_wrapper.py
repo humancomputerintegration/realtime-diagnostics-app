@@ -7,8 +7,11 @@ from pymongo.uri_parser import parse_host
 
 #Client Functions 
 def open_connection(host:str, port:int, username, password):
-	uri = "mongodb://{}:{}@{}:{}/".format(username,password,host,port)
-	client = pymongo.MongoClient(uri,serverSelectionTimeoutMS=40)
+	base = "mongodb://{}:{}@{}:{}/?authSource=admin&ssl=false"
+	uri = base.format(username,password,host,port)
+	# client = pymongo.MongoClient(uri,serverSelectionTimeoutMS=100)
+	client = pymongo.MongoClient(host=host, port=port,
+		username=username, password=password, authSource='admin')
 	try:
 		server_details = client.server_info()
 	except pymongo.errors.ServerSelectionTimeoutError as e:
@@ -39,6 +42,7 @@ def create_db(client, new_database):
 		print("Database already exists -- returning none")
 		return None 
 	print("finished creating database ::", new_database)
+	client[new_database]
 	return client[new_database]
 
 #checks if a DB exists and returns it
@@ -114,19 +118,19 @@ def unit_tests():
 
 def bad_test():
 	print("starting the tests")
-	client = open_connection('localhost',27017,'doctor','mobilemedicine')
+	client = open_connection('localhost',27017,'admin','mobilemedicine')
 	# pprint(admin_command(client, "serverStatus"))
 
 	temp_db = create_db(client, "test2_database") # temp_db = client["test2_database"]
-	# temp_db2 = create_db(client, "test3_database") 	# temp_db2 = client["test3_database"]
+	temp_db2 = create_db(client, "test3_database") 	# temp_db2 = client["test3_database"]
 
 	print(list_dbs(client, mode='names'))
 
-	stuff = get_db(client, "test2_database")
+	# stuff = get_db(client, "test2_database")
 	# stuff2 = get_db(client, "test3_database")
 
-	tcoll1 = create_collection(stuff, "testcollection")
-	# tcoll2 = create_collection(stuff2, "oiwjeroiwjrowirj")
+	tcoll1 = create_collection(temp_db, "testcollection")
+	tcoll2 = create_collection(temp_db2, "oiwjeroiwjrowirj")
 	
 	post_data = {
 		'title':'Python and MongoDB',
@@ -152,8 +156,8 @@ def bad_test():
 		'author':'II'
 	}
 
-	insert(tcoll1, False, post_data)
-	# insert(tcoll2, True, [post1,post2,post3])
+	insert(tcoll1, post_data, False)
+	insert(tcoll2, [post1,post2,post3], True)
 
 	# drop_collection(stuff, "dummycollection")
 	# drop_collection(stuff2, "dummycollection")
