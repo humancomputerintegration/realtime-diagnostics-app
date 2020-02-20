@@ -1,7 +1,6 @@
 package com.example.mobilehealthprototype;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -10,9 +9,7 @@ import androidx.annotation.RequiresApi;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,15 +18,13 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 //Handles communication protocol between the app & server -- needs to include encryption protocol
 public class CommunicationHandler {
 
     //generates a compressed string of the information into the server
+    // TODO DELETE
     public String generateHashID(int p_id){
         String pre_processed_id = Integer.toString(p_id);
         String hashedPID= null;
@@ -67,6 +62,7 @@ public class CommunicationHandler {
     }
 
     //Reads a key from a file
+    // TODO DELETE
     private String readKeyFileCH(Context c, String fname) throws IOException {
         String strKeyPEM = "";
         Log.d("TESTING", "READING KEY FILE");
@@ -93,6 +89,7 @@ public class CommunicationHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    // TODO DELETE
     private static RSAPublicKey getPublicKeyFromString(String key) throws IOException, GeneralSecurityException {
         String publicKeyPEM = key;
         publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----\n", "");
@@ -106,6 +103,7 @@ public class CommunicationHandler {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    // TODO DELETE
     public static String encryptMessage(String pubKeyString, String raw_msg){
         RSAPublicKey pubKey = null;
         try {

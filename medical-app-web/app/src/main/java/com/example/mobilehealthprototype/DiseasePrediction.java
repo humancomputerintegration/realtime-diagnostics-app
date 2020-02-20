@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -202,13 +203,15 @@ public class DiseasePrediction extends AppCompatActivity {
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
                 String encToSend = null;
                 String testEncryption = "test message";
-                String pubkey = null;
-//                try {
-//                    pubkey = readKeyFile("public.pem");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
+                byte[] K = null;
+                try {
+                    K = readKeyFile(getString(R.string.kfilename));
+//                    Log.d("TESTING", Arrays.toString(K));
+//                    Log.d("TESTING", Base64.encodeToString(K, Base64.DEFAULT));
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+
 //                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 ////                    encToSend = ch.encryptMessage(pubkey, toSend);
 //                    encToSend = ch.encryptMessage(pubkey, testEncryption);
@@ -234,7 +237,7 @@ public class DiseasePrediction extends AppCompatActivity {
         return;
     }
 
-    private String readKeyFile(String fname) throws IOException {
+    private byte[] readKeyFile(String fname) throws IOException {
         String strKeyPEM = "";
         BufferedReader br = null;
         try{
@@ -247,10 +250,11 @@ public class DiseasePrediction extends AppCompatActivity {
 
         String line;
         while ((line = br.readLine()) != null) {
-            strKeyPEM += line + "\n";
+            strKeyPEM += strKeyPEM + line;
         }
         br.close();
-        return strKeyPEM;
+        byte[] byteform = Base64.decode(strKeyPEM, Base64.DEFAULT);
+        return byteform;
     }
 
     public void handlePassedIntent(){
