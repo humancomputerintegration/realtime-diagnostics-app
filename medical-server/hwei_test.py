@@ -14,7 +14,7 @@ def sms_lisener_huawei(usercred="admin",userpass="admin", parts=3):
 		ctx = huaweisms.api.user.quick_login(usercred, userpass)
 	except ValueError:
 		print("Invalid Login Credentials")
-		return
+		return 	
 	except:
 		print("unknown login error")
 

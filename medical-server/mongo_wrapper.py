@@ -35,11 +35,10 @@ def list_dbs(client, mode = 'names'):
 # least one record in the DB - so we create a dummy collection
 def create_db(client, new_database):
 	# print(client.list_databases_names())
-	print(new_database)
 	if new_database in client.list_database_names():
 		print("Database already exists -- returning none")
 		return None 
-	print("finished creating database::", new_database)
+	print("finished creating database ::", new_database)
 	return client[new_database]
 
 #checks if a DB exists and returns it
@@ -115,19 +114,19 @@ def unit_tests():
 
 def bad_test():
 	print("starting the tests")
-	client = open_connection('localhost',27017,'root',"humancomputerintegration")
+	client = open_connection('localhost',27017,'doctor','mobilemedicine')
 	# pprint(admin_command(client, "serverStatus"))
 
 	temp_db = create_db(client, "test2_database") # temp_db = client["test2_database"]
-	temp_db2 = create_db(client, "test3_database") 	# temp_db2 = client["test3_database"]
+	# temp_db2 = create_db(client, "test3_database") 	# temp_db2 = client["test3_database"]
 
 	print(list_dbs(client, mode='names'))
 
 	stuff = get_db(client, "test2_database")
-	stuff2 = get_db(client, "test3_database")
+	# stuff2 = get_db(client, "test3_database")
 
 	tcoll1 = create_collection(stuff, "testcollection")
-	tcoll2 = create_collection(stuff2, "oiwjeroiwjrowirj")
+	# tcoll2 = create_collection(stuff2, "oiwjeroiwjrowirj")
 	
 	post_data = {
 		'title':'Python and MongoDB',
@@ -154,10 +153,10 @@ def bad_test():
 	}
 
 	insert(tcoll1, False, post_data)
-	insert(tcoll2, True, [post1,post2,post3])
+	# insert(tcoll2, True, [post1,post2,post3])
 
-	drop_collection(stuff, "dummycollection")
-	drop_collection(stuff2, "dummycollection")
+	# drop_collection(stuff, "dummycollection")
+	# drop_collection(stuff2, "dummycollection")
 
 if __name__ == "__main__":
 	bad_test()
