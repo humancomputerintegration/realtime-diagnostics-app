@@ -136,6 +136,16 @@ public class CommunicationHandler {
         return new String(cipherTextComm);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static byte[] encryptMessageSIV(byte[] key, String raw_msg){
+        byte[] cipherText = new byte[0];
+//        SivSivMode() new SivMode();
+//        cipherText =
+
+        Base64.getEncoder().encodeToString(cipherText);
+        return null;
+    }
+
     public String[] splitMessage(String msg, int parts, String tag){
         String[] split_msg = new String[parts];
         int slen = msg.length();
