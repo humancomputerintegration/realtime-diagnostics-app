@@ -1,6 +1,7 @@
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Cipher import AES
+from Crypto.Random import get_random_bytes
 import base64
 import random 
 
@@ -47,6 +48,13 @@ def encrypt(raw_msg, pubkeyf= 'public.pem'):
     encrypter = PKCS1_OAEP.new(key=pubkeyf)
     enc_msg = encrypter.encrypt(raw_msg)
     return enc_msg
+
+def generate_key(nb, output):
+    k = get_random_bytes(nb)
+    f = open(output, 'wb')
+    f.write(base64.b64encode(k))
+    f.close()
+    return k
 
 #The reason for smaller sized keys is for faster encryption/decryption
 #in addition to being able to fit under the text limit of SMS 
@@ -120,8 +128,10 @@ def testing_SIV(test_strings, key):
     print("Passed")
     return True
 
+
 if __name__ == "__main__":
     test_strings = []
+    test_strings.append("123;F;12331;123.0;123.0;23,19;34")
     test_strings.append("this is a test message")
     test_strings.append("test message")
     test_strings.append('''this is a test message and I am testing if this works \\ 
@@ -129,10 +139,13 @@ if __name__ == "__main__":
 
     # testing(test_strings, write_new_keys = False)
 
-    key = b'0' * 32
+    # k = generate_key(32, 'ky.pem')
+    k = open('ky.pem', 'r').read()
+    k = base64.b64decode(k)
+    print(k)
     # test_enc, test_header, test_tag = encrypt_siv(test_strings[1], key)
     # test2 = decrypt_siv(test_enc,key,test_header,test_tag)
 
-    testing_SIV(test_strings, key)
+    testing_SIV(test_strings, k)
 
     
