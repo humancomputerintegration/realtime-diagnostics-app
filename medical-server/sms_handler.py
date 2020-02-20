@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+import huaweisms.api.user
+import huaweisms.api.wlan
+import huaweisms.api.sms
 import json 
 import mongo_wrapper as mw
 import enc
@@ -7,6 +10,51 @@ import threading
 import os
 import datetime
 import time
+
+def sms_listener_huawei(usercred="admin",userpass="admin", parts=3):
+	db_client = mw.open_connection('localhost',27017,'admin',"mobilemedicine")
+	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
+	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
+																	'medical_assets/SymptomList.csv')
+
+	print("Starting the server")
+	# Establish SMS listener access point
+	try:
+		ctx = huaweisms.api.user.quick_login(usercred, userpass)
+	except ValueError:
+		print("Invalid Login Credentials")
+		return 	
+	except:
+		print("unknown login error -- is the adapter plugged in?")
+
+	running = True
+	print("Starting the SMS listener")
+	from_pnum = None 
+	raw_text = None
+	
+	while(running):
+		z = huaweisms.api.sms.get_sms(ctx,box_type=1,page=1,qty=10,unread_preferred=True)
+		if(int(z['response']['Count']) == 0):
+			time.sleep(1)
+			continue
+
+		tracked = []
+		for txtmsg in (z['response']['Messages']['Message']):
+			from_pnum = txtmsg['Phone']
+			raw_text = txtmsg['Content']
+			text_index = txtmsg['Index']
+			print(from_pnum, text_index)
+			sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
+													ind_to_dumls, ind_to_sumls)
+			mw.insert(db_collection, sd)
+			from_pnum = None
+			raw_text = None
+			huaweisms.api.sms.delete_sms(ctx, text_index)
+		
+		time.sleep(2)
+
+	mw.close_connection(db_client)
+	return True
 
 #The ardunio should be flashed with the arduino file "sms_recv.ino"
 #Todo make sure you implement a usage with **kwargs - which might help reduce the number of functions we need
@@ -128,4 +176,5 @@ def process_data(collection, source, raw_text, umls_to_medt, ind_to_dumls, ind_t
 	return struct_data 
 
 if __name__ == "__main__":
-	sms_listener()
+	# sms_listener()
+	sms_listener_huawei()

@@ -2,13 +2,18 @@ import huaweisms.api.user
 import huaweisms.api.wlan
 import huaweisms.api.sms
 import time
+import mongo_wrapper as mw
+import datetime
+import time
+import os
 
 def sms_lisener_huawei(usercred="admin",userpass="admin", parts=3):
-	db_client = mw.open_connection('localhost',27017,'root',"humancomputerintegration")
+	db_client = mw.open_connection('localhost',27017,'admin',"mobilemedicine")
 	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
 																	'medical_assets/SymptomList.csv')
 
+	print("Starting the server")
 	# Establish SMS listener access point
 	try:
 		ctx = huaweisms.api.user.quick_login(usercred, userpass)
@@ -16,7 +21,7 @@ def sms_lisener_huawei(usercred="admin",userpass="admin", parts=3):
 		print("Invalid Login Credentials")
 		return 	
 	except:
-		print("unknown login error")
+		print("unknown login error -- is the adapter plugged in?")
 
 	running = True
 	print("Starting the SMS listener")
@@ -37,8 +42,7 @@ def sms_lisener_huawei(usercred="admin",userpass="admin", parts=3):
 			print(from_pnum, text_index)
 			sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
 													ind_to_dumls, ind_to_sumls)
-			mw.insert(deb_collection, sd)
-			print("not sure if I successfully inserted an entry")
+			mw.insert(db_collection, sd)
 			from_pnum = None
 			raw_text = None
 			huaweisms.api.sms.delete_sms(ctx, text_index)
