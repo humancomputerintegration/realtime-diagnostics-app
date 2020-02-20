@@ -1,0 +1,3 @@
+Make sure you set up systemctl & allow the system to automatically start mongod
+Make sure to set up user access on the server 
+
