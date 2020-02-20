@@ -116,7 +116,7 @@ public class CommunicationHandler {
             e.printStackTrace();
         }
 
-        AsciiHandler ah = new AsciiHandler();
+        AsciiHandler ah = new AsciiHandler(); //TODO
 
         byte[] cipherText = new byte[0];
         String cipherTextComm = null;
@@ -125,7 +125,8 @@ public class CommunicationHandler {
             cipher = Cipher.getInstance("RSA/NONE/OAEPPadding");
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);
             cipherText = cipher.doFinal(raw_msg.getBytes("UTF-8"));
-            cipherTextComm = ah.encode(cipherText);
+//            cipherTextComm = ah.encode(cipherText);
+            cipherTextComm = Base64.getEncoder().encodeToString(cipherText);
         }catch (Exception e){
             e.printStackTrace();
         }
