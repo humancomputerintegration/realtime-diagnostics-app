@@ -136,11 +136,6 @@ public class CommunicationHandler {
         return new String(cipherTextComm);
     }
 
-
-
-//    public void encrypt() {
-//        byte[] encrypted = AES_SIV.encrypt(ctrKey, macKey, "hello world".getBytes());
-//
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String encryptMessageSIV(byte[] key, byte[] mackey, String raw_msg){
         byte[] cipherText = new byte[0];
