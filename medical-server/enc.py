@@ -71,7 +71,7 @@ def generate_key_otp(blen, output='tp.pem'):
 def read_key_otp(fname):
     preK = open(fname, 'rb').read()
     postK = base64.b64decode(preK)
-    print("READ::", postK)
+    # print("READ::", postK)
     return postK
 
 def xor_ba(a,b) -> bytes:

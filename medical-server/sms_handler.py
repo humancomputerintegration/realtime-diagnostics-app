@@ -11,13 +11,13 @@ import os
 import datetime
 import time
 
-def sms_listener_huawei(usercred="admin",userpass="mobilemedicine", parts=3, kfile='tp.pem'):
+def sms_listener_huawei(usercred="admin",userpass="admin", parts=3, kfile='tp.pem'):
 	# Load Database configuration
-	db_client = mw.open_connection('localhost',27017,usercred,userpass)
+	db_client = mw.open_connection('localhost',27017,'admin',"mobilemedicine")
 	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
 																	'medical_assets/SymptomList.csv')
-	KEY = read_key_otp('tp.pem')
+	KEY = enc.read_key_otp('tp.pem')
 	print("Starting the server")
 	# Establish SMS listener access point
 	try:
@@ -42,14 +42,16 @@ def sms_listener_huawei(usercred="admin",userpass="mobilemedicine", parts=3, kfi
 		tracked = []
 		for txtmsg in (z['response']['Messages']['Message']):
 			from_pnum = txtmsg['Phone']
-			raw_text = enc.decrypt_p(txtmsg['Content'], KEY)
+			raw_text = txtmsg['Content']
+			decrypted= enc.decrypt_p(raw_text, KEY)
 			text_index = txtmsg['Index']
-			print(from_pnum, text_index, raw_text)
-			sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
+			print(from_pnum, text_index, raw_text, decrypted)
+			sd = process_data(db_collection,from_pnum,decrypted,umls_to_medt, 
 													ind_to_dumls, ind_to_sumls)
 			mw.insert(db_collection, sd)
 			from_pnum = None
 			raw_text = None
+			decrypted = None
 			huaweisms.api.sms.delete_sms(ctx, text_index)
 		
 		time.sleep(2)
@@ -154,7 +156,7 @@ def process_data(collection, source, raw_text, umls_to_medt, ind_to_dumls, ind_t
 
 	#Storing data about the patient
 	payload = raw_text.split(";")
-	struct_data["patient id"] = int(payload[0])
+	struct_data["patient id"] = payload[0]
 	struct_data["patient_sex"] = "MALE" if (payload[1] == "M") else "FEMALE"
 	struct_data["patient_age"] = int(payload[2])
 	struct_data["patient height"] = float(payload[3])
