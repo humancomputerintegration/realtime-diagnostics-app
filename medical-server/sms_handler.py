@@ -11,12 +11,13 @@ import os
 import datetime
 import time
 
-def sms_listener_huawei(usercred="admin",userpass="admin", parts=3):
-	db_client = mw.open_connection('localhost',27017,'admin',"mobilemedicine")
+def sms_listener_huawei(usercred="admin",userpass="mobilemedicine", parts=3, kfile='tp.pem'):
+	# Load Database configuration
+	db_client = mw.open_connection('localhost',27017,usercred,userpass)
 	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
 																	'medical_assets/SymptomList.csv')
-
+	KEY = read_key_otp('tp.pem')
 	print("Starting the server")
 	# Establish SMS listener access point
 	try:
@@ -41,9 +42,9 @@ def sms_listener_huawei(usercred="admin",userpass="admin", parts=3):
 		tracked = []
 		for txtmsg in (z['response']['Messages']['Message']):
 			from_pnum = txtmsg['Phone']
-			raw_text = txtmsg['Content']
+			raw_text = enc.decrypt_p(txtmsg['Content'], KEY)
 			text_index = txtmsg['Index']
-			print(from_pnum, text_index)
+			print(from_pnum, text_index, raw_text)
 			sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
 													ind_to_dumls, ind_to_sumls)
 			mw.insert(db_collection, sd)
