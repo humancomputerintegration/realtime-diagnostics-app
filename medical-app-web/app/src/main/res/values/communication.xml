@@ -4,4 +4,5 @@
     <string name="server_number">17732364204</string>
     <string name="pubkeyfilename">public.pem</string>
     <string name="kfilename">ky.pem</string>
+    <string name="pfilename">tp.pem</string>
 </resources>

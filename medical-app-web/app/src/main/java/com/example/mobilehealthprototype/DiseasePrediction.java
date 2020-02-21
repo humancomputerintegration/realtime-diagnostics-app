@@ -1,9 +1,11 @@
 package com.example.mobilehealthprototype;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Base64;
@@ -192,6 +194,7 @@ public class DiseasePrediction extends AppCompatActivity {
         CustomButton.changeButtonColor(this, sendToServ, R.color.colorPrimary, STROKE_WIDTH, R.color.colorAccent);
         CustomButton.changeButtonText(this, sendToServ, R.color.white);
         sendToServ.setOnClickListener(new View.OnClickListener(){
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View view) {
                 CommunicationHandler ch = new CommunicationHandler();
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
@@ -202,32 +205,28 @@ public class DiseasePrediction extends AppCompatActivity {
 
                 String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
                 String encToSend = null;
-                String testEncryption = "test message";
                 byte[] K = null;
                 try {
-                    K = readKeyFile(getString(R.string.kfilename));
+                    K = readKeyFile(getString(R.string.pfilename));
+//                    Log.d("TESTING", "successfully read key ----");
 //                    Log.d("TESTING", Arrays.toString(K));
 //                    Log.d("TESTING", Base64.encodeToString(K, Base64.DEFAULT));
                 } catch (IOException e){
                     e.printStackTrace();
                 }
-
-//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-////                    encToSend = ch.encryptMessage(pubkey, toSend);
-//                    encToSend = ch.encryptMessage(pubkey, testEncryption);
-//                }
-//                Log.d("TESTING", "length of the encrypted message= " + Integer.toString(encToSend.length()));
-//                sendMessage("8478686626", encToSend.substring(0,60)); //TODO
-//                sendMessage("8478686626", encToSend.substring(60,121)); //TODO
-//                sendMessage("8478686626", encToSend.substring(121,160)); //TODO
-
+//                String testEncryption = "test message";
+                encToSend = ch.encrypt_p(toSend, K);
+//                Log.d("TESTING", "---- printing encrypted message (I hope) ----");
 //                Log.d("TESTING", encToSend);
-//                Log.d("TESTING", "LENGTH OF ENCRYTPED MESSAGE " + Integer.toString(encToSend.length()));
-//                String subset = encToSend.substring(0,70);
-//                sendMessage("8478686626", subset); //TODO
-//                sendMessage("8478686626", encToSend); //TODO
-                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+//
+//                String decrypted = ch.decrypt_p(encToSend, K);
+//                Log.d("TESTING", "---- printing decrypted message (I hope) ----");
+//                Log.d("TESTING", decrypted);
 
+//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+//                sendMessage(getString(R.string.server_number),encToSend);
+                sendMessage("18478686626",encToSend);
+                Log.d("TESTING", ch.decrypt_p(encToSend, K));
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
                 Intent restart = new Intent(DiseasePrediction.this, MainActivity.class);

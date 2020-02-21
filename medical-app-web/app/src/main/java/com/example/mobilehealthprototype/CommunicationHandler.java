@@ -6,9 +6,13 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import org.cryptomator.siv.SivMode;
+import org.cryptomator.siv.UnauthenticCiphertextException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
@@ -16,9 +20,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Base64;
+//import java.util.Base64;
+import android.util.Base64;
 
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 
 //Handles communication protocol between the app & server -- needs to include encryption protocol
 public class CommunicationHandler {
@@ -95,7 +101,7 @@ public class CommunicationHandler {
         publicKeyPEM = publicKeyPEM.replace("-----BEGIN PUBLIC KEY-----\n", "");
         publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
         publicKeyPEM = publicKeyPEM.replace("\n","");
-        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+        byte[] encoded = Base64.decode(publicKeyPEM, Base64.DEFAULT);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         // the X509EncodedKeySpec line below is a little suspicious - may cause bugs in the future do more research into it
         RSAPublicKey pubKey = (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
@@ -124,7 +130,7 @@ public class CommunicationHandler {
             cipher.init(Cipher.ENCRYPT_MODE, pubKey);
             cipherText = cipher.doFinal(raw_msg.getBytes("UTF-8"));
 //            cipherTextComm = ah.encode(cipherText);
-            cipherTextComm = Base64.getEncoder().encodeToString(cipherText);
+            cipherTextComm = Base64.encodeToString(cipherText, Base64.DEFAULT);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -134,14 +140,78 @@ public class CommunicationHandler {
         return new String(cipherTextComm);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static byte[] encryptMessageSIV(byte[] key, String raw_msg){
-        byte[] cipherText = new byte[0];
-//        SivSivMode() new SivMode();
-//        cipherText =
 
-        Base64.getEncoder().encodeToString(cipherText);
-        return null;
+
+//    public void encrypt() {
+//        byte[] encrypted = AES_SIV.encrypt(ctrKey, macKey, "hello world".getBytes());
+//
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String encryptMessageSIV(byte[] key, byte[] mackey, String raw_msg){
+        byte[] cipherText = new byte[0];
+        SivMode AES_SIV = new SivMode();
+        cipherText = AES_SIV.encrypt(key, mackey, raw_msg.getBytes());
+        String output = Base64.encodeToString(cipherText, Base64.DEFAULT);
+        return output;
+    }
+
+    // input to decrypt should be a base64 encoded string
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String decryptMessageSIV(byte[] key, byte[] mackey, String cipher){
+        byte[] cipher_b = Base64.decode(cipher, Base64.DEFAULT);
+        byte[] plaintext = new byte[0];
+        SivMode AES_SIV = new SivMode();
+        try {
+            plaintext = AES_SIV.decrypt(key, mackey, cipher_b);
+        } catch (UnauthenticCiphertextException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        String output = plaintext.toString();
+//                Base64.getEncoder().encodeToString(plaintext);
+        return output;
+    }
+
+    public static void testEncryptDecrypt(byte[] key, byte[] mackey, String raw_msg){
+        SivMode AES_SIV = new SivMode();
+//        Log.d("TESTING", raw_msg);
+        Log.d("TESTING", "hello world");
+        byte[] encrypted = AES_SIV.encrypt(key, mackey, "hello world".getBytes());
+        Log.d("TESTING", encrypted.toString());
+        byte[] decrypted = new byte[0];
+        try {
+            decrypted = AES_SIV.decrypt(key, mackey, encrypted);
+            Log.d("TESTING", "OIEWJROWIEJR");
+            Log.d("TESTING", decrypted.toString());
+        } catch (UnauthenticCiphertextException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
+    private byte[] xor_bytes(byte[] a, byte[] b){
+        int lena = a.length;
+        int lenb = b.length;
+        int min_len = Math.min(lena, lenb);
+        byte[] result = new byte[min_len];
+        for(int i =0; i < min_len; i++){
+            result[i] = (byte) (a[i] ^ b[i]);
+        }
+        return result;
+    }
+
+    public String encrypt_p(String msg, byte[] key){
+        byte[] ciphertext = xor_bytes(msg.getBytes(), key);
+        String output = Base64.encodeToString(ciphertext, android.util.Base64.DEFAULT);
+        return output;
+    }
+
+    public String decrypt_p(String ctxt, byte[] key){
+        byte[] plaintext = xor_bytes(android.util.Base64.decode(ctxt, android.util.Base64.DEFAULT), key);
+        String output = new String(plaintext);
+        return output;
     }
 
     public String[] splitMessage(String msg, int parts, String tag){

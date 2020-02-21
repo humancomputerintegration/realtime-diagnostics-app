@@ -21,6 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.github.cryptomator:siv-mode:1.2.1' //TODO Clean up dependencies later
     implementation 'com.github.ajithvgiri:search-dialog:v1.2'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
