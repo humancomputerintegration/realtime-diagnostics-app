@@ -214,19 +214,13 @@ public class DiseasePrediction extends AppCompatActivity {
                 } catch (IOException e){
                     e.printStackTrace();
                 }
-//                String testEncryption = "test message";
                 encToSend = ch.encrypt_p(toSend, K);
 //                Log.d("TESTING", "---- printing encrypted message (I hope) ----");
-//                Log.d("TESTING", encToSend);
-//
+//                Log.d("TESTING", encToSend);//
 //                String decrypted = ch.decrypt_p(encToSend, K);
 //                Log.d("TESTING", "---- printing decrypted message (I hope) ----");
 //                Log.d("TESTING", decrypted);
-
-//                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
-//                sendMessage(getString(R.string.server_number),encToSend);
-                sendMessage("18478686626",encToSend);
-                Log.d("TESTING", ch.decrypt_p(encToSend, K));
+                sendMessage(getString(R.string.server_number),encToSend);
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
                 startActivity(sendToServ);
                 Intent restart = new Intent(DiseasePrediction.this, MainActivity.class);
