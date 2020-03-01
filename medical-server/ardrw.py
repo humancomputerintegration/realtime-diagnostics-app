@@ -1,3 +1,5 @@
+## DEPRECIATED - DELETE
+
 import serial # import Serial Library
 import numpy  # Import numpy
  

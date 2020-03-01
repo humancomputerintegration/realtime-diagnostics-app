@@ -4,3 +4,4 @@ finalize/implement a more FINAL and secure encryption method given project const
 implement a react-native version of mobilemedicine in order to increase performance (at the expense of some performance
 standardize/document the code base
 create a list of standard/configurable hardware for the mobilemedicine server and SMS adapter
+Deleted ARDUINO related files and keep the ones related to the current iteration of MOBILEMEDICINE
