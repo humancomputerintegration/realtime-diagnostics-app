@@ -28,10 +28,15 @@ Ubuntu 18.04.
 As of now, there is no standard hardware configuration for the mobilemedicine server.
 
 
-## Software and Operating System configurations 
-### OS: Ubuntu 18.04
-### Programming Languages: Python (libraries will be listed on requirements.txt)
-### Software: MongoDB, MongoDB's Compass (for Ubuntu)
+## Software and Operating System configurations
+Ideally, we would be able to easily deploy this in a docker container so that MobileMedicine
+will be machine agnostic. 
+#### Operating System (OS): 
+Ubuntu 18.04
+#### Programming Languages: 
+Python (libraries will be listed on requirements.txt)
+#### Software: 
+MongoDB, MongoDB's Compass (for Ubuntu)
 
 ## Concerns about server functionality going forward: 
 
@@ -48,3 +53,22 @@ repo.
 
 ## Unit Testing
 Unit Tests are in progress, an automatic test suite would be ideal 
+
+
+# TODO's 
+CRITICAL: Create a docker image that can host the server regardless of platform
+
+ENCRYPTION NOTES: Need to figure out an encryption scheme that indicates uniqueness, to remove potential for easy spoofing 
+
+REFRACTOR CODE - MAKE IT MORE MODULAR
+
+Write some tests & documentation to make the code test and run with the arduino-defined SMS interfacer & Huawei one 
+
+Write a requirements install for both the ubuntu environment and python install
+(Potentially setup a virtualenv for python?)
+
+Make an installer 
+
+REMINDER: automatically start "mongod" at the start of every boot, to make recording/inserting processes instant:
+This can be done pretty easily with ubuntu
+
