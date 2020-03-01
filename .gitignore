@@ -4,3 +4,4 @@ __pycache__/
 medical-server/sms.py
 .ipynb_checkpoints
 private.pem
+venv/

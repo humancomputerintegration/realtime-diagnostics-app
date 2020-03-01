@@ -1,0 +1,6 @@
+refactor app code in medical-app-web repository
+delete the app version medical-app. It no longer servers a purpose but for old prototypes
+finalize/implement a more FINAL and secure encryption method given project constaints
+implement a react-native version of mobilemedicine in order to increase performance (at the expense of some performance
+standardize/document the code base
+create a list of standard/configurable hardware for the mobilemedicine server and SMS adapter
