@@ -17,9 +17,8 @@ files are legacy of earlier iterations of the project - and will be deleted once
 
 ## SMS Adapter(s) for MobileMedicine Server 
 The server only supports the "HUAWEI LTE E8372 Hotspot Turbo Stick" as of now. The turbo stick offers a lot of other
-features aside from SMS functionality, but for MobileMedicine will not be leveraged. From my experience, WiFi and the 
-SMS functionallity cannot be done at the same time (I speculate this might be because of the hotspot feature of the 
-huawei adapter). 
+features aside from SMS functionality, but for this project, these features will not be leveraged. From my experience, WiFi and the SMS functionallity cannot be done at the same time (I speculate this might be because of the hotspot feature of the 
+huawei adapter). Furthermore, to easily abstract the functions of the HUAWEI turbo stick, we use a [python library](https://github.com/pablo/huawei-modem-python-api-client). However, this library is not super critical to accessing SMS features - an individual can access a localhost to a Huawei gui client for SMS. 
 
 ## Hardware configurations for MobileMedicine
 As of now, there is no "recommended" hardware configuration for the mobilemedicine server (the app component may be
