@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileMedicine Prototype</string>
+    <string name="app_name">MobileMedicine Prototype v0.9</string>
 
     <!--activity_main.xml strings-->
     <string name="welcome_header">@string/app_name</string>
@@ -14,8 +14,18 @@
     <!--activity_patient_info.xml option-->
     <string name="health_id_header">Enter the patient\'s ID number</string>
     <string name="sex_option_header">Pick the patient\'s sex</string>
+    <string name="temperature_option_header">Pick the patient\'s body temperature state</string>
+    <string name="pressure_option_header">Pick the patient\'s blood pressure state</string>
+    <string name="name_header">Enter the patient\'s name</string>
     <string name="male_option">M</string>
     <string name="female_option">F</string>
+    <string name="fever_option">Fever</string>
+    <string name="normT_option">Normal</string>
+    <string name="normP_option">Normal</string>
+    <string name="high_option">High</string>
+    <string name="low_option">Low</string>
+    <string name="pregnancy_option">pregnancy</string>
+    <string name="nonpregnancy_option">Nonpregnancy</string>
     <string name="height_header">Put the patient\'s height in the field below (Meters)</string>
     <string name="weight_header">Put the patient\'s weight in the field below (Kilograms)</string>
     <string name="age_field_header">Put the age of your patient below</string>
@@ -38,6 +48,16 @@
     <string name="continue_button">CONTINUE</string>
     <string name="all_wrong_alternative">All of the above are incorrect diagnoses - I have a better one</string>
     <string name="all_wrong_continue">All of the above are incorrect but I still need a diagnosis</string>
+
+    <!--activity_lab_test.xml options-->
+    <string name="lab_test_header">Lab Test</string>
+    <string name="lab_testing">Testing</string>
+    <string name="lab_result">Test result</string>
+
+    <!--activity_prescription.xml options-->
+    <string name="prescription_header">Prescription</string>
+    <string name="prescription">Prescription</string>
+    <string name="dosage">Dosage</string>
 
     <!--activity_confirmation_screen.xml options-->
     <string name="diagnosis_summary_header">Diagnosis Summary</string>

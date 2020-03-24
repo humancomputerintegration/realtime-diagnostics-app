@@ -1,8 +1,5 @@
 package com.example.mobilehealthprototype;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,6 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ajithvgiri.searchdialog.OnSearchItemSelected;
 import com.ajithvgiri.searchdialog.SearchListItem;
@@ -28,7 +28,8 @@ import java.util.List;
 public class DiagnosisResult extends AppCompatActivity {
     Intent passedIntent;
     Sex p_sex;
-    int p_id, p_age;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id,lab_test, lab_result;
     float p_height, p_weight;
 
     int mode;
@@ -93,11 +94,17 @@ public class DiagnosisResult extends AppCompatActivity {
         mode = passedIntent.getIntExtra("mode", -1);
         if(mode == 1){
             p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-            p_id = passedIntent.getIntExtra("hid", -1);
+            p_id = passedIntent.getStringExtra("hid");
             p_age = passedIntent.getIntExtra("age", -1);
             p_height = passedIntent.getFloatExtra("height",-1);
             p_weight = passedIntent.getFloatExtra("weight",-1);
+            p_temperature = passedIntent.getIntExtra("temperature", 0);
+            p_pressure = passedIntent.getIntExtra("pressure", 0);
+            p_pregnancy = passedIntent.getIntExtra("pregnancy", 0);
             patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+            lab_test = passedIntent.getStringExtra("lab_test");
+            lab_result = passedIntent.getStringExtra("lab_result");
+
             SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
             UmlsToSymp = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("uts"));
             IndexToUmls_s = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("itus"));
@@ -110,7 +117,7 @@ public class DiagnosisResult extends AppCompatActivity {
 
         }else if(mode == 2){
             p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-            p_id = passedIntent.getIntExtra("hid", -1);
+            p_id = passedIntent.getStringExtra("hid");
             p_age = passedIntent.getIntExtra("age", -1);
             p_height = passedIntent.getFloatExtra("height",-1);
             p_weight = passedIntent.getFloatExtra("weight",-1);
@@ -211,12 +218,15 @@ public class DiagnosisResult extends AppCompatActivity {
                     dialog.show();
                 }else {
 //                    Intent intent = new Intent(DiagnosisProcess.this, ConfirmationScreen.class);
-                    Intent intent = new Intent(DiagnosisResult.this, ConfirmationScreen.class);
+                    Intent intent = new Intent(DiagnosisResult.this, Prescription.class);
                     intent.putExtra("hid", p_id);
                     intent.putExtra("sex", p_sex);
                     intent.putExtra("age", p_age);
                     intent.putExtra("height", p_height);
                     intent.putExtra("weight", p_weight);
+                    intent.putExtra("temperature", p_temperature);
+                    intent.putExtra("pressure", p_pressure);
+                    intent.putExtra("pregnancy", p_pregnancy);
                     intent.putExtra("patient_symptoms", patientSymptoms);
                     intent.putExtra("stu", SympToUmls);
                     intent.putExtra("uts", UmlsToSymp);
@@ -230,6 +240,8 @@ public class DiagnosisResult extends AppCompatActivity {
                     intent.putExtra("likelihood_of_disease", ddProb);
                     intent.putExtra("diagnosed_UMLS", DisToUmls.get(diagnosedDisease));
                     intent.putExtra("diagnosed_disease_name", diagnosedDisease);
+                    intent.putExtra("lab_test", lab_test);
+                    intent.putExtra("lab_result", lab_result);
                     System.out.println("Going to comfirmation");
                     startActivity(intent);
                     System.out.println("comfirmation");

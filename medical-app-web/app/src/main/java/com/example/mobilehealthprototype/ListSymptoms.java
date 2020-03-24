@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -49,13 +51,46 @@ public class ListSymptoms extends AppCompatActivity {
     float[][] wm;
     Intent passedIntent;
     Sex p_sex;
-    int p_id, p_age;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id;
     float p_height, p_weight;
+
+
+    private ListView listView;
+    private ListView subListView;
+    private MyListAdapter myAdapter;
+    private MySubListAdapter subAdapter;
+    String sub_categories[][] = new String[][] {
+            new String[] { "cough", "fever", "fatigue", "headache", "stomachache","cough", "fever", "fatigue", "headache", "stomachache" },
+            new String[] { "fever", "fatigue", "headache", "stomachache", "cough", "cough","fever", "fatigue", "headache", "stomachache" },
+            new String[] { "fatigue", "headache", "cough", "fever", "stomachache", "cough", "fever", "fatigue", "headache", "stomachache"},
+            new String[] { "headache", "stomachache", "cough", "cough", "fever", "fatigue", "fever", "fatigue", "headache", "stomachache" },
+            new String[] { "stomachache", "cough", "fever","cough", "fever", "fatigue", "headache",  "fatigue", "headache", "stomachache" },
+            new String[] { "cough", "fever", "fatigue", "headache", "stomachache", "cough", "fever", "fatigue", "headache", "stomachache" },
+            new String[] { "cough", "fever", "fatigue", "headache", "stomachache", "cough", "fever", "fatigue", "headache", "stomachache" },
+
+    };
+    String categories[] = new String[] { "head", "arm", "leg", "face", "neck", "abdomen", "other" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_symptoms);
+        listView = (ListView) findViewById(R.id.listView);
+        subListView = (ListView) findViewById(R.id.subListView);
+        myAdapter = new MyListAdapter(getApplicationContext(), categories);
+        listView.setAdapter(myAdapter);
+        setSubList(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long arg3) {
+                setSubList(position);
+            }
+        });
+        System.out.println("onclick");
+
+
         handlePassedIntent();
         //TODO - Make sure you add to the documentation that the CSV needs to be well behaved
         //TODO - Well behaved csv = UMLS code to empty field
@@ -64,13 +99,37 @@ public class ListSymptoms extends AppCompatActivity {
         setUpInterface();
     }
 
+    public void setSubList(int position) {
+        final int location = position;
+        myAdapter.setSelectedPosition(position);
+        myAdapter.notifyDataSetInvalidated();
+        System.out.println("position in function call:");
+        System.out.println(position);
+        subAdapter = new MySubListAdapter(getApplicationContext(), sub_categories,
+                position);
+        subListView.setAdapter(subAdapter);
+        subListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1,
+                                    int position, long arg3) {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(),
+                        sub_categories[location][position], Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
     public void handlePassedIntent(){
         passedIntent = getIntent();
         p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
+        p_id =  passedIntent.getStringExtra("hid");
         p_age = passedIntent.getIntExtra("age", -1);
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
+        p_temperature = passedIntent.getIntExtra("temperature", 0);
+        p_pressure = passedIntent.getIntExtra("pressure", 0);
+        p_pregnancy = passedIntent.getIntExtra("pregnancy", 0);
     }
 
     //Loads up all the symptoms from the file into our activity
@@ -194,6 +253,9 @@ public class ListSymptoms extends AppCompatActivity {
                 intent.putExtra("age", p_age);
                 intent.putExtra("height", p_height);
                 intent.putExtra("weight", p_weight);
+                intent.putExtra("temperature", p_temperature);
+                intent.putExtra("pressure", p_pressure);
+                intent.putExtra("pregnancy", p_pregnancy);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
                 intent.putExtra("uts", UmlsToSymp);

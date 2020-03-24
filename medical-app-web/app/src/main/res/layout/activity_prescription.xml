@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Prescription">
+
+    <LinearLayout
+        android:id="@+id/prescription_layout"
+        android:layout_width="397dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginBottom="26dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/confirmDisease"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"></LinearLayout>
+
+    <TextView
+        android:id="@+id/textView_prescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/prescription_header"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/diagnose_button_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/next_prescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/next_button"
+        android:text="@string/continue_button"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/diagnose_button_layout" />
+
+    <TextView
+        android:id="@+id/prescription_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/prescription"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/prescription_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_prescription" />
+
+    <TextView
+        android:id="@+id/dosage_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/dosage"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/prescription_input"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dosage_input" />
+
+
+    <EditText
+        android:id="@+id/prescription_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/dosage_header"
+        app:layout_constraintEnd_toEndOf="@+id/prescription_header"
+        app:layout_constraintStart_toStartOf="@+id/prescription_header"
+        app:layout_constraintTop_toBottomOf="@+id/prescription_header" />
+
+    <EditText
+        android:id="@+id/dosage_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/next_prescription"
+        app:layout_constraintEnd_toEndOf="@+id/dosage_header"
+        app:layout_constraintStart_toStartOf="@+id/dosage_header"
+        app:layout_constraintTop_toBottomOf="@+id/dosage_header" />
+</androidx.constraintlayout.widget.ConstraintLayout>

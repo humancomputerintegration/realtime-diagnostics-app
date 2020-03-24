@@ -4,8 +4,3 @@ Ubuntu:
 https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
 https://docs.mongodb.com/compass/master/install/ (MONGODB DB VIEWER)
 	- Community Edition, Stable, Linux 64bit 
-
-Python 3 (Version 3.6.5):
-pySerial
-mongodb
-

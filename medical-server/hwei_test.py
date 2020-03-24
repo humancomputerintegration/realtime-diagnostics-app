@@ -1,23 +1,18 @@
-#!/usr/bin/env python3
 import huaweisms.api.user
 import huaweisms.api.wlan
 import huaweisms.api.sms
-import json 
+import time
 import mongo_wrapper as mw
-import enc
-import serial
-import threading
-import os
 import datetime
 import time
+import os
 
-def sms_listener_huawei(usercred="admin",userpass="admin", parts=3, kfile='tp.pem'):
-	# Load Database configuration
+def sms_lisener_huawei(usercred="admin",userpass="admin", parts=3):
 	db_client = mw.open_connection('localhost',27017,'admin',"mobilemedicine")
 	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
 	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
 																	'medical_assets/SymptomList.csv')
-	KEY = enc.read_key_otp('tp.pem')
+
 	print("Starting the server")
 	# Establish SMS listener access point
 	try:
@@ -43,72 +38,19 @@ def sms_listener_huawei(usercred="admin",userpass="admin", parts=3, kfile='tp.pe
 		for txtmsg in (z['response']['Messages']['Message']):
 			from_pnum = txtmsg['Phone']
 			raw_text = txtmsg['Content']
-			decrypted= enc.decrypt_p(raw_text, KEY)
 			text_index = txtmsg['Index']
-			print(from_pnum, text_index, raw_text, decrypted)
-			sd = process_data(db_collection,from_pnum,decrypted,umls_to_medt, 
+			print(from_pnum, text_index)
+			sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
 													ind_to_dumls, ind_to_sumls)
 			mw.insert(db_collection, sd)
 			from_pnum = None
 			raw_text = None
-			decrypted = None
 			huaweisms.api.sms.delete_sms(ctx, text_index)
 		
 		time.sleep(2)
 
 	mw.close_connection(db_client)
 	return True
-
-#The ardunio should be flashed with the arduino file "sms_recv.ino"
-#Todo make sure you implement a usage with **kwargs - which might help reduce the number of functions we need
-def sms_listener(port_name="/dev/ttyACM0", baud_rate=115200, ign=5, filter_key=["MMEI:","FROM:"]):
-	db_client = mw.open_connection('localhost',27017,'root',"humancomputerintegration")
-	db_collection = prepare_collection(db_client, "mobilemedicine_test_db", "data_test_coll")
-	umls_to_medt, ind_to_dumls, ind_to_sumls = process_dictionaries('medical_assets/DiseaseList.csv',
-																	'medical_assets/SymptomList.csv')
-
-	running = True
-	arduino_port = serial.Serial(port_name, baud_rate)
-
-	print("Starting the SMS listener")
-	from_pnum = None 
-	raw_text = None
-
-	while (running):
-		while (arduino_port.inWaiting() == 0):
-			pass
-
-		raw_data = arduino_port.readline()
-		processed_data = raw_data.decode('utf-8').strip()
-		data_tag = processed_data[:ign]
-
-		if(data_tag in filter_key):
-			if(data_tag == filter_key[0]):
-				raw_text = processed_data[5:]
-			elif(data_tag == filter_key[1]):
-				from_pnum = processed_data[5:]
-			else:
-				print("error")
-
-			print(raw_text, " ==", from_pnum)
-
-			if(from_pnum != None and raw_text != None):
-				pthread = threading.Thread(target=process_signal, 
-					args=(db_collection,from_pnum,raw_text,umls_to_medt,ind_to_dumls, ind_to_sumls))
-				pthread.start()
-				# sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt, 
-				# 										ind_to_dumls, ind_to_sumls)
-				# mw.insert(db_collection, sd)
-				from_pnum = None
-				raw_text = None
-
-	mw.close_connection(db_client)
-
-def process_signal(db_collection,from_pnum,raw_text,umls_to_medt,ind_to_dumls, ind_to_sumls):
-	sd = process_data(db_collection,from_pnum,raw_text,umls_to_medt,ind_to_dumls, ind_to_sumls)
-	mw.insert(db_collection,sd)
-	print("THREAD DONE")
-
 
 def process_dictionaries(umlsdis, umlssymp):
 	umls_to_medical_term = dict()
@@ -156,7 +98,7 @@ def process_data(collection, source, raw_text, umls_to_medt, ind_to_dumls, ind_t
 
 	#Storing data about the patient
 	payload = raw_text.split(";")
-	struct_data["patient id"] = payload[0]
+	struct_data["patient id"] = int(payload[0])
 	struct_data["patient_sex"] = "MALE" if (payload[1] == "M") else "FEMALE"
 	struct_data["patient_age"] = int(payload[2])
 	struct_data["patient height"] = float(payload[3])
@@ -178,6 +120,26 @@ def process_data(collection, source, raw_text, umls_to_medt, ind_to_dumls, ind_t
 	
 	return struct_data 
 
+# ctx = huaweisms.api.user.quick_login("admin", "admin")
+
+# debug_counter = 0 
+
+# while(True):
+# 	if(debug_counter % 1000 == 0):
+# 		print("debug counter =", int(debug_counter/1000))
+
+# 	debug_counter += 1
+# 	z = huaweisms.api.sms.get_sms(ctx,box_type=1,page=1,qty=10,unread_preferred=True)
+# 	if(int(z['response']['Count']) == 0):
+# 		time.sleep(1)
+# 		continue
+
+# 	tracked = []
+# 	for x in (z['response']['Messages']['Message']):
+# 		print(x['Phone'], x['Content'], x['Index'])
+# 		huaweisms.api.sms.delete_sms(ctx, x['Index'])
+	
+# 	time.sleep(2)
+
 if __name__ == "__main__":
-	# sms_listener()
-	sms_listener_huawei()
+	sms_lisener_huawei()

@@ -1,16 +1,18 @@
 package com.example.mobilehealthprototype;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import   java.text.SimpleDateFormat;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ajithvgiri.searchdialog.SearchListItem;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,7 +34,8 @@ import java.util.List;
 public class ConfirmationScreen extends AppCompatActivity {
     Intent passedIntent;
     Sex p_sex;
-    int p_id, p_age;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id,lab_test, lab_result, prescription, dosage;
     float p_height, p_weight;
 
     int diagnosed_disease_index;
@@ -63,30 +67,61 @@ public class ConfirmationScreen extends AppCompatActivity {
         text.setText(summary);
 
         Button confirmation_button = (Button) findViewById(R.id.final_confirmation);
-        confirmation_button.setOnClickListener(new View.OnClickListener() {
-            @Override
+        confirmation_button.setOnClickListener(new View.OnClickListener(){
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View view) {
-                System.out.println(p_height);
                 CommunicationHandler ch = new CommunicationHandler();
-                System.out.println(p_weight);
                 ArrayList<Integer> tmp = new ArrayList<Integer>();
-                System.out.println(patientSymptoms.size());
                 for(int i = 0; i < patientSymptoms.size(); i++){
                     tmp.add(UmlsToIndex_s.get(SympToUmls.get(patientSymptoms.get(i))));
                     //new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))))
                 }
-                System.out.println(p_age);
 
-                String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
-                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
+                String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index, lab_test, lab_result, prescription, dosage);
+                String encToSend = null;
+                byte[] K = null;
+                try {
+                    K = readKeyFile(getString(R.string.pfilename));
+//                    Log.d("TESTING", "successfully read key ----");
+//                    Log.d("TESTING", Arrays.toString(K));
+//                    Log.d("TESTING", Base64.encodeToString(K, Base64.DEFAULT));
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+                encToSend = ch.encrypt_p(toSend, K);
+//                Log.d("TESTING", "---- printing encrypted message (I hope) ----");
+//                Log.d("TESTING", encToSend);//
+//                String decrypted = ch.decrypt_p(encToSend, K);
+//                Log.d("TESTING", "---- printing decrypted message (I hope) ----");
+//                Log.d("TESTING", decrypted);
+                sendMessage(getString(R.string.server_number),encToSend);
                 saveFile(summary);
-                readFile();
-
-
-                Intent intent = new Intent(ConfirmationScreen.this, MainActivity.class);
-                startActivity(intent);
+                Intent restart = new Intent(ConfirmationScreen.this, MainActivity.class);
+                startActivity(restart);
             }
         });
+
+
+    }
+
+    private byte[] readKeyFile(String fname) throws IOException {
+        String strKeyPEM = "";
+        BufferedReader br = null;
+        try{
+            InputStreamReader is = new InputStreamReader(getAssets().open(fname));
+            br = new BufferedReader(is);
+        }catch (IOException e){
+            Log.d("TESTING", "Error with loading in file");
+            e.printStackTrace();
+        }
+
+        String line;
+        while ((line = br.readLine()) != null) {
+            strKeyPEM += strKeyPEM + line;
+        }
+        br.close();
+        byte[] byteform = Base64.decode(strKeyPEM, Base64.DEFAULT);
+        return byteform;
     }
 
     private void readFile() {
@@ -130,7 +165,7 @@ public class ConfirmationScreen extends AppCompatActivity {
 
 
     public String constructConfirmationDetails(){
-        String spid = Integer.toString(p_id);
+        String spid = p_id;
         String spage = Integer.toString(p_age);
         String spsex = (p_sex == Sex.MALE) ? "M" : "F";
         String spheight = Float.toString(p_height);
@@ -138,8 +173,8 @@ public class ConfirmationScreen extends AppCompatActivity {
 
         String sddprob = Float.toString(diagnosed_disease_prob);
 
-        String fp = "Patient id:" + spid + "\n" + "Patient age:" + spage + "\n";
-        String sp = fp + "Patient Symptoms::" + "\n";
+        String fp = "Patient id:" + spid + "\n" + "Patient age:" + spage + "\n" + "Patient Sex" + spsex + "\n";
+        String sp = fp + "Patient Symptoms::" + "\n" + "Lab test:" + lab_test + "\n" + "Prescription:" + prescription + ',' + dosage + "\n";
         for(int i = 0; i < patientSymptoms.size(); i++){
             sp = sp + patientSymptoms.get(i) + "\n";
         }
@@ -150,11 +185,18 @@ public class ConfirmationScreen extends AppCompatActivity {
     public void handlePassedIntent(){
         passedIntent = getIntent();
         p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
+        p_id = passedIntent.getStringExtra("hid");
         p_age = passedIntent.getIntExtra("age", -1);
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
+        p_temperature = passedIntent.getIntExtra("temperature", 0);
+        p_pressure = passedIntent.getIntExtra("pressure", 0);
+        p_pregnancy = passedIntent.getIntExtra("pregnancy", 0);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+        lab_test = passedIntent.getStringExtra("lab_test");
+        lab_result = passedIntent.getStringExtra("lab_result");
+        prescription = passedIntent.getStringExtra("prescription");
+        dosage = passedIntent.getStringExtra("dosage");
 
         SympToUmls = new Hashtable<> ((HashMap<String,String>) passedIntent.getSerializableExtra("stu"));
         UmlsToSymp = new Hashtable<>((HashMap<String,String>) passedIntent.getSerializableExtra("uts"));

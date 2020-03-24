@@ -1,7 +1,5 @@
 package com.example.mobilehealthprototype;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,14 +7,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ajithvgiri.searchdialog.SearchListItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -28,7 +26,8 @@ import static java.lang.StrictMath.abs;
 public class AdaptiveDiagnosis extends AppCompatActivity {
     Intent passedIntent;
     Sex p_sex;
-    int p_id, p_age;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id;
     float p_height, p_weight;
 
     int mode;
@@ -169,10 +168,13 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
         passedIntent = getIntent();
         mode = passedIntent.getIntExtra("mode", -1);
         p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
+        p_id = passedIntent.getStringExtra("hid");
         p_age = passedIntent.getIntExtra("age", -1);
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
+        p_temperature = passedIntent.getIntExtra("temperature", 0);
+        p_pressure = passedIntent.getIntExtra("pressure", 0);
+        p_pregnancy = passedIntent.getIntExtra("pregnancy", 0);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
         nrows = passedIntent.getIntExtra("nrows", 0);
         ncols = passedIntent.getIntExtra("ncols", 0);
@@ -219,7 +221,7 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
 
                 System.out.println(disease_list.size());
                 if(disease_list.size() <= 1){
-                    intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
+                    intent = new Intent(AdaptiveDiagnosis.this, Labtest.class);
                     intent.putExtra("mode", 1);
                 }
                 else{
@@ -232,6 +234,9 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 intent.putExtra("age", p_age);
                 intent.putExtra("height", p_height);
                 intent.putExtra("weight", p_weight);
+                intent.putExtra("temperature", p_temperature);
+                intent.putExtra("pressure", p_pressure);
+                intent.putExtra("pregnancy", p_pregnancy);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
                 intent.putExtra("uts", UmlsToSymp);
@@ -261,7 +266,7 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
 
                 System.out.println(disease_list.size());
                 if(disease_list.size() <= 1){
-                    intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
+                    intent = new Intent(AdaptiveDiagnosis.this, Labtest.class);
                     intent.putExtra("mode", 1);
                 }
                 else{
@@ -273,6 +278,9 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 intent.putExtra("age", p_age);
                 intent.putExtra("height", p_height);
                 intent.putExtra("weight", p_weight);
+                intent.putExtra("temperature", p_temperature);
+                intent.putExtra("pressure", p_pressure);
+                intent.putExtra("pregnancy", p_pregnancy);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
                 intent.putExtra("uts", UmlsToSymp);
@@ -302,7 +310,7 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
 
                 System.out.println(disease_list.size());
                 if(disease_list.size() <= 1){
-                    intent = new Intent(AdaptiveDiagnosis.this, DiagnosisResult.class);
+                    intent = new Intent(AdaptiveDiagnosis.this, Labtest.class);
                     intent.putExtra("mode", 1);
                 }
                 else{
@@ -314,6 +322,9 @@ public class AdaptiveDiagnosis extends AppCompatActivity {
                 intent.putExtra("age", p_age);
                 intent.putExtra("height", p_height);
                 intent.putExtra("weight", p_weight);
+                intent.putExtra("temperature", p_temperature);
+                intent.putExtra("pressure", p_pressure);
+                intent.putExtra("pregnancy", p_pregnancy);
                 intent.putExtra("patient_symptoms", patientSymptoms);
                 intent.putExtra("stu", SympToUmls);
                 intent.putExtra("uts", UmlsToSymp);

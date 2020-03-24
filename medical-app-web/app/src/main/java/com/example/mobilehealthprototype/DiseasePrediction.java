@@ -1,7 +1,5 @@
 package com.example.mobilehealthprototype;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,13 +9,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.ajithvgiri.searchdialog.SearchListItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -25,7 +24,8 @@ import java.util.List;
 public class DiseasePrediction extends AppCompatActivity {
 
     Sex p_sex;
-    int p_id, p_age;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id,lab_test, lab_result, prescription, dosage;
     float p_height, p_weight;
 
     int diagnosed_disease_index;
@@ -201,6 +201,9 @@ public class DiseasePrediction extends AppCompatActivity {
                 backwards.putExtra("age", p_age);
                 backwards.putExtra("height", p_height);
                 backwards.putExtra("weight", p_weight);
+                backwards.putExtra("temperature", p_temperature);
+                backwards.putExtra("pressure", p_pressure);
+                backwards.putExtra("pregnancy", p_pregnancy);
                 backwards.putExtra("patient_symptoms", patientSymptoms);
                 backwards.putExtra("stu", SympToUmls);
                 backwards.putExtra("its", IndexToSymp);
@@ -223,7 +226,7 @@ public class DiseasePrediction extends AppCompatActivity {
                     //new Integer(UmlsToIndex.get(SympToUmls.get(patientSymptoms.get(i))))
                 }
 
-                String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index);
+                String toSend = ch.generateRawMessage(p_id, p_sex, p_age, p_height, p_weight, tmp, diagnosed_disease_index, lab_test, lab_result, prescription, dosage);
 //                sendMessage(getString(R.string.server_number),toSend); //Check if this is working later
                 Log.d("TESTING", toSend);
                 Intent sendToServ = new Intent(DiseasePrediction.this, ConfirmationScreen.class);
@@ -238,11 +241,18 @@ public class DiseasePrediction extends AppCompatActivity {
     public void handlePassedIntent(){
         Intent passedIntent = getIntent();
         p_sex = (Sex) passedIntent.getSerializableExtra("sex");
-        p_id = passedIntent.getIntExtra("hid", -1);
+        p_id = passedIntent.getStringExtra("hid");
         p_age = passedIntent.getIntExtra("age", -1);
         p_height = passedIntent.getFloatExtra("height",-1);
         p_weight = passedIntent.getFloatExtra("weight",-1);
+        p_temperature = passedIntent.getIntExtra("temperature", 0);
+        p_pressure = passedIntent.getIntExtra("pressure", 0);
+        p_pregnancy = passedIntent.getIntExtra("pregnancy", 0);
         patientSymptoms = passedIntent.getStringArrayListExtra("patient_symptoms");
+        lab_test = passedIntent.getStringExtra("lab_test");
+        lab_result = passedIntent.getStringExtra("lab_result");
+        prescription = passedIntent.getStringExtra("prescription");
+        dosage = passedIntent.getStringExtra("dosage");
 
         SympToUmls = new Hashtable<>((HashMap<String, String>) passedIntent.getSerializableExtra("stu"));
         IndexToSymp = new Hashtable<>((HashMap<Integer, String>) passedIntent.getSerializableExtra("its"));

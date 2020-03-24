@@ -3,7 +3,6 @@ package com.example.mobilehealthprototype;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,10 @@ public class SelectPatient extends AppCompatActivity {
     SearchableDialog sd;
     Hashtable<String,String> patientList = new Hashtable<>();
 
-    String p_sex, p_id, p_age, p_height, p_weight;
+    Sex p_sex;
+    int p_age, p_pressure, p_temperature, p_pregnancy;
+    String p_id;
+    float p_height, p_weight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,14 @@ public class SelectPatient extends AppCompatActivity {
                 String newSmp = searchListItem.getTitle();
                 if(!currentPatient.contains(newSmp)){
                     currentPatient.add(searchListItem.getTitle());
+                    p_id = searchListItem.getTitle();
+                    p_age = Integer.parseInt(patientList.get(p_id).split(",")[1]);
+                    if(patientList.get(p_id).split(",")[2] == "M"){
+                        p_sex = Sex.MALE;
+                    }
+                    else{
+                        p_sex = Sex.FEMALE;
+                    }
                     ((ListSymptoms.SymptomAdapter) patientView.getAdapter()).notifyDataSetChanged();
                 }
             }
@@ -96,7 +106,7 @@ public class SelectPatient extends AppCompatActivity {
             }
         });
 
-        //Sets up the ListView for the patient's current symptoms
+        //Sets up the ListView for the patient's id
         patientView = findViewById(R.id.patient_view);
         adp = new ListSymptoms.SymptomAdapter(this, currentPatient);
         patientView.setAdapter(adp);
@@ -114,6 +124,9 @@ public class SelectPatient extends AppCompatActivity {
                 intent.putExtra("age", p_age);
                 intent.putExtra("height", p_height);
                 intent.putExtra("weight", p_weight);
+                intent.putExtra("temperature", p_temperature);
+                intent.putExtra("pressure", p_pressure);
+                intent.putExtra("pregnancy", p_pregnancy);
                 startActivity(intent);
             }
         });
